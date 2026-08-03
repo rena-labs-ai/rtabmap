@@ -17,8 +17,8 @@ modification, are permitted provided that the following conditions are met:
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY
-DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
 (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
 LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
 ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
@@ -29,16 +29,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef ODOMETRYCUVSLAM_H_
 #define ODOMETRYCUVSLAM_H_
 
-#include <rtabmap/core/Odometry.h>
 #include <memory>
-#include <deque>
-#include <array>
-
-#ifdef RTABMAP_CUVSLAM
-#include <cuvslam.h>
-#include <ground_constraint.h>
-#include <cuda_runtime.h>
-#endif
+#include <rtabmap/core/Odometry.h>
 
 namespace rtabmap {
 
@@ -49,53 +41,18 @@ public:
 	virtual ~OdometryCuVSLAM();
 
 	virtual void reset(const Transform & initialPose = Transform::getIdentity());
-	virtual Odometry::Type getType() {return Odometry::kTypeCuVSLAM;}
+	virtual Odometry::Type getType() { return Odometry::kTypeCuVSLAM; }
 
 private:
-	virtual Transform computeTransform(SensorData & image, const Transform & guess = Transform(), OdometryInfo * info = 0);
-	virtual void cleanupCuVSLAMResources();
+	virtual Transform computeTransform(SensorData & image, const Transform & guess = Transform(),
+	                                   OdometryInfo * info = 0);
+	void cleanupCuVSLAMResources();
 
 private:
-#ifdef RTABMAP_CUVSLAM
-	CUVSLAM_TrackerHandle cuvslam_handle_;
-	CUVSLAM_GroundConstraintHandle ground_constraint_handle_;
-
-	std::vector<CUVSLAM_Camera> cuvslam_cameras_;
-	std::vector<std::array<float, 12>> intrinsics_;
-	
-	// State tracking
-	bool initialized_;
-	bool lost_;
-	bool tracking_;
-	bool planar_constraints_;
-	int multicam_mode_;
-	Transform previous_pose_;
-	double last_timestamp_;
-
-	// Configuration Thresholds
-	double velocity_ratio_threshold_high_ = 1.5;			// The maximum velocity ratio of guess / estimated velocity needed to detect lost state.
-	double velocity_ratio_threshold_low_ = 0.5;				// The minimum velocity ratio of guess / estimated velocity needed to detect lost state.
-	double velocity_difference_threshold_ = 0.1;			// The maximum velocity difference between the guess and the estimated velocity needed to detect lost state.
-	double zero_estimated_velocity_threshold_ = 0.00001;	// The minimum cuVSLAM estimated velocity needed to detect lost state.
-	double min_landmarks_threshold_ = 30; 					// The minimum number of landmarks needed to start tracking after an initialization.
-	
-	// Forward cuVLSAM covariance directly to RTAB-Map.
-	// When true this disables covariance based lost detection.
-	bool use_raw_covariance_  = false;
-
-	//visualization
-	std::vector<CUVSLAM_Observation> observations_;
-	std::vector<CUVSLAM_Landmark> landmarks_;
-	
-	// GPU memory management
-	std::vector<uint8_t *> gpu_left_image_data_; // pointers to all gpu images
-	std::vector<uint8_t *> gpu_right_image_data_;
-	std::vector<size_t> gpu_left_image_sizes_; // size of one image
-	std::vector<size_t> gpu_right_image_sizes_;
-	cudaStream_t cuda_stream_;
-#endif
+	class Impl;
+	std::unique_ptr<Impl> impl_;
 };
 
-}
+}  // namespace rtabmap
 
 #endif /* ODOMETRYCUVSLAM_H_ */
