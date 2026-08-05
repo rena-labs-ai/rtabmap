@@ -42,6 +42,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifdef RTABMAP_CUVSLAM
 #include "rtabmap/core/CameraModel.h"
+#include "rtabmap/core/IMU.h"
 #include "rtabmap/core/SensorData.h"
 #include "rtabmap/core/StereoCameraModel.h"
 #include "rtabmap/core/Transform.h"
@@ -65,6 +66,18 @@ public:
 	int64_t lastTimestampNs = std::numeric_limits<int64_t>::min();
 	bool trackingStarted = false;
 	bool continuityLost = false;
+
+	bool imuFusion = Parameters::defaultOdomCuVSLAMImuFusion();
+	float imuGyroNoiseDensity = Parameters::defaultOdomCuVSLAMImuGyroNoiseDensity();
+	float imuGyroRandomWalk = Parameters::defaultOdomCuVSLAMImuGyroRandomWalk();
+	float imuAccelNoiseDensity = Parameters::defaultOdomCuVSLAMImuAccelNoiseDensity();
+	float imuAccelRandomWalk = Parameters::defaultOdomCuVSLAMImuAccelRandomWalk();
+	float imuFrequency = Parameters::defaultOdomCuVSLAMImuFrequency();
+	bool imuCalibrationKnown = false;
+	cuvslam::ImuCalibration imuCalibration{};
+	std::vector<cuvslam::ImuMeasurement> pendingImu;
+	int64_t lastImuTimestampNs = std::numeric_limits<int64_t>::min();
+	bool imuIgnoredWarned = false;
 #endif
 };
 
@@ -106,6 +119,23 @@ Transform fromCuVSLAMPose(const cuvslam::Pose & pose)
 {
 	return Transform(pose.translation[0], pose.translation[1], pose.translation[2], pose.rotation[0], pose.rotation[1],
 	                 pose.rotation[2], pose.rotation[3]);
+}
+
+bool toCuVSLAMImuMeasurement(const IMU & imu, double stamp, cuvslam::ImuMeasurement * measurement)
+{
+	const long double nanoseconds = static_cast<long double>(stamp) * 1000000000.0L;
+	if(!std::isfinite(stamp) || nanoseconds < static_cast<long double>(std::numeric_limits<int64_t>::min()) ||
+	   nanoseconds > static_cast<long double>(std::numeric_limits<int64_t>::max()))
+	{
+		return false;
+	}
+	measurement->timestamp_ns = static_cast<int64_t>(std::llround(nanoseconds));
+	for(int i = 0; i < 3; ++i)
+	{
+		measurement->linear_accelerations[i] = static_cast<float>(imu.linearAcceleration()[i]);
+		measurement->angular_velocities[i] = static_cast<float>(imu.angularVelocity()[i]);
+	}
+	return true;
 }
 
 cuvslam::Odometry::MulticameraMode toCuVSLAMMulticameraMode(int mode)
@@ -175,7 +205,7 @@ bool isRectifiedStereoPair(const StereoCameraModel & stereo, size_t stereoIndex)
 	return true;
 }
 
-bool createRig(const SensorData & data, cuvslam::Rig * rig)
+bool createRig(const SensorData & data, const cuvslam::ImuCalibration * imu, cuvslam::Rig * rig)
 {
 	const std::vector<StereoCameraModel> & models = data.stereoCameraModels();
 	if(models.empty())
@@ -192,6 +222,10 @@ bool createRig(const SensorData & data, cuvslam::Rig * rig)
 	rig->cameras.clear();
 	rig->cameras.reserve(models.size() * 2);
 	rig->imus.clear();
+	if(imu)
+	{
+		rig->imus.push_back(*imu);
+	}
 	for(size_t i = 0; i < models.size(); ++i)
 	{
 		const StereoCameraModel & stereo = models[i];
@@ -305,19 +339,30 @@ bool rigsMatch(const cuvslam::Rig & first, const cuvslam::Rig & second)
 	return true;
 }
 
-bool createTracker(const SensorData & data, int multicamMode, cuvslam::Rig * rig,
+bool createTracker(const SensorData & data, int multicamMode, const cuvslam::ImuCalibration * imu, cuvslam::Rig * rig,
                    std::unique_ptr<cuvslam::Odometry> * odometry)
 {
 	cuvslam::Rig candidateRig;
-	if(!createRig(data, &candidateRig))
+	if(!createRig(data, imu, &candidateRig))
 	{
 		return false;
 	}
 
 	cuvslam::Odometry::Config configuration = cuvslam::Odometry::GetDefaultConfig();
-	configuration.odometry_mode = cuvslam::Odometry::OdometryMode::Multicamera;
+	if(imu)
+	{
+		// Inertial = single stereo + single IMU (fusion is not supported in
+		// Multicamera mode). The IMU drives pose prediction, so the internal
+		// motion model is off per the cuVSLAM guidance.
+		configuration.odometry_mode = cuvslam::Odometry::OdometryMode::Inertial;
+		configuration.use_motion_model = false;
+	}
+	else
+	{
+		configuration.odometry_mode = cuvslam::Odometry::OdometryMode::Multicamera;
+		configuration.use_motion_model = true;
+	}
 	configuration.multicam_mode = toCuVSLAMMulticameraMode(multicamMode);
-	configuration.use_motion_model = true;
 	configuration.rectified_stereo_camera = true;
 	configuration.enable_observations_export = false;
 	configuration.enable_landmarks_export = false;
@@ -637,6 +682,22 @@ OdometryCuVSLAM::OdometryCuVSLAM(const ParametersMap & parameters) : Odometry(pa
 		impl_->multicamMode = 0;
 	}
 	UINFO("%s=%d", Parameters::kOdomCuVSLAMMulticamMode().c_str(), impl_->multicamMode);
+	Parameters::parse(parameters, Parameters::kOdomCuVSLAMImuFusion(), impl_->imuFusion);
+	Parameters::parse(parameters, Parameters::kOdomCuVSLAMImuGyroNoiseDensity(), impl_->imuGyroNoiseDensity);
+	Parameters::parse(parameters, Parameters::kOdomCuVSLAMImuGyroRandomWalk(), impl_->imuGyroRandomWalk);
+	Parameters::parse(parameters, Parameters::kOdomCuVSLAMImuAccelNoiseDensity(), impl_->imuAccelNoiseDensity);
+	Parameters::parse(parameters, Parameters::kOdomCuVSLAMImuAccelRandomWalk(), impl_->imuAccelRandomWalk);
+	Parameters::parse(parameters, Parameters::kOdomCuVSLAMImuFrequency(), impl_->imuFrequency);
+	UINFO("%s=%s", Parameters::kOdomCuVSLAMImuFusion().c_str(), impl_->imuFusion ? "true" : "false");
+#endif
+}
+
+bool OdometryCuVSLAM::canProcessAsyncIMU() const
+{
+#ifdef RTABMAP_CUVSLAM
+	return impl_->imuFusion;
+#else
+	return false;
 #endif
 }
 
@@ -672,6 +733,44 @@ Transform OdometryCuVSLAM::computeTransform(SensorData & data, const Transform &
 	UTimer timer;
 	(void)guess;  // cuVSLAM 17 has no external pose-prediction input.
 
+	if(impl_->imuFusion && !data.imu().empty())
+	{
+		if(!impl_->imuCalibrationKnown)
+		{
+			const Transform & rigFromImu = data.imu().localTransform();
+			if(rigFromImu.isNull())
+			{
+				UERROR("IMU sample has no local transform; cannot calibrate cuVSLAM IMU");
+			}
+			else
+			{
+				impl_->imuCalibration.rig_from_imu = toCuVSLAMPose(rigFromImu);
+				impl_->imuCalibration.gyroscope_noise_density = impl_->imuGyroNoiseDensity;
+				impl_->imuCalibration.gyroscope_random_walk = impl_->imuGyroRandomWalk;
+				impl_->imuCalibration.accelerometer_noise_density = impl_->imuAccelNoiseDensity;
+				impl_->imuCalibration.accelerometer_random_walk = impl_->imuAccelRandomWalk;
+				impl_->imuCalibration.frequency = impl_->imuFrequency;
+				impl_->imuCalibrationKnown = true;
+			}
+		}
+		// A live tracker without an IMU in its rig will never consume samples
+		// (multi-camera mode) — don't accumulate them.
+		const bool consumable = !impl_->odometry || !impl_->rig.imus.empty();
+		cuvslam::ImuMeasurement measurement{};
+		if(consumable && impl_->imuCalibrationKnown &&
+		   toCuVSLAMImuMeasurement(data.imu(), data.stamp(), &measurement) &&
+		   measurement.timestamp_ns > impl_->lastImuTimestampNs)
+		{
+			impl_->lastImuTimestampNs = measurement.timestamp_ns;
+			impl_->pendingImu.push_back(measurement);
+		}
+		if(data.imageRaw().empty())
+		{
+			// Async IMU-only event; nothing to track.
+			return Transform();
+		}
+	}
+
 	if(data.imageRaw().empty() || data.rightRaw().empty())
 	{
 		UERROR("cuVSLAM odometry requires stereo images");
@@ -685,9 +784,30 @@ Transform OdometryCuVSLAM::computeTransform(SensorData & data, const Transform &
 		return Transform();
 	}
 
+	// IMU fusion is only supported for a single stereo camera (cuVSLAM
+	// Inertial mode); multi-camera rigs keep the visual-only Multicamera mode.
+	const bool wantImu =
+	    impl_->imuFusion && impl_->imuCalibrationKnown && data.stereoCameraModels().size() == 1;
+	if(impl_->imuFusion && impl_->imuCalibrationKnown && data.stereoCameraModels().size() > 1 &&
+	   !impl_->imuIgnoredWarned)
+	{
+		UWARN("cuVSLAM IMU fusion supports a single stereo camera only; ignoring the IMU (multicamera mode)");
+		impl_->imuIgnoredWarned = true;
+	}
+
+	// The rig is fixed at tracker creation. If the IMU showed up after a
+	// visual-only tracker was created but tracking never engaged, recreate the
+	// tracker with the IMU instead of silently staying visual-only.
+	if(impl_->odometry && wantImu && impl_->rig.imus.empty() && !impl_->trackingStarted)
+	{
+		cleanupCuVSLAMResources();
+	}
+
+	const cuvslam::ImuCalibration * imu = nullptr;
 	if(!impl_->odometry)
 	{
-		if(!createTracker(data, impl_->multicamMode, &impl_->rig, &impl_->odometry))
+		imu = wantImu ? &impl_->imuCalibration : nullptr;
+		if(!createTracker(data, impl_->multicamMode, imu, &impl_->rig, &impl_->odometry))
 		{
 			setFailureInfo(info, timer);
 			return Transform();
@@ -695,8 +815,9 @@ Transform OdometryCuVSLAM::computeTransform(SensorData & data, const Transform &
 	}
 	else
 	{
+		imu = impl_->rig.imus.empty() ? nullptr : &impl_->imuCalibration;
 		cuvslam::Rig currentRig;
-		if(!createRig(data, &currentRig) || !rigsMatch(impl_->rig, currentRig))
+		if(!createRig(data, imu, &currentRig) || !rigsMatch(impl_->rig, currentRig))
 		{
 			UERROR("Stereo camera calibration changed; restarting cuVSLAM");
 			impl_->continuityLost = impl_->continuityLost || impl_->trackingStarted;
@@ -728,6 +849,27 @@ Transform OdometryCuVSLAM::computeTransform(SensorData & data, const Transform &
 	{
 		setFailureInfo(info, timer);
 		return Transform();
+	}
+
+	if(!impl_->rig.imus.empty() && !impl_->pendingImu.empty())
+	{
+		// Register buffered samples up to the frame stamp; Track() and
+		// RegisterImuMeasurement() must be called in timestamp order.
+		size_t registered = 0;
+		try
+		{
+			while(registered < impl_->pendingImu.size() &&
+			      impl_->pendingImu[registered].timestamp_ns <= timestampNs)
+			{
+				impl_->odometry->RegisterImuMeasurement(0, impl_->pendingImu[registered]);
+				++registered;
+			}
+		} catch(const std::exception & exception)
+		{
+			UWARN("cuVSLAM rejected an IMU measurement: %s", exception.what());
+			++registered;  // drop the offending sample
+		}
+		impl_->pendingImu.erase(impl_->pendingImu.begin(), impl_->pendingImu.begin() + registered);
 	}
 
 	cuvslam::PoseEstimate estimate{};

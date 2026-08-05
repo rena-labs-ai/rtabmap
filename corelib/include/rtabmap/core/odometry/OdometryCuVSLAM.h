@@ -42,6 +42,7 @@ public:
 
 	virtual void reset(const Transform & initialPose = Transform::getIdentity());
 	virtual Odometry::Type getType() { return Odometry::kTypeCuVSLAM; }
+	virtual bool canProcessAsyncIMU() const;
 
 private:
 	virtual Transform computeTransform(SensorData & image, const Transform & guess = Transform(),
