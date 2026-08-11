@@ -169,14 +169,25 @@ bool configureCamera(const CameraModel & model, const Transform & rigFromCamera,
 	}
 
 	camera->size = {model.imageWidth(), model.imageHeight()};
-	camera->principal = {static_cast<float>(model.cx()), static_cast<float>(model.cy())};
-	camera->focal = {static_cast<float>(model.fx()), static_cast<float>(model.fy())};
 	camera->rig_from_camera = toCuVSLAMPose(rigFromCamera);
 	if(rawImages)
 	{
+		// fx()/cx() return P (the rectified projection) and D() returns zeros
+		// whenever P is set, which it always is for a ROS stereo pair. Raw
+		// frames must be described by the unrectified K and D instead.
+		const cv::Mat intrinsics = model.K_raw();
+		const cv::Mat distortion = model.D_raw();
+		if(intrinsics.rows != 3 || intrinsics.cols != 3)
+		{
+			UERROR("Camera model %u carries raw images but no unrectified K", cameraIndex);
+			return false;
+		}
+		camera->focal = {static_cast<float>(intrinsics.at<double>(0, 0)),
+		                 static_cast<float>(intrinsics.at<double>(1, 1))};
+		camera->principal = {static_cast<float>(intrinsics.at<double>(0, 2)),
+		                     static_cast<float>(intrinsics.at<double>(1, 2))};
 		// OpenCV/ROS D order (k1,k2,p1,p2,k3,k4,k5,k6) is the tail of the
 		// cuVSLAM Polynomial model; absent trailing coefficients are zero.
-		const cv::Mat distortion = model.D();
 		camera->distortion.model = cuvslam::Distortion::Model::Polynomial;
 		camera->distortion.parameters.assign(8, 0.0f);
 		for(int i = 0; i < 8 && i < static_cast<int>(distortion.total()); ++i)
@@ -186,6 +197,8 @@ bool configureCamera(const CameraModel & model, const Transform & rigFromCamera,
 	}
 	else
 	{
+		camera->principal = {static_cast<float>(model.cx()), static_cast<float>(model.cy())};
+		camera->focal = {static_cast<float>(model.fx()), static_cast<float>(model.fy())};
 		camera->distortion.model = cuvslam::Distortion::Model::Pinhole;
 		camera->distortion.parameters.clear();
 	}
