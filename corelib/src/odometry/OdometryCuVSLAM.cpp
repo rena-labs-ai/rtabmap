@@ -322,22 +322,6 @@ bool createRig(const SensorData & data, const cuvslam::ImuCalibration * imu, boo
 			return false;
 		}
 		rig->cameras.push_back(std::move(rightCamera));
-
-		// One-shot at tracker creation. UWARN so it survives the node's
-		// warn-only log level without turning on per-frame UINFO spam.
-		for(size_t side = 0; side < 2; ++side)
-		{
-			const cuvslam::Camera & camera = rig->cameras[i * 2 + side];
-			UWARN("cuVSLAM rig cam%zu (%s, baseline=%.6f): size=%dx%d focal=(%.2f,%.2f) principal=(%.2f,%.2f) "
-			      "dist=%s[%zu] rig_t=(%.6f,%.6f,%.6f) rig_q=(%.6f,%.6f,%.6f,%.6f)",
-			      i * 2 + side, side == 0 ? "left" : "right", stereo.baseline(), camera.size[0], camera.size[1],
-			      camera.focal[0], camera.focal[1], camera.principal[0], camera.principal[1],
-			      rawImages ? "polynomial" : "pinhole", camera.distortion.parameters.size(),
-			      camera.rig_from_camera.translation[0], camera.rig_from_camera.translation[1],
-			      camera.rig_from_camera.translation[2], camera.rig_from_camera.rotation[0],
-			      camera.rig_from_camera.rotation[1], camera.rig_from_camera.rotation[2],
-			      camera.rig_from_camera.rotation[3]);
-		}
 	}
 
 	for(size_t i = 1; i < rig->cameras.size(); ++i)
