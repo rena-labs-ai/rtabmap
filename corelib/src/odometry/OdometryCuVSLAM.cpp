@@ -155,7 +155,7 @@ cuvslam::Odometry::MulticameraMode toCuVSLAMMulticameraMode(int mode)
 }
 
 bool configureCamera(const CameraModel & model, const Transform & rigFromCamera, unsigned int cameraIndex,
-                     cuvslam::Camera * camera)
+                     bool rawImages, cuvslam::Camera * camera)
 {
 	if(!model.isValidForProjection() || model.imageWidth() <= 0 || model.imageHeight() <= 0)
 	{
@@ -172,7 +172,23 @@ bool configureCamera(const CameraModel & model, const Transform & rigFromCamera,
 	camera->principal = {static_cast<float>(model.cx()), static_cast<float>(model.cy())};
 	camera->focal = {static_cast<float>(model.fx()), static_cast<float>(model.fy())};
 	camera->rig_from_camera = toCuVSLAMPose(rigFromCamera);
-	camera->distortion.model = cuvslam::Distortion::Model::Pinhole;
+	if(rawImages)
+	{
+		// OpenCV/ROS D order (k1,k2,p1,p2,k3,k4,k5,k6) is the tail of the
+		// cuVSLAM Polynomial model; absent trailing coefficients are zero.
+		const cv::Mat distortion = model.D();
+		camera->distortion.model = cuvslam::Distortion::Model::Polynomial;
+		camera->distortion.parameters.assign(8, 0.0f);
+		for(int i = 0; i < 8 && i < static_cast<int>(distortion.total()); ++i)
+		{
+			camera->distortion.parameters[i] = static_cast<float>(distortion.at<double>(i));
+		}
+	}
+	else
+	{
+		camera->distortion.model = cuvslam::Distortion::Model::Pinhole;
+		camera->distortion.parameters.clear();
+	}
 	return true;
 }
 
@@ -205,7 +221,40 @@ bool isRectifiedStereoPair(const StereoCameraModel & stereo, size_t stereoIndex)
 	return true;
 }
 
-bool createRig(const SensorData & data, const cuvslam::ImuCalibration * imu, cuvslam::Rig * rig)
+// Pose of the right camera in the left camera frame. Rectified pairs share the
+// rectified frame, so the right camera is a pure baseline translation. A raw
+// pair does not: both rectification rotations map into that shared frame, so
+// undo the left one and re-apply the right one to get back to raw left.
+Transform leftFromRight(const StereoCameraModel & stereo, bool rawImages, size_t stereoIndex)
+{
+	const double baseline = stereo.baseline();
+	if(!rawImages)
+	{
+		return Transform(1.0f, 0.0f, 0.0f, static_cast<float>(baseline), 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+		                 0.0f);
+	}
+
+	const cv::Mat leftRectification = stereo.left().R();
+	const cv::Mat rightRectification = stereo.right().R();
+	if(leftRectification.rows != 3 || leftRectification.cols != 3 || rightRectification.rows != 3 ||
+	   rightRectification.cols != 3)
+	{
+		UERROR("Stereo camera model %zu carries raw images but no rectification rotations; cannot place the right "
+		       "camera in the rig",
+		       stereoIndex);
+		return Transform();
+	}
+
+	const cv::Mat leftRectificationInverse = leftRectification.t();
+	const cv::Mat rotation = leftRectificationInverse * rightRectification;
+	const cv::Mat translation = leftRectificationInverse * (cv::Mat_<double>(3, 1) << baseline, 0.0, 0.0);
+	return Transform(rotation.at<double>(0, 0), rotation.at<double>(0, 1), rotation.at<double>(0, 2),
+	                 translation.at<double>(0), rotation.at<double>(1, 0), rotation.at<double>(1, 1),
+	                 rotation.at<double>(1, 2), translation.at<double>(1), rotation.at<double>(2, 0),
+	                 rotation.at<double>(2, 1), rotation.at<double>(2, 2), translation.at<double>(2));
+}
+
+bool createRig(const SensorData & data, const cuvslam::ImuCalibration * imu, bool rawImages, cuvslam::Rig * rig)
 {
 	const std::vector<StereoCameraModel> & models = data.stereoCameraModels();
 	if(models.empty())
@@ -234,25 +283,28 @@ bool createRig(const SensorData & data, const cuvslam::ImuCalibration * imu, cuv
 			UERROR("Invalid stereo camera model %zu for cuVSLAM initialization", i);
 			return false;
 		}
-		if(!isRectifiedStereoPair(stereo, i))
+		if(!rawImages && !isRectifiedStereoPair(stereo, i))
 		{
 			return false;
 		}
 
 		const Transform & rigFromLeft = stereo.localTransform();
-		const Transform leftFromRight(1.0f, 0.0f, 0.0f, static_cast<float>(stereo.baseline()), 0.0f, 1.0f, 0.0f, 0.0f,
-		                              0.0f, 0.0f, 1.0f, 0.0f);
+		const Transform rightInLeft = leftFromRight(stereo, rawImages, i);
+		if(rightInLeft.isNull())
+		{
+			return false;
+		}
 
 		cuvslam::Camera leftCamera;
-		if(!configureCamera(stereo.left(), rigFromLeft, static_cast<unsigned int>(i * 2), &leftCamera))
+		if(!configureCamera(stereo.left(), rigFromLeft, static_cast<unsigned int>(i * 2), rawImages, &leftCamera))
 		{
 			return false;
 		}
 		rig->cameras.push_back(std::move(leftCamera));
 
 		cuvslam::Camera rightCamera;
-		if(!configureCamera(stereo.right(), rigFromLeft * leftFromRight, static_cast<unsigned int>(i * 2 + 1),
-		                    &rightCamera))
+		if(!configureCamera(stereo.right(), rigFromLeft * rightInLeft, static_cast<unsigned int>(i * 2 + 1),
+		                    rawImages, &rightCamera))
 		{
 			return false;
 		}
@@ -339,11 +391,11 @@ bool rigsMatch(const cuvslam::Rig & first, const cuvslam::Rig & second)
 	return true;
 }
 
-bool createTracker(const SensorData & data, int multicamMode, const cuvslam::ImuCalibration * imu, cuvslam::Rig * rig,
-                   std::unique_ptr<cuvslam::Odometry> * odometry)
+bool createTracker(const SensorData & data, int multicamMode, const cuvslam::ImuCalibration * imu, bool rawImages,
+                   cuvslam::Rig * rig, std::unique_ptr<cuvslam::Odometry> * odometry)
 {
 	cuvslam::Rig candidateRig;
-	if(!createRig(data, imu, &candidateRig))
+	if(!createRig(data, imu, rawImages, &candidateRig))
 	{
 		return false;
 	}
@@ -363,7 +415,7 @@ bool createTracker(const SensorData & data, int multicamMode, const cuvslam::Imu
 		configuration.use_motion_model = true;
 	}
 	configuration.multicam_mode = toCuVSLAMMulticameraMode(multicamMode);
-	configuration.rectified_stereo_camera = true;
+	configuration.rectified_stereo_camera = !rawImages;
 	// Observation export feeds the per-frame quality (tracked feature count)
 	// reported through OdometryInfo.
 	configuration.enable_observations_export = true;
@@ -805,11 +857,16 @@ Transform OdometryCuVSLAM::computeTransform(SensorData & data, const Transform &
 		cleanupCuVSLAMResources();
 	}
 
+	// Odometry::process() leaves raw pairs untouched (canProcessRawImages), so
+	// the models still carry lens distortion and per-camera rectification
+	// rotations: cuVSLAM undistorts instead.
+	const bool rawImages = !this->imagesAlreadyRectified();
+
 	const cuvslam::ImuCalibration * imu = nullptr;
 	if(!impl_->odometry)
 	{
 		imu = wantImu ? &impl_->imuCalibration : nullptr;
-		if(!createTracker(data, impl_->multicamMode, imu, &impl_->rig, &impl_->odometry))
+		if(!createTracker(data, impl_->multicamMode, imu, rawImages, &impl_->rig, &impl_->odometry))
 		{
 			setFailureInfo(info, timer);
 			return Transform();
@@ -819,7 +876,7 @@ Transform OdometryCuVSLAM::computeTransform(SensorData & data, const Transform &
 	{
 		imu = impl_->rig.imus.empty() ? nullptr : &impl_->imuCalibration;
 		cuvslam::Rig currentRig;
-		if(!createRig(data, imu, &currentRig) || !rigsMatch(impl_->rig, currentRig))
+		if(!createRig(data, imu, rawImages, &currentRig) || !rigsMatch(impl_->rig, currentRig))
 		{
 			UERROR("Stereo camera calibration changed; restarting cuVSLAM");
 			impl_->continuityLost = impl_->continuityLost || impl_->trackingStarted;

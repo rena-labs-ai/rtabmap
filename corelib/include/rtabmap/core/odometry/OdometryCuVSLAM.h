@@ -43,6 +43,9 @@ public:
 	virtual void reset(const Transform & initialPose = Transform::getIdentity());
 	virtual Odometry::Type getType() { return Odometry::kTypeCuVSLAM; }
 	virtual bool canProcessAsyncIMU() const;
+	// cuVSLAM undistorts internally from the polynomial model, so raw pairs are
+	// passed through untouched instead of being rectified by Odometry::process().
+	virtual bool canProcessRawImages() const { return true; }
 
 private:
 	virtual Transform computeTransform(SensorData & image, const Transform & guess = Transform(),
