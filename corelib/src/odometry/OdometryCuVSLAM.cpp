@@ -364,7 +364,9 @@ bool createTracker(const SensorData & data, int multicamMode, const cuvslam::Imu
 	}
 	configuration.multicam_mode = toCuVSLAMMulticameraMode(multicamMode);
 	configuration.rectified_stereo_camera = true;
-	configuration.enable_observations_export = false;
+	// Observation export feeds the per-frame quality (tracked feature count)
+	// reported through OdometryInfo.
+	configuration.enable_observations_export = true;
 	configuration.enable_landmarks_export = false;
 	configuration.enable_final_landmarks_export = false;
 	// cuVSLAM observations do not include descriptors. Let the RTAB-Map backend
@@ -884,6 +886,9 @@ Transform OdometryCuVSLAM::computeTransform(SensorData & data, const Transform &
 		setFailureInfo(info, timer);
 		return Transform();
 	}
+	const double frameGapMs = impl_->lastTimestampNs > 0
+		? double(timestampNs - impl_->lastTimestampNs) / 1e6
+		: 0.0;
 	impl_->lastTimestampNs = timestampNs;
 
 	if(!estimate.world_from_rig)
@@ -923,6 +928,14 @@ Transform OdometryCuVSLAM::computeTransform(SensorData & data, const Transform &
 		return Transform();
 	}
 
+	const int failuresBridged = impl_->consecutiveTrackingFailures;
+	const bool bridgedGap = impl_->continuityLost;
+	uint32_t observationCount = 0;
+	{
+		cuvslam::Odometry::State state;
+		impl_->odometry->GetState(state);
+		observationCount = static_cast<uint32_t>(state.observations.size());
+	}
 	const Transform transform = impl_->previousPose.inverse() * currentPose;
 	cv::Mat covariance;
 	if(impl_->continuityLost)
@@ -939,10 +952,18 @@ Transform OdometryCuVSLAM::computeTransform(SensorData & data, const Transform &
 	impl_->consecutiveTrackingFailures = 0;
 	impl_->trackingStarted = true;
 
+	const Eigen::Quaternionf q = transform.getQuaternionf();
+	const float rotDeg = 2.0f * std::acos(std::min(1.0f, std::fabs(q.w()))) * 180.0f / float(M_PI);
+	UINFO("cuVSLAM dt=%.0fms |t|=%.3fm |r|=%.1fdeg obs=%u fails=%d bridge=%d",
+	      frameGapMs, transform.getNorm(), rotDeg, observationCount,
+	      failuresBridged, bridgedGap ? 1 : 0);
+
 	if(info)
 	{
 		info->type = kTypeF2F;
 		info->reg.covariance = covariance;
+		info->reg.inliers = static_cast<int>(observationCount);
+		info->features = static_cast<int>(observationCount);
 		info->timeEstimation = timer.ticks();
 	}
 	return transform;
