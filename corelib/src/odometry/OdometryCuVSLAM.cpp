@@ -416,6 +416,9 @@ bool createTracker(const SensorData & data, int multicamMode, const cuvslam::Imu
 	}
 	configuration.multicam_mode = toCuVSLAMMulticameraMode(multicamMode);
 	configuration.rectified_stereo_camera = !rawImages;
+	// Synchronous bundle adjustment: the pose returned by Track() is the
+	// refined one rather than one that can run ahead of the SBA thread.
+	configuration.async_sba = false;
 	// Observation export feeds the per-frame quality (tracked feature count)
 	// reported through OdometryInfo.
 	configuration.enable_observations_export = true;
