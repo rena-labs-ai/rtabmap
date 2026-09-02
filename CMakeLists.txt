@@ -962,15 +962,15 @@ IF(NOT (APPLE OR WIN32) AND BUILD_WITH_RPATH_NOT_RUNPATH)
 ENDIF()
 
 IF(NOT MSVC)
-    IF(Qt6_FOUND OR (G2O_FOUND AND G2O_CPP11 EQUAL 1) OR (GTSAM_FOUND AND GTSAM_VERSION VERSION_GREATER_EQUAL "4.3.0") OR TORCH_FOUND OR MRPT_FOUND)
-      # Qt6 requires c++17
+    IF(Qt6_FOUND OR (G2O_FOUND AND G2O_CPP11 EQUAL 1) OR (GTSAM_FOUND AND GTSAM_VERSION VERSION_GREATER_EQUAL "4.3.0") OR TORCH_FOUND OR MRPT_FOUND OR CUVSLAM_FOUND)
+      # Qt6 and cuVSLAM v17 require c++17
       include(CheckCXXCompilerFlag)
       CHECK_CXX_COMPILER_FLAG("-std=c++17" COMPILER_SUPPORTS_CXX17)
       IF(COMPILER_SUPPORTS_CXX17)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
         set(CMAKE_CXX_STANDARD 17)
       ELSE()
-        message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++17 support. Please use a different C++ compiler if you want to use Qt6.")
+        message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++17 support. Please use a different C++ compiler for dependencies requiring C++17.")
       ENDIF()
     ENDIF()
     IF((NOT (${CMAKE_CXX_STANDARD} STREQUAL "17")) AND (msckf_vio_FOUND OR loam_velodyne_FOUND OR floam_FOUND OR PCL_VERSION VERSION_GREATER "1.9.1" OR G2O_FOUND OR CCCoreLib_FOUND OR Open3D_FOUND))
