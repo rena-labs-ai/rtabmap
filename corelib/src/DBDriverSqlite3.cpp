@@ -143,7 +143,7 @@ void DBDriverSqlite3::setJournalMode(int journalMode)
 
 void DBDriverSqlite3::setSynchronous(int synchronous)
 {
-	if(synchronous >= 0 && synchronous < 3)
+	if(synchronous >= 0 && synchronous <= 3)
 	{
 		_synchronous = synchronous;
 		if(this->isConnected())
@@ -155,6 +155,9 @@ void DBDriverSqlite3::setSynchronous(int synchronous)
 				break;
 			case 1:
 				this->executeNoResultQuery("PRAGMA synchronous = NORMAL;");
+				break;
+			case 3:
+				this->executeNoResultQuery("PRAGMA synchronous = EXTRA;");
 				break;
 			case 2:
 			default:

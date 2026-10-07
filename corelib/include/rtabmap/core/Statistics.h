@@ -189,6 +189,7 @@ class RTABMAP_CORE_EXPORT Statistics
 	RTABMAP_STATS(Timing, Forgetting, ms);
 	RTABMAP_STATS(Timing, Joining_trash, ms);
 	RTABMAP_STATS(Timing, Emptying_trash, ms);
+	RTABMAP_STATS(Timing, Session_flush, ms);
 	RTABMAP_STATS(Timing, Finalizing_statistics, ms);
 	RTABMAP_STATS(Timing, RAM_estimation, ms);
 

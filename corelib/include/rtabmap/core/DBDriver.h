@@ -78,6 +78,8 @@ public:
 	void asyncSave(Signature * s); //ownership transferred
 	void asyncSave(VisualWord * vw); //ownership transferred
 	void emptyTrashes(bool async = false);
+	bool isInTrash(int signatureId);
+	void asyncSaveLastLocalizationPose(const Transform & pose);
 	double getEmptyTrashesTime() const {return _emptyTrashesTime;}
 	void setTimestampUpdateEnabled(bool enabled) {_timestampUpdate = enabled;} // used on Update Signature and Word queries
 
@@ -312,6 +314,8 @@ private:
 	UMutex _transactionMutex;
 	std::map<int, Signature *> _trashSignatures;//<id, Signature*>
 	std::map<int, VisualWord *> _trashVisualWords; //<id, VisualWord*>
+	Transform _trashLastLocalizationPose;
+	bool _trashLastLocalizationPoseSet;
 	UMutex _trashesMutex;
 	UMutex _dbSafeAccessMutex;
 	USemaphore _addSem;

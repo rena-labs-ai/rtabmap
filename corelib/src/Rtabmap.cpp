@@ -4898,6 +4898,12 @@ bool Rtabmap::process(
 		UDEBUG("wmState=%d", (int)ids.size());
 	}
 
+	UTimer flushTimer;
+	if(_memory->flushSession(_lastLocalizationPose))
+	{
+		statistics_.addStatistic(Statistics::kTimingSession_flush(), flushTimer.ticks()*1000);
+	}
+
 	//Save statistics to database
 	if(_memory->isIncremental() || _memory->isLocalizationDataSaved())
 	{
