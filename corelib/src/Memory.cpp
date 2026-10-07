@@ -3234,7 +3234,7 @@ void Memory::deleteLocation(int locationId, std::list<int> * deletedWords, bool 
 	}
 }
 
-bool Memory::flushSession(const Transform & currentPose)
+bool Memory::flushSession(const std::map<int, Transform> & optimizedPoses, const Transform & currentPose)
 {
 	if(!_sessionFlush || !_incrementalMemory || !_dbDriver || _dbDriver->isInMemory())
 	{
@@ -3273,7 +3273,10 @@ bool Memory::flushSession(const Transform & currentPose)
 		w->second->setSaved(true);
 	}
 	_wordsCreatedSinceFlush.clear();
-	_dbDriver->asyncSaveLastLocalizationPose(currentPose);
+	// Above the bound the set is written empty: the loader then re-optimizes from the
+	// newest node instead of reading a blob that grows with the map.
+	static const size_t kFlushedPosesMax = 2000;
+	_dbDriver->asyncSaveOptimizedPoses(optimizedPoses.size() <= kFlushedPosesMax ? optimizedPoses : std::map<int, Transform>(), currentPose);
 	return true;
 }
 

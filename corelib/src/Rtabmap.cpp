@@ -4899,7 +4899,7 @@ bool Rtabmap::process(
 	}
 
 	UTimer flushTimer;
-	if(_memory->flushSession(_lastLocalizationPose))
+	if(_memory->flushSession(_optimizedPoses, _lastLocalizationPose))
 	{
 		statistics_.addStatistic(Statistics::kTimingSession_flush(), flushTimer.ticks()*1000);
 	}
