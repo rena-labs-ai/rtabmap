@@ -82,7 +82,8 @@ Memory::Memory(const ParametersMap & parameters) :
 	_saveDepth16Format(Parameters::defaultMemSaveDepth16Format()),
 	_notLinkedNodesKeptInDb(Parameters::defaultMemNotLinkedNodesKept()),
 	_sessionFlush(Parameters::defaultRtabmapSessionFlush()),
-	_poseSetFlushedAt(0.0),
+	_poseSetDirty(true),
+	_poseSetDirtySince(0.0),
 	_saveIntermediateNodeData(Parameters::defaultMemIntermediateNodeDataKept()),
 	_rgbCompressionFormat(Parameters::defaultMemImageCompressionFormat()),
 	_depthCompressionFormat(Parameters::defaultMemDepthCompressionFormat()),
@@ -3235,7 +3236,7 @@ void Memory::deleteLocation(int locationId, std::list<int> * deletedWords, bool 
 	}
 }
 
-int Memory::flushSession(const std::map<int, Transform> & optimizedPoses, const Transform & currentPose, bool optimizedPosesChanged)
+int Memory::flushSession(const std::map<int, Transform> & optimizedPoses, const Transform & currentPose, bool optimizedPosesChanged, bool stationary)
 {
 	if(!_sessionFlush || !_incrementalMemory || !_dbDriver || _dbDriver->isInMemory())
 	{
@@ -3274,14 +3275,20 @@ int Memory::flushSession(const std::map<int, Transform> & optimizedPoses, const 
 		w->second->setSaved(true);
 	}
 	_wordsCreatedSinceFlush.clear();
-	// The set is rewritten only when optimization replaced it or it has aged; the
-	// loader chains the few nodes appended since along their neighbor links.
-	static const double kPoseSetFlushPeriodSec = 30.0;
+	// The set is rewritten only after something replaced it, and then at the first
+	// update where the robot stands still (nothing else to write) or after 60 s dirty;
+	// the loader chains the nodes appended since along their neighbor links.
+	static const double kPoseSetDirtyMaxSec = 60.0;
 	double now = UTimer::now();
-	if(optimizedPosesChanged || now - _poseSetFlushedAt >= kPoseSetFlushPeriodSec)
+	if(optimizedPosesChanged && !_poseSetDirty)
+	{
+		_poseSetDirty = true;
+		_poseSetDirtySince = now;
+	}
+	if(_poseSetDirty && (stationary || now - _poseSetDirtySince >= kPoseSetDirtyMaxSec))
 	{
 		_dbDriver->asyncSaveOptimizedPoses(optimizedPoses, currentPose);
-		_poseSetFlushedAt = now;
+		_poseSetDirty = false;
 		return 2;
 	}
 	_dbDriver->asyncSaveLastLocalizationPose(currentPose);

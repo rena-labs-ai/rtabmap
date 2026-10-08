@@ -371,6 +371,7 @@ void Rtabmap::init(const ParametersMap & parameters, const std::string & databas
 
 	_optimizedPoses.clear();
 	_constraints.clear();
+	_optimizedPosesChanged = true;
 	_globalScanMap.clear();
 	_globalScanMapPoses.clear();
 	_odomCachePoses.clear();
@@ -971,6 +972,7 @@ int Rtabmap::triggerNewMap()
 		UINFO("New map triggered, new map = %d", mapId);
 		_optimizedPoses.clear();
 		_constraints.clear();
+		_optimizedPosesChanged = true;
 		_lastRejectedLoopClosureIds = std::make_pair(0,0);
 
 		if(_bayesFilter)
@@ -1131,6 +1133,7 @@ void Rtabmap::resetMemory()
 	_someNodesHaveBeenTransferred = false;
 	_optimizedPoses.clear();
 	_constraints.clear();
+	_optimizedPosesChanged = true;
 	_mapCorrection.setIdentity();
 	_mapCorrectionBackup.setNull();
 	_lastLocalizationPose.setNull();
@@ -4728,6 +4731,7 @@ bool Rtabmap::process(
 				UDEBUG("Optimized poses cleared!");
 			_optimizedPoses.clear();
 			_constraints.clear();
+			_optimizedPosesChanged = true;
 		}
 	}
 	// just some verifications to make sure that planning path is still in the local map!
@@ -4929,7 +4933,8 @@ bool Rtabmap::process(
 	}
 
 	UTimer flushTimer;
-	int flushed = _memory->flushSession(_optimizedPoses, _lastLocalizationPose, _optimizedPosesChanged);
+	bool stationary = smallDisplacement || rehearsalMaxId > 0;
+	int flushed = _memory->flushSession(_optimizedPoses, _lastLocalizationPose, _optimizedPosesChanged, stationary);
 	if(flushed)
 	{
 		_optimizedPosesChanged = false;
@@ -5139,6 +5144,7 @@ void Rtabmap::rejectLastLoopClosure()
 				{
 					UINFO("Updated local map (old size=%d, new size=%d)", (int)_optimizedPoses.size(), (int)poses.size());
 					_optimizedPoses = poses;
+					_optimizedPosesChanged = true;
 					_constraints = constraints;
 					_mapCorrection = _optimizedPoses.at(lastS->id()) * lastS->getPose().inverse();
 				}
@@ -5196,6 +5202,7 @@ void Rtabmap::deleteLastLocation()
 				else
 				{
 					_optimizedPoses = poses;
+					_optimizedPosesChanged = true;
 					_constraints = constraints;
 					_mapCorrection = _optimizedPoses.at(_memory->getLastWorkingSignature(true)->id()) * _memory->getLastWorkingSignature(true)->getPose().inverse();
 				}
@@ -5207,6 +5214,7 @@ void Rtabmap::deleteLastLocation()
 void Rtabmap::setOptimizedPoses(const std::map<int, Transform> & poses, const std::multimap<int, Link> & constraints)
 {
 	_optimizedPoses = poses;
+	_optimizedPosesChanged = true;
     _constraints = constraints;
 }
 
@@ -6496,6 +6504,7 @@ bool Rtabmap::globalBundleAdjustment(
 		else
 		{
 			_optimizedPoses = poses;
+			_optimizedPosesChanged = true;
 			// This will force rtabmap_ros to regenerate the global occupancy grid if there was one
 			_memory->save2DMap(cv::Mat(), 0, 0, 0);
 			return true;
