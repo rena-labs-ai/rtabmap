@@ -147,7 +147,7 @@ public:
 	void convertToIntermediate(int locationId);
 	void deleteLocation(int locationId, std::list<int> * deletedWords = 0, bool keepLinkedInDb = false);
 	void saveLocationData(int locationId);
-	bool flushSession(const std::map<int, Transform> & optimizedPoses, const Transform & currentPose);
+	int flushSession(const std::map<int, Transform> & optimizedPoses, const Transform & currentPose, bool optimizedPosesChanged);
 	void removeLink(int idA, int idB);
 	void removeRawData(int id, bool image = true, bool scan = true, bool userData = true, bool occupancyGrid = true);
 	int reduceNode(int id, float maxDistance = 0.0f, bool keepLinkedInDb = false, int direction = 0);
@@ -382,6 +382,7 @@ private:
 	std::map<int, double> _workingMem; // id,age
 	bool _sessionFlush;
 	std::set<int> _wordsCreatedSinceFlush;
+	double _poseSetFlushedAt;
 	std::map<int, Transform> _groundTruths;
 	std::map<int, std::string> _labels;
 	std::map<int, std::set<int> > _landmarksIndex; // < -landmarkId, nodeIds >

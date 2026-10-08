@@ -99,6 +99,7 @@ Rtabmap::Rtabmap() :
 	_publishRAMUsage(Parameters::defaultRtabmapPublishRAMUsage()),
 	_computeRMSE(Parameters::defaultRtabmapComputeRMSE()),
 	_saveWMState(Parameters::defaultRtabmapSaveWMState()),
+	_optimizedPosesChanged(false),
 	_maxTimeAllowed(Parameters::defaultRtabmapTimeThr()), // 700 ms
 	_maxMemoryAllowed(Parameters::defaultRtabmapMemoryThr()), // 0=inf
 	_loopThr(Parameters::defaultRtabmapLoopThr()),
@@ -381,6 +382,34 @@ void Rtabmap::init(const ParametersMap & parameters, const std::string & databas
 
 	Transform lastPose;
 	_optimizedPoses = _memory->loadOptimizedPoses(&lastPose);
+	// A stored pose set can be a few updates older than the newest nodes (the session
+	// flush writes it on optimization or every few seconds); chain the rest along
+	// their neighbor links so init does not re-optimize what odometry already gives.
+	if(!_optimizedPoses.empty())
+	{
+		std::list<int> frontier(uKeysList(_optimizedPoses));
+		int chained = 0;
+		while(!frontier.empty())
+		{
+			int id = frontier.front();
+			frontier.pop_front();
+			std::multimap<int, Link> links = _memory->getNeighborLinks(id);
+			for(std::multimap<int, Link>::iterator iter=links.begin(); iter!=links.end(); ++iter)
+			{
+				int to = iter->second.to();
+				if(!uContains(_optimizedPoses, to) && _memory->isInWM(to))
+				{
+					_optimizedPoses.insert(std::make_pair(to, _optimizedPoses.at(id) * iter->second.transform()));
+					frontier.push_back(to);
+					++chained;
+				}
+			}
+		}
+		if(chained)
+		{
+			UINFO("Chained %d node(s) missing from the stored pose set along neighbor links", chained);
+		}
+	}
 	if(!_memory->isIncremental())
 	{
 		if(_optimizedPoses.empty() && _memory->getWorkingMemSize(true) > 0)
@@ -4102,6 +4131,7 @@ bool Rtabmap::process(
 			{
 				UINFO("Updated local map (old size=%d, new size=%d)", (int)_optimizedPoses.size(), (int)poses.size());
 				_optimizedPoses = poses;
+				_optimizedPosesChanged = true;
 				_constraints = constraints;
 				_localizationCovariance = covariance;
 			}
@@ -4899,9 +4929,12 @@ bool Rtabmap::process(
 	}
 
 	UTimer flushTimer;
-	if(_memory->flushSession(_optimizedPoses, _lastLocalizationPose))
+	int flushed = _memory->flushSession(_optimizedPoses, _lastLocalizationPose, _optimizedPosesChanged);
+	if(flushed)
 	{
+		_optimizedPosesChanged = false;
 		statistics_.addStatistic(Statistics::kTimingSession_flush(), flushTimer.ticks()*1000);
+		statistics_.addStatistic(Statistics::kMemorySession_flush_pose_set(), flushed == 2 ? 1 : 0);
 	}
 
 	//Save statistics to database

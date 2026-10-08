@@ -82,6 +82,7 @@ Memory::Memory(const ParametersMap & parameters) :
 	_saveDepth16Format(Parameters::defaultMemSaveDepth16Format()),
 	_notLinkedNodesKeptInDb(Parameters::defaultMemNotLinkedNodesKept()),
 	_sessionFlush(Parameters::defaultRtabmapSessionFlush()),
+	_poseSetFlushedAt(0.0),
 	_saveIntermediateNodeData(Parameters::defaultMemIntermediateNodeDataKept()),
 	_rgbCompressionFormat(Parameters::defaultMemImageCompressionFormat()),
 	_depthCompressionFormat(Parameters::defaultMemDepthCompressionFormat()),
@@ -3234,11 +3235,11 @@ void Memory::deleteLocation(int locationId, std::list<int> * deletedWords, bool 
 	}
 }
 
-bool Memory::flushSession(const std::map<int, Transform> & optimizedPoses, const Transform & currentPose)
+int Memory::flushSession(const std::map<int, Transform> & optimizedPoses, const Transform & currentPose, bool optimizedPosesChanged)
 {
 	if(!_sessionFlush || !_incrementalMemory || !_dbDriver || _dbDriver->isInMemory())
 	{
-		return false;
+		return 0;
 	}
 	std::list<int> ids(_stMem.begin(), _stMem.end());
 	for(std::map<int, double>::const_iterator iter=_workingMem.lower_bound(0); iter!=_workingMem.end(); ++iter)
@@ -3273,8 +3274,18 @@ bool Memory::flushSession(const std::map<int, Transform> & optimizedPoses, const
 		w->second->setSaved(true);
 	}
 	_wordsCreatedSinceFlush.clear();
-	_dbDriver->asyncSaveOptimizedPoses(optimizedPoses, currentPose);
-	return true;
+	// The set is rewritten only when optimization replaced it or it has aged; the
+	// loader chains the few nodes appended since along their neighbor links.
+	static const double kPoseSetFlushPeriodSec = 30.0;
+	double now = UTimer::now();
+	if(optimizedPosesChanged || now - _poseSetFlushedAt >= kPoseSetFlushPeriodSec)
+	{
+		_dbDriver->asyncSaveOptimizedPoses(optimizedPoses, currentPose);
+		_poseSetFlushedAt = now;
+		return 2;
+	}
+	_dbDriver->asyncSaveLastLocalizationPose(currentPose);
+	return 1;
 }
 
 void Memory::saveLocationData(int locationId)

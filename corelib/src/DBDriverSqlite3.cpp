@@ -5230,6 +5230,24 @@ void DBDriverSqlite3::saveOptimizedPosesQuery(const std::map<int, Transform> & p
 	}
 }
 
+void DBDriverSqlite3::saveLastLocalizationPoseQuery(const Transform & lastlocalizationPose) const
+{
+	if(_ppDb && uStrNumCmp(_version, "0.17.0") >= 0 && !lastlocalizationPose.isNull())
+	{
+		int rc = SQLITE_OK;
+		sqlite3_stmt * ppStmt = 0;
+		std::string query = uFormat("UPDATE Admin SET opt_last_localization=?, time_enter = DATETIME('NOW') WHERE version='%s';", _version.c_str());
+		rc = sqlite3_prepare_v2(_ppDb, query.c_str(), -1, &ppStmt, 0);
+		UASSERT_MSG(rc == SQLITE_OK, uFormat("DB error (%s): %s", _version.c_str(), sqlite3_errmsg(_ppDb)).c_str());
+		rc = sqlite3_bind_blob(ppStmt, 1, lastlocalizationPose.data(), lastlocalizationPose.size()*sizeof(float), SQLITE_STATIC);
+		UASSERT_MSG(rc == SQLITE_OK, uFormat("DB error (%s): %s", _version.c_str(), sqlite3_errmsg(_ppDb)).c_str());
+		rc=sqlite3_step(ppStmt);
+		UASSERT_MSG(rc == SQLITE_DONE, uFormat("DB error (%s): %s", _version.c_str(), sqlite3_errmsg(_ppDb)).c_str());
+		rc = sqlite3_finalize(ppStmt);
+		UASSERT_MSG(rc == SQLITE_OK, uFormat("DB error (%s): %s", _version.c_str(), sqlite3_errmsg(_ppDb)).c_str());
+	}
+}
+
 std::map<int, Transform> DBDriverSqlite3::loadOptimizedPosesQuery(Transform * lastlocalizationPose) const
 {
 	UDEBUG("");
