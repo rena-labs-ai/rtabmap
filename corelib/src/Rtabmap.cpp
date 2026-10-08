@@ -383,9 +383,9 @@ void Rtabmap::init(const ParametersMap & parameters, const std::string & databas
 
 	Transform lastPose;
 	_optimizedPoses = _memory->loadOptimizedPoses(&lastPose);
-	// A stored pose set can be a few updates older than the newest nodes (the session
-	// flush writes it on optimization or every few seconds); chain the rest along
-	// their neighbor links so init does not re-optimize what odometry already gives.
+	// A stored pose set can be up to a minute older than the newest nodes (the session
+	// flush rewrites it at most once per minute); chain the rest along their links
+	// so init does not re-optimize what odometry already gives.
 	if(!_optimizedPoses.empty())
 	{
 		std::list<int> frontier(uKeysList(_optimizedPoses));
@@ -394,11 +394,13 @@ void Rtabmap::init(const ParametersMap & parameters, const std::string & databas
 		{
 			int id = frontier.front();
 			frontier.pop_front();
-			std::multimap<int, Link> links = _memory->getNeighborLinks(id);
+			// Any link with a transform will do: a new session reaches the stored
+			// component only through the loop closure that joined them.
+			std::multimap<int, Link> links = _memory->getLinks(id);
 			for(std::multimap<int, Link>::iterator iter=links.begin(); iter!=links.end(); ++iter)
 			{
 				int to = iter->second.to();
-				if(!uContains(_optimizedPoses, to) && _memory->isInWM(to))
+				if(iter->second.isValid() && !uContains(_optimizedPoses, to) && _memory->isInWM(to))
 				{
 					_optimizedPoses.insert(std::make_pair(to, _optimizedPoses.at(id) * iter->second.transform()));
 					frontier.push_back(to);
@@ -408,7 +410,7 @@ void Rtabmap::init(const ParametersMap & parameters, const std::string & databas
 		}
 		if(chained)
 		{
-			UINFO("Chained %d node(s) missing from the stored pose set along neighbor links", chained);
+			UINFO("Chained %d node(s) missing from the stored pose set along their links", chained);
 		}
 	}
 	if(!_memory->isIncremental())

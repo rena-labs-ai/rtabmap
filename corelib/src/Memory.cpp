@@ -84,6 +84,7 @@ Memory::Memory(const ParametersMap & parameters) :
 	_sessionFlush(Parameters::defaultRtabmapSessionFlush()),
 	_poseSetDirty(true),
 	_poseSetDirtySince(0.0),
+	_poseSetWrittenAt(0.0),
 	_saveIntermediateNodeData(Parameters::defaultMemIntermediateNodeDataKept()),
 	_rgbCompressionFormat(Parameters::defaultMemImageCompressionFormat()),
 	_depthCompressionFormat(Parameters::defaultMemDepthCompressionFormat()),
@@ -3275,20 +3276,25 @@ int Memory::flushSession(const std::map<int, Transform> & optimizedPoses, const 
 		w->second->setSaved(true);
 	}
 	_wordsCreatedSinceFlush.clear();
-	// The set is rewritten only after something replaced it, and then at the first
-	// update where the robot stands still (nothing else to write) or after 60 s dirty;
-	// the loader chains the nodes appended since along their neighbor links.
-	static const double kPoseSetDirtyMaxSec = 60.0;
+	// The set is rewritten only after something replaced it, at the first update
+	// where the robot stands still (nothing else to write) or after 60 s dirty, and
+	// never more than once per 60 s: a parked robot in a known place accepts a loop
+	// closure on about half its updates and would otherwise rewrite it every second.
+	// The loader chains the nodes appended since along their links.
+	static const double kPoseSetIntervalSec = 60.0;
 	double now = UTimer::now();
 	if(optimizedPosesChanged && !_poseSetDirty)
 	{
 		_poseSetDirty = true;
 		_poseSetDirtySince = now;
 	}
-	if(_poseSetDirty && (stationary || now - _poseSetDirtySince >= kPoseSetDirtyMaxSec))
+	if(_poseSetDirty &&
+	   now - _poseSetWrittenAt >= kPoseSetIntervalSec &&
+	   (stationary || now - _poseSetDirtySince >= kPoseSetIntervalSec))
 	{
 		_dbDriver->asyncSaveOptimizedPoses(optimizedPoses, currentPose);
 		_poseSetDirty = false;
+		_poseSetWrittenAt = now;
 		return 2;
 	}
 	_dbDriver->asyncSaveLastLocalizationPose(currentPose);
