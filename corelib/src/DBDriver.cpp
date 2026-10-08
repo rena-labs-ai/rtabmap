@@ -45,6 +45,8 @@ DBDriver * DBDriver::create(const ParametersMap & parameters)
 
 DBDriver::DBDriver(const ParametersMap & parameters) :
 	_emptyTrashesTime(0),
+	_trashOptimizedPosesSet(false),
+	_trashLastLocalizationPoseSet(false),
 	_timestampUpdate(false)
 {
 	this->parseParameters(parameters);
@@ -330,19 +332,30 @@ void DBDriver::emptyTrashes(bool async)
 
 	std::map<int, Signature*> signatures;
 	std::map<int, VisualWord*> visualWords;
+	std::map<int, Transform> optimizedPoses;
+	Transform lastLocalizationPose;
+	bool optimizedPosesSet = false;
+	bool lastLocalizationPoseSet = false;
 	_trashesMutex.lock();
 	{
 		ULOGGER_DEBUG("signatures=%d, visualWords=%d", _trashSignatures.size(), _trashVisualWords.size());
 		signatures = _trashSignatures;
 		visualWords = _trashVisualWords;
+		optimizedPoses = _trashOptimizedPoses;
+		lastLocalizationPose = _trashLastLocalizationPose;
+		optimizedPosesSet = _trashOptimizedPosesSet;
+		lastLocalizationPoseSet = _trashLastLocalizationPoseSet;
 		_trashSignatures.clear();
 		_trashVisualWords.clear();
+		_trashOptimizedPoses.clear();
+		_trashOptimizedPosesSet = false;
+		_trashLastLocalizationPoseSet = false;
 
 		_dbSafeAccessMutex.lock();
 	}
 	_trashesMutex.unlock();
 
-	if(signatures.size() || visualWords.size())
+	if(signatures.size() || visualWords.size() || optimizedPosesSet || lastLocalizationPoseSet)
 	{
 		this->beginTransaction();
 		UTimer timer;
@@ -377,6 +390,14 @@ void DBDriver::emptyTrashes(bool async)
 			visualWords.clear();
 			ULOGGER_DEBUG("Time emptying memory visualWords trash = %f...", timer.ticks());
 		}
+		if(optimizedPosesSet && this->isConnected())
+		{
+			this->saveOptimizedPosesQuery(optimizedPoses, lastLocalizationPose);
+		}
+		else if(lastLocalizationPoseSet && this->isConnected())
+		{
+			this->saveLastLocalizationPoseQuery(lastLocalizationPose);
+		}
 
 		this->commit();
 	}
@@ -385,6 +406,31 @@ void DBDriver::emptyTrashes(bool async)
 	ULOGGER_DEBUG("Total time emptying trashes = %fs...", _emptyTrashesTime);
 
 	_dbSafeAccessMutex.unlock();
+}
+
+bool DBDriver::isInTrash(int signatureId)
+{
+	_trashesMutex.lock();
+	bool pending = _trashSignatures.find(signatureId) != _trashSignatures.end();
+	_trashesMutex.unlock();
+	return pending;
+}
+
+void DBDriver::asyncSaveOptimizedPoses(const std::map<int, Transform> & optimizedPoses, const Transform & lastLocalizationPose)
+{
+	_trashesMutex.lock();
+	_trashOptimizedPoses = optimizedPoses;
+	_trashLastLocalizationPose = lastLocalizationPose;
+	_trashOptimizedPosesSet = true;
+	_trashesMutex.unlock();
+}
+
+void DBDriver::asyncSaveLastLocalizationPose(const Transform & lastLocalizationPose)
+{
+	_trashesMutex.lock();
+	_trashLastLocalizationPose = lastLocalizationPose;
+	_trashLastLocalizationPoseSet = true;
+	_trashesMutex.unlock();
 }
 
 void DBDriver::asyncSave(Signature * s)
