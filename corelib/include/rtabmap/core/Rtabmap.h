@@ -950,6 +950,7 @@ private:
 	bool _publishRAMUsage;
 	bool _computeRMSE;
 	bool _saveWMState;
+	bool _optimizedPosesChanged;
 	float _maxTimeAllowed;          ///< Per-iteration time budget (ms).
 	unsigned int _maxMemoryAllowed; ///< Maximum number of signatures kept in WM.
 	float _loopThr;
