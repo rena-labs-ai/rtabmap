@@ -383,8 +383,8 @@ void Rtabmap::init(const ParametersMap & parameters, const std::string & databas
 
 	Transform lastPose;
 	_optimizedPoses = _memory->loadOptimizedPoses(&lastPose);
-	// A stored pose set can be up to a minute older than the newest nodes (the session
-	// flush rewrites it at most once per minute); chain the rest along their links
+	// The stored pose set is as old as the last stationary edge that found it dirty
+	// (no time bound, see Memory::flushSession); chain the rest along their links
 	// so init does not re-optimize what odometry already gives.
 	if(!_optimizedPoses.empty())
 	{

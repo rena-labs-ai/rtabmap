@@ -3275,11 +3275,11 @@ int Memory::flushSession(const std::map<int, Transform> & optimizedPoses, const 
 		w->second->setSaved(true);
 	}
 	_wordsCreatedSinceFlush.clear();
-	// The set is rewritten only after something replaced it, and only at the update
-	// where the robot comes to rest: a parked robot in a known place accepts a loop
-	// closure on about half its updates, so a level trigger would rewrite it every
-	// second. No time bound: a home robot stops (human decision); the loader chains
-	// the nodes appended since along their links.
+	// The set is rewritten only after something replaced it, and only on the edge of
+	// rtabmap's own small-displacement/rehearsal test (node spacing, not physical rest;
+	// 0.2-1.0 writes/min on the fleet's maps): a parked robot accepts a closure on about
+	// half its updates, so a level trigger would rewrite it every second. No time bound
+	// (human decision); the loader chains the nodes appended since along their links.
 	bool stopped = stationary && !_wasStationary;
 	_wasStationary = stationary;
 	_poseSetDirty = _poseSetDirty || optimizedPosesChanged;
