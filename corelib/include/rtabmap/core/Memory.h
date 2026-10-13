@@ -383,8 +383,7 @@ private:
 	bool _sessionFlush;
 	std::set<int> _wordsCreatedSinceFlush;
 	bool _poseSetDirty;
-	double _poseSetDirtySince;
-	double _poseSetWrittenAt;
+	bool _wasStationary;
 	std::map<int, Transform> _groundTruths;
 	std::map<int, std::string> _labels;
 	std::map<int, std::set<int> > _landmarksIndex; // < -landmarkId, nodeIds >

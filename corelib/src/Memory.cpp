@@ -83,8 +83,7 @@ Memory::Memory(const ParametersMap & parameters) :
 	_notLinkedNodesKeptInDb(Parameters::defaultMemNotLinkedNodesKept()),
 	_sessionFlush(Parameters::defaultRtabmapSessionFlush()),
 	_poseSetDirty(true),
-	_poseSetDirtySince(0.0),
-	_poseSetWrittenAt(0.0),
+	_wasStationary(false),
 	_saveIntermediateNodeData(Parameters::defaultMemIntermediateNodeDataKept()),
 	_rgbCompressionFormat(Parameters::defaultMemImageCompressionFormat()),
 	_depthCompressionFormat(Parameters::defaultMemDepthCompressionFormat()),
@@ -3276,25 +3275,18 @@ int Memory::flushSession(const std::map<int, Transform> & optimizedPoses, const 
 		w->second->setSaved(true);
 	}
 	_wordsCreatedSinceFlush.clear();
-	// The set is rewritten only after something replaced it, at the first update
-	// where the robot stands still (nothing else to write) or after 60 s dirty, and
-	// never more than once per 60 s: a parked robot in a known place accepts a loop
-	// closure on about half its updates and would otherwise rewrite it every second.
-	// The loader chains the nodes appended since along their links.
-	static const double kPoseSetIntervalSec = 60.0;
-	double now = UTimer::now();
-	if(optimizedPosesChanged && !_poseSetDirty)
-	{
-		_poseSetDirty = true;
-		_poseSetDirtySince = now;
-	}
-	if(_poseSetDirty &&
-	   now - _poseSetWrittenAt >= kPoseSetIntervalSec &&
-	   (stationary || now - _poseSetDirtySince >= kPoseSetIntervalSec))
+	// The set is rewritten only after something replaced it, and only at the update
+	// where the robot comes to rest: a parked robot in a known place accepts a loop
+	// closure on about half its updates, so a level trigger would rewrite it every
+	// second. No time bound: a home robot stops (human decision); the loader chains
+	// the nodes appended since along their links.
+	bool stopped = stationary && !_wasStationary;
+	_wasStationary = stationary;
+	_poseSetDirty = _poseSetDirty || optimizedPosesChanged;
+	if(_poseSetDirty && stopped)
 	{
 		_dbDriver->asyncSaveOptimizedPoses(optimizedPoses, currentPose);
 		_poseSetDirty = false;
-		_poseSetWrittenAt = now;
 		return 2;
 	}
 	_dbDriver->asyncSaveLastLocalizationPose(currentPose);
