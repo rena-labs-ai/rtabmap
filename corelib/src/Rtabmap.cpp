@@ -389,32 +389,30 @@ void Rtabmap::init(const ParametersMap & parameters, const std::string & databas
 	// The stored pose set is as old as the last stationary edge that found it dirty
 	// (no time bound, see Memory::flushSession); chain the rest along their links
 	// so init does not re-optimize what odometry already gives.
-	if(!_optimizedPoses.empty())
+	std::list<int> frontier(uKeysList(_optimizedPoses));
+	int chained = 0;
+	while(!frontier.empty())
 	{
-		std::list<int> frontier(uKeysList(_optimizedPoses));
-		int chained = 0;
-		while(!frontier.empty())
+		int id = frontier.front();
+		frontier.pop_front();
+		// Any link with a transform will do: a new session reaches the stored
+		// component only through the loop closure that joined them.
+		std::multimap<int, Link> links = _memory->getLinks(id);
+		for(std::multimap<int, Link>::iterator iter=links.begin(); iter!=links.end(); ++iter)
 		{
-			int id = frontier.front();
-			frontier.pop_front();
-			// Any link with a transform will do: a new session reaches the stored
-			// component only through the loop closure that joined them.
-			std::multimap<int, Link> links = _memory->getLinks(id);
-			for(std::multimap<int, Link>::iterator iter=links.begin(); iter!=links.end(); ++iter)
+			int to = iter->second.to();
+			if(!iter->second.isValid() || uContains(_optimizedPoses, to) || !_memory->isInWM(to))
 			{
-				int to = iter->second.to();
-				if(iter->second.isValid() && !uContains(_optimizedPoses, to) && _memory->isInWM(to))
-				{
-					_optimizedPoses.insert(std::make_pair(to, _optimizedPoses.at(id) * iter->second.transform()));
-					frontier.push_back(to);
-					++chained;
-				}
+				continue;
 			}
+			_optimizedPoses.insert(std::make_pair(to, _optimizedPoses.at(id) * iter->second.transform()));
+			frontier.push_back(to);
+			++chained;
 		}
-		if(chained)
-		{
-			UINFO("Chained %d node(s) missing from the stored pose set along their links", chained);
-		}
+	}
+	if(chained)
+	{
+		UINFO("Chained %d node(s) missing from the stored pose set along their links", chained);
 	}
 	if(!_memory->isIncremental())
 	{
