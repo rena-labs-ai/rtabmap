@@ -325,6 +325,39 @@ void Rtabmap::flushStatisticLogs()
 	}
 }
 
+// With Rtabmap/SessionFlush, the stored pose set is only rewritten when the robot
+// stops, so after a crash it can lack the nodes added since then. For each missing
+// node, take a linked node whose pose is known and add the link's offset (e.g. "0.3 m
+// ahead") to get its pose. Much faster than re-optimizing the whole graph.
+static void chainMissingPoses(const Memory & memory, std::map<int, Transform> & poses)
+{
+	std::list<int> frontier(uKeysList(poses));
+	int chained = 0;
+	while(!frontier.empty())
+	{
+		int id = frontier.front();
+		frontier.pop_front();
+		// Follow loop closures too, not only odometry links: a new mapping session is
+		// connected to the old map only by the loop closure that joined them.
+		std::multimap<int, Link> links = memory.getLinks(id);
+		for(std::multimap<int, Link>::iterator iter=links.begin(); iter!=links.end(); ++iter)
+		{
+			int to = iter->second.to();
+			if(!iter->second.isValid() || uContains(poses, to) || !memory.isInWM(to))
+			{
+				continue;
+			}
+			poses.insert(std::make_pair(to, poses.at(id) * iter->second.transform()));
+			frontier.push_back(to);
+			++chained;
+		}
+	}
+	if(chained)
+	{
+		UINFO("Chained %d node(s) missing from the stored pose set along their links", chained);
+	}
+}
+
 void Rtabmap::init(const ParametersMap & parameters, const std::string & databasePath, bool loadDatabaseParameters)
 {
 	UDEBUG("path=%s", databasePath.c_str());
@@ -386,35 +419,7 @@ void Rtabmap::init(const ParametersMap & parameters, const std::string & databas
 
 	Transform lastPose;
 	_optimizedPoses = _memory->loadOptimizedPoses(&lastPose);
-	// With Rtabmap/SessionFlush, the stored pose set is only rewritten when the robot
-	// stops, so after a crash it can lack the nodes added since then. Give each of them
-	// a pose from an already-posed neighbour and their link, instead of re-optimizing
-	// the whole graph.
-	std::list<int> frontier(uKeysList(_optimizedPoses));
-	int chained = 0;
-	while(!frontier.empty())
-	{
-		int id = frontier.front();
-		frontier.pop_front();
-		// Follow loop closures too, not only odometry links: a new mapping session is
-		// connected to the old map only by the loop closure that joined them.
-		std::multimap<int, Link> links = _memory->getLinks(id);
-		for(std::multimap<int, Link>::iterator iter=links.begin(); iter!=links.end(); ++iter)
-		{
-			int to = iter->second.to();
-			if(!iter->second.isValid() || uContains(_optimizedPoses, to) || !_memory->isInWM(to))
-			{
-				continue;
-			}
-			_optimizedPoses.insert(std::make_pair(to, _optimizedPoses.at(id) * iter->second.transform()));
-			frontier.push_back(to);
-			++chained;
-		}
-	}
-	if(chained)
-	{
-		UINFO("Chained %d node(s) missing from the stored pose set along their links", chained);
-	}
+	chainMissingPoses(*_memory, _optimizedPoses);
 	if(!_memory->isIncremental())
 	{
 		if(_optimizedPoses.empty() && _memory->getWorkingMemSize(true) > 0)
