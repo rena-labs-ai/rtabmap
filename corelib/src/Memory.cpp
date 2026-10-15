@@ -2615,8 +2615,8 @@ void Memory::saveOptimizedPoses(const std::map<int, Transform> & optimizedPoses,
 {
 	if(_dbDriver)
 	{
-		// A session flush may still hold a pending empty pose set; let it commit first
-		// so this full set is the one left on disk.
+		// The trash thread may still be writing an older pose set queued by
+		// flushSession(); wait for it, so this set is the one left on disk.
 		_dbDriver->join();
 		_dbDriver->saveOptimizedPoses(optimizedPoses, lastlocalizationPose);
 	}
@@ -3304,7 +3304,8 @@ int Memory::flushSession(const std::map<int, Transform> & optimizedPoses, const 
 		{
 			continue;
 		}
-		// A copy queued earlier this update (saveLocationData) already carries this state.
+		// Already queued this update by saveLocationData(); a second copy would be
+		// ignored by the trash map and leak.
 		if(!_dbDriver->isInTrash(s->id()))
 		{
 			Signature * cpy = new Signature();
@@ -3325,11 +3326,11 @@ int Memory::flushSession(const std::map<int, Transform> & optimizedPoses, const 
 		w->second->setSaved(true);
 	}
 	_wordsCreatedSinceFlush.clear();
-	// The set is rewritten only after something replaced it, and only on the edge of
-	// rtabmap's own small-displacement/rehearsal test (node spacing, not physical rest;
-	// 0.2-1.0 writes/min on the fleet's maps): a parked robot accepts a closure on about
-	// half its updates, so a level trigger would rewrite it every second. No time bound
-	// (human decision); the loader chains the nodes appended since along their links.
+	// Writing the full pose set is expensive, so do it only when the set changed and
+	// the robot has just stopped (first update without a new node after moving). Not on
+	// every stationary update: a parked robot keeps finding loop closures, which would
+	// rewrite the set every second. After a crash, Rtabmap::init() poses the nodes added
+	// since the last write from their links.
 	bool stopped = stationary && !_wasStationary;
 	_wasStationary = stationary;
 	_poseSetDirty = _poseSetDirty || optimizedPosesChanged;

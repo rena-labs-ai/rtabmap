@@ -386,17 +386,18 @@ void Rtabmap::init(const ParametersMap & parameters, const std::string & databas
 
 	Transform lastPose;
 	_optimizedPoses = _memory->loadOptimizedPoses(&lastPose);
-	// The stored pose set is as old as the last stationary edge that found it dirty
-	// (no time bound, see Memory::flushSession); chain the rest along their links
-	// so init does not re-optimize what odometry already gives.
+	// With Rtabmap/SessionFlush, the stored pose set is only rewritten when the robot
+	// stops, so after a crash it can lack the nodes added since then. Give each of them
+	// a pose from an already-posed neighbour and their link, instead of re-optimizing
+	// the whole graph.
 	std::list<int> frontier(uKeysList(_optimizedPoses));
 	int chained = 0;
 	while(!frontier.empty())
 	{
 		int id = frontier.front();
 		frontier.pop_front();
-		// Any link with a transform will do: a new session reaches the stored
-		// component only through the loop closure that joined them.
+		// Follow loop closures too, not only odometry links: a new mapping session is
+		// connected to the old map only by the loop closure that joined them.
 		std::multimap<int, Link> links = _memory->getLinks(id);
 		for(std::multimap<int, Link>::iterator iter=links.begin(); iter!=links.end(); ++iter)
 		{
