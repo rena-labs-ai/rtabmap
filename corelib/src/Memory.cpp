@@ -81,6 +81,9 @@ Memory::Memory(const ParametersMap & parameters) :
 	_loadVisualLocalFeaturesOnInit(Parameters::defaultMemLoadVisualLocalFeaturesOnInit()),
 	_saveDepth16Format(Parameters::defaultMemSaveDepth16Format()),
 	_notLinkedNodesKeptInDb(Parameters::defaultMemNotLinkedNodesKept()),
+	_sessionFlush(Parameters::defaultRtabmapSessionFlush()),
+	_poseSetDirty(true),
+	_wasStationary(false),
 	_saveIntermediateNodeData(Parameters::defaultMemIntermediateNodeDataKept()),
 	_rgbCompressionFormat(Parameters::defaultMemImageCompressionFormat()),
 	_depthCompressionFormat(Parameters::defaultMemDepthCompressionFormat()),
@@ -823,6 +826,7 @@ void Memory::parseParameters(const ParametersMap & parameters)
 	Parameters::parse(params, Parameters::kMemSaveDepth16Format(), _saveDepth16Format);
 	Parameters::parse(params, Parameters::kMemReduceGraph(), _reduceGraph);
 	Parameters::parse(params, Parameters::kMemNotLinkedNodesKept(), _notLinkedNodesKeptInDb);
+	Parameters::parse(params, Parameters::kRtabmapSessionFlush(), _sessionFlush);
 	Parameters::parse(params, Parameters::kMemIntermediateNodeDataKept(), _saveIntermediateNodeData);
 	Parameters::parse(params, Parameters::kMemImageCompressionFormat(), _rgbCompressionFormat);
 	Parameters::parse(params, Parameters::kMemDepthCompressionFormat(), _depthCompressionFormat);
@@ -2611,6 +2615,9 @@ void Memory::saveOptimizedPoses(const std::map<int, Transform> & optimizedPoses,
 {
 	if(_dbDriver)
 	{
+		// The trash thread may still be writing an older pose set queued by
+		// flushSession(); wait for it, so this set is the one left on disk.
+		_dbDriver->join();
 		_dbDriver->saveOptimizedPoses(optimizedPoses, lastlocalizationPose);
 	}
 }
@@ -3277,6 +3284,64 @@ void Memory::deleteLocation(int locationId, std::list<int> * deletedWords, bool 
 	{
 		UWARN("Location %d has not been found in STM/WM, cannot delete it.", locationId);
 	}
+}
+
+int Memory::flushSession(const std::map<int, Transform> & optimizedPoses, const Transform & currentPose, bool optimizedPosesChanged, bool stationary)
+{
+	if(!_sessionFlush || !_incrementalMemory || !_dbDriver || _dbDriver->isInMemory())
+	{
+		return 0;
+	}
+	std::list<int> ids(_stMem.begin(), _stMem.end());
+	for(std::map<int, double>::const_iterator iter=_workingMem.lower_bound(0); iter!=_workingMem.end(); ++iter)
+	{
+		ids.push_back(iter->first);
+	}
+	for(std::list<int>::const_iterator iter=ids.begin(); iter!=ids.end(); ++iter)
+	{
+		Signature * s = _getSignature(*iter);
+		if(!s->isSaved() || !s->isModified())
+		{
+			continue;
+		}
+		// Already queued this update by saveLocationData(); a second copy would be
+		// ignored by the trash map and leak.
+		if(!_dbDriver->isInTrash(s->id()))
+		{
+			Signature * cpy = new Signature();
+			*cpy = *s;
+			_dbDriver->asyncSave(cpy);
+		}
+		s->setModified(false);
+	}
+	const std::map<int, VisualWord *> & words = _vwd->getVisualWords();
+	for(std::set<int>::const_iterator iter=_wordsCreatedSinceFlush.begin(); iter!=_wordsCreatedSinceFlush.end(); ++iter)
+	{
+		std::map<int, VisualWord *>::const_iterator w = words.find(*iter);
+		if(w == words.end() || w->second->isSaved())
+		{
+			continue;
+		}
+		_dbDriver->asyncSave(new VisualWord(w->second->id(), w->second->getDescriptor()));
+		w->second->setSaved(true);
+	}
+	_wordsCreatedSinceFlush.clear();
+	// Writing the full pose set is expensive, so do it only when the set changed and
+	// the robot has just stopped (first update without a new node after moving). Not on
+	// every stationary update: a parked robot keeps finding loop closures, which would
+	// rewrite the set every second. After a crash, Rtabmap::init() poses the nodes added
+	// since the last write from their links.
+	bool stopped = stationary && !_wasStationary;
+	_wasStationary = stationary;
+	_poseSetDirty = _poseSetDirty || optimizedPosesChanged;
+	if(_poseSetDirty && stopped)
+	{
+		_dbDriver->asyncSaveOptimizedPoses(optimizedPoses, currentPose);
+		_poseSetDirty = false;
+		return 2;
+	}
+	_dbDriver->asyncSaveLastLocalizationPose(currentPose);
+	return 1;
 }
 
 void Memory::saveLocationData(int locationId)
@@ -6221,6 +6286,10 @@ Signature * Memory::createSignature(const SensorData & inputData, const Transfor
 
 			// Quantization to vocabulary
 			wordIds = _vwd->addNewWords(descriptorsForQuantization, id);
+			if(_sessionFlush && _incrementalMemory)
+			{
+				_wordsCreatedSinceFlush.insert(wordIds.begin(), wordIds.end());
+			}
 			addedToDictionary = true;
 
 			// Set ID -1 to features not used for quantization
