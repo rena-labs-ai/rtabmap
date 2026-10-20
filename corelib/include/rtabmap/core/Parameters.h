@@ -216,6 +216,7 @@ class RTABMAP_CORE_EXPORT Parameters
     RTABMAP_PARAM(Mem, RehearsalSimilarity,         float, 0.6,     "Rehearsal similarity.");
     RTABMAP_PARAM(Mem, ImageKept,                   bool, false,    "Keep raw images in RAM.");
     RTABMAP_PARAM(Mem, BinDataKept,                 bool, true,     "Keep binary data in db.");
+    RTABMAP_PARAM(Mem, BinDataOnRequest,            bool, false,    uFormat("Compress the images of each new node and hold them only while the node is in short-term memory; the node row is inserted without them and they are written only when Memory::keepNodeData() asks for them. Ignored if %s=true.", kMemBinDataKept().c_str()));
     RTABMAP_PARAM(Mem, RawDescriptorsKept,          bool, true,     "Raw descriptors kept in memory.");
     RTABMAP_PARAM(Mem, LoadVisualLocalFeaturesOnInit, bool, true,   "Load all local visual features (keypoints, descriptors and 3D points) in RAM when loading an existing database. This can add significant time to initialize the memory but the features will be already loaded before computing loop closure transforms. If false, the features are loaded on-demand from the database when a loop closure transformation should be estimated.");
     RTABMAP_PARAM(Mem, MapLabelsAdded,              bool, true,     "Create map labels. The first node of a map will be labeled as \"map#\" where # is the map ID.");
