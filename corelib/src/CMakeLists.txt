@@ -836,6 +836,7 @@ IF(CUVSLAM_FOUND)
     SET(LIBRARIES
 		${LIBRARIES}
 		cuvslam::cuvslam
+		CUDA::cudart
 	)
 ENDIF(CUVSLAM_FOUND)
 
