@@ -721,6 +721,7 @@ class RTABMAP_CORE_EXPORT Parameters
 
     // Odometry cuVSLAM
     RTABMAP_PARAM(OdomCuVSLAM, MulticamMode,        int, 0,  "cuVSLAM multicam_mode setting: 0=moderate, 1=performance, 2=precision.");
+    RTABMAP_PARAM(OdomCuVSLAM, HighPriorityStreams, bool, false, "Run cuVSLAM's CUDA work on the device's highest-priority streams, so other GPU work on the device (e.g. inference) yields to odometry. Read when the first cuVSLAM odometry is created.");
     RTABMAP_PARAM(OdomCuVSLAM, ImuFusion,            bool, true,        "Fuse IMU measurements (cuVSLAM Inertial mode). Supported with a single stereo camera only; ignored on multi-camera rigs.");
     RTABMAP_PARAM(OdomCuVSLAM, ImuGyroNoiseDensity,  float, 0.000244,   "Gyroscope noise density (rad/s/sqrt(Hz)).");
     RTABMAP_PARAM(OdomCuVSLAM, ImuGyroRandomWalk,    float, 0.000019393, "Gyroscope random walk (rad/s^2/sqrt(Hz)).");
