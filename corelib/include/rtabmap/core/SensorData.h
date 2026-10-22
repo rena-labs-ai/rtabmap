@@ -813,6 +813,25 @@ public:
 	 * @note Use Compression::uncompressData() to uncompress the data.
 	 */
 	const cv::Mat & gridEmptyCellsCompressed() const {return _emptyCellsCompressed;}
+
+	/**
+	 * @brief Sets per-pixel semantic labels aligned with the depth image (cameras side
+	 * by side, like the depth), CV_8UC1. Input of the local grid only (see
+	 * Parameters::kGridLabelObstacle()): neither compressed nor saved.
+	 */
+	void setLabels(const cv::Mat & labels) {_labelsRaw = labels;}
+	const cv::Mat & labelsRaw() const {return _labelsRaw;}
+
+	/**
+	 * @brief Sets the local grid's label cells: ground cells whose label is known,
+	 * 1×N `CV_32FC3` (x, y, label) in the robot/base frame, or their compressed
+	 * bytes (`CV_8UC1`, 1 row). Saved with the occupancy grid.
+	 */
+	void setGridLabelCells(const cv::Mat & cells);
+	const cv::Mat & gridLabelCellsRaw() const {return _labelCellsRaw;}
+	const cv::Mat & gridLabelCellsCompressed() const {return _labelCellsCompressed;}
+	/// @return The label cells, uncompressed if only compressed ones are set.
+	cv::Mat gridLabelCells() const;
 	
 	/**
 	 * @brief Returns the occupancy grid cell size
@@ -1055,6 +1074,9 @@ private:
 	cv::Mat _groundCellsRaw; ///< Raw ground cells matrix
 	cv::Mat _obstacleCellsRaw; ///< Raw obstacle cells matrix
 	cv::Mat _emptyCellsRaw; ///< Raw empty cells matrix
+	cv::Mat _labelsRaw; ///< Per-pixel semantic labels aligned with the depth (CV_8UC1)
+	cv::Mat _labelCellsCompressed; ///< Compressed label cells (ZIP-compressed bytes)
+	cv::Mat _labelCellsRaw; ///< Raw label cells (1×N CV_32FC3: x, y, label)
 	float _cellSize; ///< Occupancy grid cell size in meters
 	cv::Point3f _viewPoint; ///< Occupancy grid viewpoint/origin (3D point)
 

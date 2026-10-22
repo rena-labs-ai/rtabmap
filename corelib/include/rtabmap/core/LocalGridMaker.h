@@ -105,6 +105,16 @@ public:
 			pcl::IndicesPtr * flatObstacles = 0) const; // output cloud indices
 
 	/**
+	 * @brief The label cells of @p data: ground points (`Grid/MinGroundHeight` to
+	 * `Grid/MaxGroundHeight`, within `Grid/RangeMin`/`Grid/RangeMax` depth) whose label
+	 * in @p data's labels is `Grid/LabelObstacle` or `Grid/LabelFloor`, one per cell,
+	 * obstacle winning: knowledge of low obstacles that height alone cannot give.
+	 * @return 1×N `CV_32FC3` (x, y, label) in the robot/base frame; empty when the
+	 * labels are disabled, absent or do not match the depth image.
+	 */
+	cv::Mat createLabelCells(const SensorData & data) const;
+
+	/**
 	 * @brief Creates a local grid from a @ref Signature's laser scan or depth data.
 	 * @param node Signature with sensor data (pose used for 3D scans).
 	 * @param groundCells Output ground cells (@ref LocalGrid format).
@@ -199,6 +209,8 @@ protected:
 	int noiseFilteringMinNeighbors_;
 	bool scan2dUnknownSpaceFilled_;
 	bool rayTracing_;
+	int labelObstacle_;
+	int labelFloor_;
 };
 
 } /* namespace rtabmap */
