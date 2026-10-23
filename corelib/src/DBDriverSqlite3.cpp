@@ -54,6 +54,7 @@ DBDriverSqlite3::DBDriverSqlite3(const ParametersMap & parameters) :
 	DBDriver(parameters),
 	_ppDb(0),
 	_version("0.0.0"),
+	_labelCells(false),
 	_memoryUsedEstimate(0),
 	_dbInMemory(Parameters::defaultDbSqlite3InMemory()),
 	_cacheSize(Parameters::defaultDbSqlite3CacheSize()),
@@ -441,6 +442,29 @@ bool DBDriverSqlite3::connectDatabaseQuery(const std::string & url, bool overwri
 				   _version.c_str(), RTABMAP_VERSION);
 			this->disconnectDatabaseQuery(false);
 			return false;
+	}
+
+	// Label cells (see Parameters::kGridLabelObstacle()) are a column databases made
+	// without it lack: added on open, or left absent (and unused) when read-only.
+	_labelCells = false;
+	if(uStrNumCmp(_version, "0.11.10") >= 0)
+	{
+		sqlite3_stmt * ppStmt = 0;
+		rc = sqlite3_prepare_v2(_ppDb, "PRAGMA table_info(Data);", -1, &ppStmt, 0);
+		UASSERT_MSG(rc == SQLITE_OK, uFormat("DB error (%s): %s", _version.c_str(), sqlite3_errmsg(_ppDb)).c_str());
+		while(sqlite3_step(ppStmt) == SQLITE_ROW)
+		{
+			if(std::string((const char *)sqlite3_column_text(ppStmt, 1)) == "label_cells")
+			{
+				_labelCells = true;
+			}
+		}
+		sqlite3_finalize(ppStmt);
+		if(!_labelCells && !readOnly)
+		{
+			this->executeNoResultQuery("ALTER TABLE Data ADD COLUMN label_cells BLOB;");
+			_labelCells = true;
+		}
 	}
 
 	//Set database optimizations
@@ -1364,6 +1388,10 @@ void DBDriverSqlite3::loadNodeDataQuery(std::list<Signature *> & signatures, boo
 				{
 					fields << "ground_cells, obstacle_cells, cell_size, view_point_x, view_point_y, view_point_z";
 				}
+				if(_labelCells)
+				{
+					fields << ", label_cells";
+				}
 			}
 
 			query << "SELECT " << fields.str().c_str() << " "
@@ -1793,6 +1821,7 @@ void DBDriverSqlite3::loadNodeDataQuery(std::list<Signature *> & signatures, boo
 				cv::Mat groundCellsCompressed;
 				cv::Mat obstacleCellsCompressed;
 				cv::Mat emptyCellsCompressed;
+				cv::Mat labelCellsCompressed;
 				float cellSize = 0.0f;
 				cv::Point3f viewPoint;
 				if(uStrNumCmp(_version, "0.11.10") >= 0 && occupancyGrid)
@@ -1831,6 +1860,17 @@ void DBDriverSqlite3::loadNodeDataQuery(std::list<Signature *> & signatures, boo
 					viewPoint.x = sqlite3_column_double(ppStmt, index++);
 					viewPoint.y = sqlite3_column_double(ppStmt, index++);
 					viewPoint.z = sqlite3_column_double(ppStmt, index++);
+
+					if(_labelCells)
+					{
+						data = sqlite3_column_blob(ppStmt, index);
+						dataSize = sqlite3_column_bytes(ppStmt, index++);
+						if(dataSize > 0 && data)
+						{
+							labelCellsCompressed = cv::Mat(1, dataSize, CV_8UC1);
+							memcpy((void*)labelCellsCompressed.data, data, dataSize);
+						}
+					}
 				}
 
 				if(scan)
@@ -1865,6 +1905,7 @@ void DBDriverSqlite3::loadNodeDataQuery(std::list<Signature *> & signatures, boo
 				if(occupancyGrid)
 				{
 					(*iter)->sensorData().setOccupancyGrid(groundCellsCompressed, obstacleCellsCompressed, emptyCellsCompressed, cellSize, viewPoint);
+					(*iter)->sensorData().setGridLabelCells(labelCellsCompressed);
 				}
 
 				rc = sqlite3_step(ppStmt); // next result...
@@ -6451,6 +6492,17 @@ void DBDriverSqlite3::stepScanUpdate(sqlite3_stmt * ppStmt, int nodeId, const La
 
 std::string DBDriverSqlite3::queryStepSensorData() const
 {
+	std::string query = queryStepSensorDataColumns(_version);
+	if(_labelCells)
+	{
+		query.replace(query.find(") VALUES("), 9, ", label_cells) VALUES(");
+		query.replace(query.rfind(");"), 2, ",?);");
+	}
+	return query;
+}
+
+std::string DBDriverSqlite3::queryStepSensorDataColumns(const std::string & _version)
+{
 	UASSERT(uStrNumCmp(_version, "0.10.0") >= 0);
 	if(uStrNumCmp(_version, "0.22.0") >= 0)
 	{
@@ -6774,6 +6826,19 @@ void DBDriverSqlite3::stepSensorData(sqlite3_stmt * ppStmt,
 		UASSERT_MSG(rc == SQLITE_OK, uFormat("DB error (%s): %s", _version.c_str(), sqlite3_errmsg(_ppDb)).c_str());
 		rc = sqlite3_bind_double(ppStmt, index++, sensorData.gridViewPoint().z);
 		UASSERT_MSG(rc == SQLITE_OK, uFormat("DB error (%s): %s", _version.c_str(), sqlite3_errmsg(_ppDb)).c_str());
+
+		if(_labelCells)
+		{
+			if(sensorData.gridLabelCellsCompressed().empty())
+			{
+				rc = sqlite3_bind_null(ppStmt, index++);
+			}
+			else
+			{
+				rc = sqlite3_bind_blob(ppStmt, index++, sensorData.gridLabelCellsCompressed().data, (int)sensorData.gridLabelCellsCompressed().cols, SQLITE_STATIC);
+			}
+			UASSERT_MSG(rc == SQLITE_OK, uFormat("DB error (%s): %s", _version.c_str(), sqlite3_errmsg(_ppDb)).c_str());
+		}
 	}
 
 	//step
