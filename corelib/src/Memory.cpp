@@ -5594,6 +5594,12 @@ Signature * Memory::createSignature(const SensorData & inputData, const Transfor
 		{
 			data.setRGBDImage(rotatedColorImages, rotatedDepthImages, rotatedCameraModels);
 
+			if(!data.labelsRaw().empty())
+			{
+				UWARN("Labels are not rotated with %s, they are dropped (no label cells).", Parameters::kMemRotateImagesUpsideUp().c_str());
+				data.setLabels(cv::Mat());
+			}
+
 			// Clear any features to avoid confusion with the rotated cameras.
 			if(!data.keypoints().empty() || !data.keypoints3D().empty() || !data.descriptors().empty())
 			{
@@ -7025,7 +7031,7 @@ Signature * Memory::createSignature(const SensorData & inputData, const Transfor
 					data.gridEmptyCellsRaw(),
 					data.gridCellSize(),
 					data.gridViewPoint());
-			s->sensorData().setGridLabelCells(data.gridLabelCellsRaw());
+			s->sensorData().setGridLabelCells(data.gridLabelCells());
 		}
 	}
 

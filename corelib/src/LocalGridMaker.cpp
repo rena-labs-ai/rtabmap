@@ -216,9 +216,10 @@ cv::Mat LocalGridMaker::createLabelCells(const SensorData & data) const
 	{
 		// The camera model is the image's; the depth may be smaller.
 		const CameraModel model = models[i].scaled(double(width) / double(models[i].imageWidth()));
-		for(int v=0; v<depth.rows; ++v)
+		const cv::Rect roi = roiRatios_.size() == 4 ? util2d::computeRoi(cv::Size(width, depth.rows), roiRatios_) : cv::Rect(0, 0, width, depth.rows);
+		for(int v=roi.y; v<roi.y+roi.height; ++v)
 		{
-			for(int u=0; u<width; ++u)
+			for(int u=roi.x; u<roi.x+roi.width; ++u)
 			{
 				const int col = int(i)*width + u;
 				const int label = labels.at<unsigned char>(v, col);
