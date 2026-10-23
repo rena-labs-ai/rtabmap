@@ -99,6 +99,7 @@ Rtabmap::Rtabmap() :
 	_publishRAMUsage(Parameters::defaultRtabmapPublishRAMUsage()),
 	_computeRMSE(Parameters::defaultRtabmapComputeRMSE()),
 	_saveWMState(Parameters::defaultRtabmapSaveWMState()),
+	_optimizedPosesChanged(false),
 	_maxTimeAllowed(Parameters::defaultRtabmapTimeThr()), // 700 ms
 	_maxMemoryAllowed(Parameters::defaultRtabmapMemoryThr()), // 0=inf
 	_loopThr(Parameters::defaultRtabmapLoopThr()),
@@ -324,6 +325,39 @@ void Rtabmap::flushStatisticLogs()
 	}
 }
 
+// With Rtabmap/SessionFlush, the stored pose set is only rewritten when the robot
+// stops, so after a crash it can lack the nodes added since then. For each missing
+// node, take a linked node whose pose is known and add the link's offset (e.g. "0.3 m
+// ahead") to get its pose. Much faster than re-optimizing the whole graph.
+static void chainMissingPoses(const Memory & memory, std::map<int, Transform> & poses)
+{
+	std::list<int> frontier(uKeysList(poses));
+	int chained = 0;
+	while(!frontier.empty())
+	{
+		int id = frontier.front();
+		frontier.pop_front();
+		// Follow loop closures too, not only odometry links: a new mapping session is
+		// connected to the old map only by the loop closure that joined them.
+		std::multimap<int, Link> links = memory.getLinks(id);
+		for(std::multimap<int, Link>::iterator iter=links.begin(); iter!=links.end(); ++iter)
+		{
+			int to = iter->second.to();
+			if(!iter->second.isValid() || uContains(poses, to) || !memory.isInWM(to))
+			{
+				continue;
+			}
+			poses.insert(std::make_pair(to, poses.at(id) * iter->second.transform()));
+			frontier.push_back(to);
+			++chained;
+		}
+	}
+	if(chained)
+	{
+		UINFO("Chained %d node(s) missing from the stored pose set along their links", chained);
+	}
+}
+
 void Rtabmap::init(const ParametersMap & parameters, const std::string & databasePath, bool loadDatabaseParameters)
 {
 	UDEBUG("path=%s", databasePath.c_str());
@@ -373,6 +407,7 @@ void Rtabmap::init(const ParametersMap & parameters, const std::string & databas
 
 	_optimizedPoses.clear();
 	_constraints.clear();
+	_optimizedPosesChanged = true;
 	_globalScanMap.clear();
 	_globalScanMapPoses.clear();
 	_odomCachePoses.clear();
@@ -384,6 +419,7 @@ void Rtabmap::init(const ParametersMap & parameters, const std::string & databas
 
 	Transform lastPose;
 	_optimizedPoses = _memory->loadOptimizedPoses(&lastPose);
+	chainMissingPoses(*_memory, _optimizedPoses);
 	if(!_memory->isIncremental())
 	{
 		if(_optimizedPoses.empty() && _memory->getWorkingMemSize(true) > 0)
@@ -945,6 +981,7 @@ int Rtabmap::triggerNewMap()
 		UINFO("New map triggered, new map = %d", mapId);
 		_optimizedPoses.clear();
 		_constraints.clear();
+		_optimizedPosesChanged = true;
 		_lastRejectedLoopClosureIds = std::make_pair(0,0);
 
 		if(_bayesFilter)
@@ -1105,6 +1142,7 @@ void Rtabmap::resetMemory()
 	_someNodesHaveBeenTransferred = false;
 	_optimizedPoses.clear();
 	_constraints.clear();
+	_optimizedPosesChanged = true;
 	_mapCorrection.setIdentity();
 	_mapCorrectionBackup.setNull();
 	_lastLocalizationPose.setNull();
@@ -4110,6 +4148,7 @@ bool Rtabmap::process(
 			{
 				UINFO("Updated local map (old size=%d, new size=%d)", (int)_optimizedPoses.size(), (int)poses.size());
 				_optimizedPoses = poses;
+				_optimizedPosesChanged = true;
 				_constraints = constraints;
 				_localizationCovariance = covariance;
 			}
@@ -4720,6 +4759,7 @@ bool Rtabmap::process(
 				UDEBUG("Optimized poses cleared!");
 			_optimizedPoses.clear();
 			_constraints.clear();
+			_optimizedPosesChanged = true;
 		}
 	}
 	// just some verifications to make sure that planning path is still in the local map!
@@ -4918,6 +4958,16 @@ bool Rtabmap::process(
 		}
 		statistics_.setWmState(ids);
 		UDEBUG("wmState=%d", (int)ids.size());
+	}
+
+	UTimer flushTimer;
+	bool stationary = smallDisplacement || rehearsalMaxId > 0;
+	int flushed = _memory->flushSession(_optimizedPoses, _lastLocalizationPose, _optimizedPosesChanged, stationary);
+	if(flushed)
+	{
+		_optimizedPosesChanged = false;
+		statistics_.addStatistic(Statistics::kTimingSession_flush(), flushTimer.ticks()*1000);
+		statistics_.addStatistic(Statistics::kMemorySession_flush_pose_set(), flushed == 2 ? 1 : 0);
 	}
 
 	//Save statistics to database
@@ -5129,6 +5179,7 @@ void Rtabmap::rejectLastLoopClosure()
 				{
 					UINFO("Updated local map (old size=%d, new size=%d)", (int)_optimizedPoses.size(), (int)poses.size());
 					_optimizedPoses = poses;
+					_optimizedPosesChanged = true;
 					_constraints = constraints;
 					_mapCorrection = _optimizedPoses.at(lastS->id()) * lastS->getPose().inverse();
 				}
@@ -5186,6 +5237,7 @@ void Rtabmap::deleteLastLocation()
 				else
 				{
 					_optimizedPoses = poses;
+					_optimizedPosesChanged = true;
 					_constraints = constraints;
 					_mapCorrection = _optimizedPoses.at(_memory->getLastWorkingSignature(true)->id()) * _memory->getLastWorkingSignature(true)->getPose().inverse();
 				}
@@ -5197,6 +5249,7 @@ void Rtabmap::deleteLastLocation()
 void Rtabmap::setOptimizedPoses(const std::map<int, Transform> & poses, const std::multimap<int, Link> & constraints)
 {
 	_optimizedPoses = poses;
+	_optimizedPosesChanged = true;
     _constraints = constraints;
 }
 
@@ -6491,6 +6544,7 @@ bool Rtabmap::globalBundleAdjustment(
 		else
 		{
 			_optimizedPoses = poses;
+			_optimizedPosesChanged = true;
 			// This will force rtabmap_ros to regenerate the global occupancy grid if there was one
 			_memory->save2DMap(cv::Mat(), 0, 0, 0);
 			return true;

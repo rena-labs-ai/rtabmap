@@ -143,7 +143,7 @@ void DBDriverSqlite3::setJournalMode(int journalMode)
 
 void DBDriverSqlite3::setSynchronous(int synchronous)
 {
-	if(synchronous >= 0 && synchronous < 3)
+	if(synchronous >= 0 && synchronous <= 3)
 	{
 		_synchronous = synchronous;
 		if(this->isConnected())
@@ -155,6 +155,9 @@ void DBDriverSqlite3::setSynchronous(int synchronous)
 				break;
 			case 1:
 				this->executeNoResultQuery("PRAGMA synchronous = NORMAL;");
+				break;
+			case 3:
+				this->executeNoResultQuery("PRAGMA synchronous = EXTRA;");
 				break;
 			case 2:
 			default:
@@ -5240,6 +5243,24 @@ void DBDriverSqlite3::saveOptimizedPosesQuery(const std::map<int, Transform> & p
 
 		UDEBUG("Time=%fs", timer.ticks());
 	}
+}
+
+void DBDriverSqlite3::saveLastLocalizationPoseQuery(const Transform & lastlocalizationPose) const
+{
+	if(!_ppDb || uStrNumCmp(_version, "0.17.0") < 0 || lastlocalizationPose.isNull())
+	{
+		return;
+	}
+	sqlite3_stmt * ppStmt = 0;
+	std::string query = uFormat("UPDATE Admin SET opt_last_localization=?, time_enter = DATETIME('NOW') WHERE version='%s';", _version.c_str());
+	int rc = sqlite3_prepare_v2(_ppDb, query.c_str(), -1, &ppStmt, 0);
+	UASSERT_MSG(rc == SQLITE_OK, uFormat("DB error (%s): %s", _version.c_str(), sqlite3_errmsg(_ppDb)).c_str());
+	rc = sqlite3_bind_blob(ppStmt, 1, lastlocalizationPose.data(), lastlocalizationPose.size()*sizeof(float), SQLITE_STATIC);
+	UASSERT_MSG(rc == SQLITE_OK, uFormat("DB error (%s): %s", _version.c_str(), sqlite3_errmsg(_ppDb)).c_str());
+	rc = sqlite3_step(ppStmt);
+	UASSERT_MSG(rc == SQLITE_DONE, uFormat("DB error (%s): %s", _version.c_str(), sqlite3_errmsg(_ppDb)).c_str());
+	rc = sqlite3_finalize(ppStmt);
+	UASSERT_MSG(rc == SQLITE_OK, uFormat("DB error (%s): %s", _version.c_str(), sqlite3_errmsg(_ppDb)).c_str());
 }
 
 std::map<int, Transform> DBDriverSqlite3::loadOptimizedPosesQuery(Transform * lastlocalizationPose) const

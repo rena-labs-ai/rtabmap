@@ -365,6 +365,7 @@ public:
 	void deleteLocation(int locationId, std::list<int> * deletedWords = 0, bool keepLinkedInDb = false);
 	/** @brief Forces @p locationId to be flushed to the database. */
 	void saveLocationData(int locationId);
+	int flushSession(const std::map<int, Transform> & optimizedPoses, const Transform & currentPose, bool optimizedPosesChanged, bool stationary);
 	/** @brief Removes any link between @p idA and @p idB (both directions). */
 	void removeLink(int idA, int idB);
 	/** @brief Strips raw images, scan, user data and/or occupancy grid from @p id to save memory (RAM). This doesn't clear any compressed data.*/
@@ -893,6 +894,10 @@ private:
 	std::map<int, Signature *> _signatures; // TODO : check if a signature is already added? although it is not supposed to occur...
 	std::set<int> _stMem; // id
 	std::map<int, double> _workingMem; // id,age
+	bool _sessionFlush;
+	std::set<int> _wordsCreatedSinceFlush;
+	bool _poseSetDirty;
+	bool _wasStationary;
 	std::map<int, Transform> _groundTruths;
 	std::map<int, std::string> _labels;
 	std::map<int, std::set<int> > _landmarksIndex; // < -landmarkId, nodeIds >

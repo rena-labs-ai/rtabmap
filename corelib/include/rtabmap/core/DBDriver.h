@@ -113,6 +113,9 @@ public:
 	 * @param async If true, signal the background thread instead of flushing synchronously.
 	 */
 	void emptyTrashes(bool async = false);
+	bool isInTrash(int signatureId);
+	void asyncSaveOptimizedPoses(const std::map<int, Transform> & optimizedPoses, const Transform & lastLocalizationPose);
+	void asyncSaveLastLocalizationPose(const Transform & lastLocalizationPose);
 	double getEmptyTrashesTime() const {return _emptyTrashesTime;}
 	void setTimestampUpdateEnabled(bool enabled) {_timestampUpdate = enabled;} // used on Update Signature and Word queries
 
@@ -401,6 +404,7 @@ protected:
 	virtual void savePreviewImageQuery(const cv::Mat & image) const = 0;
 	virtual cv::Mat loadPreviewImageQuery() const = 0;
 	virtual void saveOptimizedPosesQuery(const std::map<int, Transform> & optimizedPoses, const Transform & lastlocalizationPose) const = 0;
+	virtual void saveLastLocalizationPoseQuery(const Transform & lastlocalizationPose) const = 0;
 	virtual std::map<int, Transform> loadOptimizedPosesQuery(Transform * lastlocalizationPose = 0) const = 0;
 	virtual void save2DMapQuery(const cv::Mat & map, float xMin, float yMin, float cellSize) const = 0;
 	virtual cv::Mat load2DMapQuery(float & xMin, float & yMin, float & cellSize) const = 0;
@@ -466,6 +470,10 @@ private:
 	// Lock order: _trashesMutex -> _dbSafeAccessMutex -> _transactionMutex.
 	// emptyTrashes() locks _dbSafeAccessMutex before releasing _trashesMutex, so that
 	// an item not found in the trash is guaranteed to be readable from the database.
+	std::map<int, Transform> _trashOptimizedPoses;
+	Transform _trashLastLocalizationPose;
+	bool _trashOptimizedPosesSet;
+	bool _trashLastLocalizationPoseSet;
 	UMutex _trashesMutex;
 	UMutex _dbSafeAccessMutex;
 	USemaphore _addSem;
