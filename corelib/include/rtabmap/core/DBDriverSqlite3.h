@@ -308,6 +308,8 @@ private:
 	std::string queryStepScanUpdate() const;
 	std::string queryStepSensorData() const;
 	static std::string queryStepSensorDataColumns(const std::string & version);
+	bool addDataColumn(const std::string & name, bool readOnly);
+	void bindCells(sqlite3_stmt * ppStmt, int index, const cv::Mat & compressed) const;
 	std::string queryStepLinkUpdate() const;
 	std::string queryStepLink() const;
 	std::string queryStepWordsChanged() const;
@@ -343,6 +345,7 @@ protected:
 	sqlite3 * _ppDb; ///< Open SQLite connection (null when disconnected)
 	std::string _version; ///< Schema version read from the database
 	bool _labelCells; ///< The Data table has the label_cells column (added on open when writable)
+	bool _objectCells; ///< The Data table has the object_cells column (added on open when writable)
 
 private:
 	unsigned long _memoryUsedEstimate;

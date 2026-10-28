@@ -7018,6 +7018,7 @@ Signature * Memory::createSignature(const SensorData & inputData, const Transfor
 			cellSize = _localMapMaker->getCellSize();
 			s->sensorData().setOccupancyGrid(ground, obstacles, empty, cellSize, viewPoint);
 			s->sensorData().setGridLabelCells(_localMapMaker->createLabelCells(data));
+			s->sensorData().setGridObjectCells(_localMapMaker->createObjectCells(data));
 
 			t = timer.ticks();
 			if(stats) stats->addStatistic(Statistics::kTimingMemOccupancy_grid(), t*1000.0f);
@@ -7032,6 +7033,7 @@ Signature * Memory::createSignature(const SensorData & inputData, const Transfor
 					data.gridCellSize(),
 					data.gridViewPoint());
 			s->sensorData().setGridLabelCells(data.gridLabelCells());
+			s->sensorData().setGridObjectCells(data.gridObjectCells());
 		}
 	}
 

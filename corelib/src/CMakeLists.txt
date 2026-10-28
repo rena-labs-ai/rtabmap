@@ -123,6 +123,7 @@ SET(SRC_FILES
     LocalGridMaker.cpp
     LocalGrid.cpp
     global_map/OccupancyGrid.cpp
+    global_map/ObjectGrid.cpp
     global_map/CloudMap.cpp
     
     MarkerDetector.cpp

@@ -75,7 +75,8 @@ LocalGridMaker::LocalGridMaker(const ParametersMap & parameters) :
 	scan2dUnknownSpaceFilled_(Parameters::defaultGridScan2dUnknownSpaceFilled()),
 	rayTracing_(Parameters::defaultGridRayTracing()),
 	labelObstacle_(Parameters::defaultGridLabelObstacle()),
-	labelFloor_(Parameters::defaultGridLabelFloor())
+	labelFloor_(Parameters::defaultGridLabelFloor()),
+	objectMaxHeight_(Parameters::defaultGridObjectMaxHeight())
 {
 	this->parseParameters(parameters);
 }
@@ -127,6 +128,7 @@ void LocalGridMaker::parseParameters(const ParametersMap & parameters)
 	Parameters::parse(parameters, Parameters::kGridRayTracing(), rayTracing_);
 	Parameters::parse(parameters, Parameters::kGridLabelObstacle(), labelObstacle_);
 	Parameters::parse(parameters, Parameters::kGridLabelFloor(), labelFloor_);
+	Parameters::parse(parameters, Parameters::kGridObjectMaxHeight(), objectMaxHeight_);
 
 	// convert ROI from string to vector
 	ParametersMap::const_iterator iter;
@@ -190,19 +192,80 @@ void LocalGridMaker::parseParameters(const ParametersMap & parameters)
 	}
 }
 
-cv::Mat LocalGridMaker::createLabelCells(const SensorData & data) const
+namespace {
+
+// True when data's labels lie over its depth image's pixels; warns otherwise.
+bool labelsOverDepth(const SensorData & data)
+{
+	const cv::Mat & labels = data.labelsRaw();
+	const cv::Mat & depth = data.depthRaw();
+	if(!depth.empty() && !data.cameraModels().empty() && labels.depth() == CV_8U && labels.channels() <= 2 && labels.size() == depth.size())
+	{
+		return true;
+	}
+	UWARN("Labels (%dx%d, type=%d) do not match the depth image (%dx%d, %d cameras), no label cells.",
+			labels.cols, labels.rows, labels.type(), depth.cols, depth.rows, (int)data.cameraModels().size());
+	return false;
+}
+
+// Calls visit(labels, point) for each pixel of data's depth image, in roiRatios, with a
+// depth in [rangeMin, rangeMax] (rangeMax 0: no limit): labels points to the pixel's
+// label channels, point is the pixel's point in the robot/base frame.
+template<typename Visit>
+void forEachLabelledPoint(const SensorData & data, const std::vector<float> & roiRatios, float rangeMin, float rangeMax, Visit visit)
 {
 	const cv::Mat & labels = data.labelsRaw();
 	const cv::Mat & depth = data.depthRaw();
 	const std::vector<CameraModel> & models = data.cameraModels();
-	if(labelObstacle_ == 0 || labelFloor_ == 0 || labels.empty())
+	const int width = depth.cols / (int)models.size();
+	const cv::Rect roi = roiRatios.size() == 4 ? util2d::computeRoi(cv::Size(width, depth.rows), roiRatios) : cv::Rect(0, 0, width, depth.rows);
+	for(size_t i=0; i<models.size(); ++i)
 	{
-		return cv::Mat();
+		// The camera model is the image's; the depth may be smaller.
+		const CameraModel model = models[i].scaled(double(width) / double(models[i].imageWidth()));
+		for(int v=roi.y; v<roi.y+roi.height; ++v)
+		{
+			for(int u=roi.x; u<roi.x+roi.width; ++u)
+			{
+				const int col = int(i)*width + u;
+				const float z = depth.type() == CV_16UC1 ?
+						float(depth.at<unsigned short>(v, col)) * 0.001f : depth.at<float>(v, col);
+				if(!(z > 0.0f) || !std::isfinite(z) || z < rangeMin || (rangeMax > 0.0f && z > rangeMax))
+				{
+					continue;
+				}
+				visit(labels.ptr<unsigned char>(v) + col*labels.channels(), util3d::transformPoint(
+						cv::Point3f((u - model.cx()) * z / model.fx(), (v - model.cy()) * z / model.fy(), z),
+						model.localTransform()));
+			}
+		}
 	}
-	if(depth.empty() || models.empty() || labels.type() != CV_8UC1 || labels.size() != depth.size())
+}
+
+std::pair<int, int> cellOf(const cv::Point3f & point, float cellSize)
+{
+	return std::make_pair((int)std::floor(point.x / cellSize), (int)std::floor(point.y / cellSize));
+}
+
+// 1×N CV_32FC3 (x, y, label) at the cells' centers.
+cv::Mat cellsMat(const std::map<std::pair<int, int>, int> & cells, float cellSize)
+{
+	cv::Mat out(1, (int)cells.size(), CV_32FC3);
+	int n = 0;
+	for(const std::pair<const std::pair<int, int>, int> & cell : cells)
 	{
-		UWARN("Labels (%dx%d, type=%d) do not match the depth image (%dx%d, %d cameras), no label cells.",
-				labels.cols, labels.rows, labels.type(), depth.cols, depth.rows, (int)models.size());
+		out.at<cv::Vec3f>(0, n++) = cv::Vec3f(
+				(cell.first.first + 0.5f) * cellSize, (cell.first.second + 0.5f) * cellSize, float(cell.second));
+	}
+	return out;
+}
+
+} // namespace
+
+cv::Mat LocalGridMaker::createLabelCells(const SensorData & data) const
+{
+	if(labelObstacle_ == 0 || labelFloor_ == 0 || data.labelsRaw().empty() || !labelsOverDepth(data))
+	{
 		return cv::Mat();
 	}
 	if(maxGroundHeight_ <= 0.0f)
@@ -210,57 +273,55 @@ cv::Mat LocalGridMaker::createLabelCells(const SensorData & data) const
 		UWARN("%s must be set for label cells, none made.", Parameters::kGridMaxGroundHeight().c_str());
 		return cv::Mat();
 	}
-	const int width = depth.cols / (int)models.size();
 	std::map<std::pair<int, int>, int> cells;
-	for(size_t i=0; i<models.size(); ++i)
+	forEachLabelledPoint(data, roiRatios_, rangeMin_, rangeMax_, [&](const unsigned char * labels, const cv::Point3f & point)
 	{
-		// The camera model is the image's; the depth may be smaller.
-		const CameraModel model = models[i].scaled(double(width) / double(models[i].imageWidth()));
-		const cv::Rect roi = roiRatios_.size() == 4 ? util2d::computeRoi(cv::Size(width, depth.rows), roiRatios_) : cv::Rect(0, 0, width, depth.rows);
-		for(int v=roi.y; v<roi.y+roi.height; ++v)
+		const int label = labels[0];
+		if((label != labelObstacle_ && label != labelFloor_) ||
+			point.z > maxGroundHeight_ || (minGroundHeight_ != 0.0f && point.z < minGroundHeight_))
 		{
-			for(int u=roi.x; u<roi.x+roi.width; ++u)
-			{
-				const int col = int(i)*width + u;
-				const int label = labels.at<unsigned char>(v, col);
-				if(label != labelObstacle_ && label != labelFloor_)
-				{
-					continue;
-				}
-				const float z = depth.type() == CV_16UC1 ?
-						float(depth.at<unsigned short>(v, col)) * 0.001f : depth.at<float>(v, col);
-				if(!(z > 0.0f) || !std::isfinite(z) || z < rangeMin_ || (rangeMax_ > 0.0f && z > rangeMax_))
-				{
-					continue;
-				}
-				const cv::Point3f point = util3d::transformPoint(
-						cv::Point3f((u - model.cx()) * z / model.fx(), (v - model.cy()) * z / model.fy(), z),
-						model.localTransform());
-				if(point.z > maxGroundHeight_ || (minGroundHeight_ != 0.0f && point.z < minGroundHeight_))
-				{
-					continue;
-				}
-				const std::pair<int, int> cell((int)std::floor(point.x / cellSize_), (int)std::floor(point.y / cellSize_));
-				std::map<std::pair<int, int>, int>::iterator found = cells.find(cell);
-				if(found == cells.end())
-				{
-					cells.insert(std::make_pair(cell, label));
-				}
-				else if(label == labelObstacle_)
-				{
-					found->second = label;
-				}
-			}
+			return;
 		}
-	}
-	cv::Mat out(1, (int)cells.size(), CV_32FC3);
-	int n = 0;
-	for(const std::pair<const std::pair<int, int>, int> & cell : cells)
+		int & cell = cells.insert(std::make_pair(cellOf(point, cellSize_), label)).first->second;
+		if(label == labelObstacle_)
+		{
+			cell = label;
+		}
+	});
+	return cellsMat(cells, cellSize_);
+}
+
+cv::Mat LocalGridMaker::createObjectCells(const SensorData & data) const
+{
+	if(data.labelsRaw().channels() != 2 || !labelsOverDepth(data))
 	{
-		out.at<cv::Vec3f>(0, n++) = cv::Vec3f(
-				(cell.first.first + 0.5f) * cellSize_, (cell.first.second + 0.5f) * cellSize_, float(cell.second));
+		return cv::Mat();
 	}
-	return out;
+	if(maxGroundHeight_ <= 0.0f)
+	{
+		UWARN("%s must be set for object cells, none made.", Parameters::kGridMaxGroundHeight().c_str());
+		return cv::Mat();
+	}
+	// Per cell, the points of each object label (0: ground without an object).
+	std::map<std::pair<int, int>, std::map<int, int> > points;
+	forEachLabelledPoint(data, roiRatios_, rangeMin_, rangeMax_, [&](const unsigned char * labels, const cv::Point3f & point)
+	{
+		const int label = labels[1];
+		if(label > 127 || point.z > (label ? objectMaxHeight_ : maxGroundHeight_) ||
+			(minGroundHeight_ != 0.0f && point.z < minGroundHeight_))
+		{
+			return;
+		}
+		++points[cellOf(point, cellSize_)][label];
+	});
+	std::map<std::pair<int, int>, int> cells;
+	for(const std::pair<const std::pair<int, int>, std::map<int, int> > & cell : points)
+	{
+		const std::map<int, int>::const_iterator best = std::max_element(cell.second.upper_bound(0), cell.second.end(),
+				[](const std::pair<const int, int> & a, const std::pair<const int, int> & b) {return a.second < b.second;});
+		cells.insert(std::make_pair(cell.first, best == cell.second.end() ? 0 : best->first));
+	}
+	return cellsMat(cells, cellSize_);
 }
 
 void LocalGridMaker::createLocalMap(

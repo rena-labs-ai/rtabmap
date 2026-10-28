@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include <rtabmap/core/GlobalMap.h>
 #include <rtabmap/core/global_map/OccupancyGrid.h>
+#include <rtabmap/core/global_map/ObjectGrid.h>
 #include <rtabmap/core/LocalGrid.h>
 #include <rtabmap/core/Parameters.h>
 #include <rtabmap/utilite/UConversion.h>
@@ -328,4 +329,125 @@ TEST(OccupancyGridTest, EmptyCacheProducesEmptyMap)
 	grid.update(std::map<int, Transform>());
 	float xMin = 0.0f, yMin = 0.0f;
 	EXPECT_TRUE(grid.getMap(xMin, yMin).empty());
+}
+
+// ---------------------------------------------------------------------------
+// ObjectGrid: cells 0.1 m, ProbHit 0.7 (+0.85 log-odds), ProbMiss 0.4 (-0.41),
+// OccupancyThr 0.6 (0.41), so the boundaries the tests cross are clear.
+// ---------------------------------------------------------------------------
+
+namespace {
+
+ParametersMap objectGridParams()
+{
+	ParametersMap parameters;
+	parameters.insert(ParametersPair(Parameters::kGridCellSize(), "0.1"));
+	parameters.insert(ParametersPair(Parameters::kGridGlobalOccupancyThr(), "0.6"));
+	return parameters;
+}
+
+// A node seeing object `label` at (x, y) (label 0: floor there).
+void addObjectCell(LocalGridCache & cache, int nodeId, float x, float y, int label)
+{
+	const bool floor = label == 0;
+	cache.add(nodeId,
+			floor ? cv::Mat(1, 1, CV_32FC2, cv::Scalar(x, y)) : cv::Mat(),
+			floor ? cv::Mat() : cv::Mat(1, 1, CV_32FC3, cv::Scalar(x, y, float(label))),
+			cv::Mat(),
+			0.1f);
+}
+
+// One node per label, all at the origin.
+cv::Mat assembledMap(const std::vector<std::pair<float, int> > & views, float & xMin, float & yMin)
+{
+	LocalGridCache cache;
+	std::map<int, Transform> poses;
+	for(size_t i=0; i<views.size(); ++i)
+	{
+		addObjectCell(cache, int(i)+1, views[i].first, 0.05f, views[i].second);
+		poses.insert(std::make_pair(int(i)+1, Transform::getIdentity()));
+	}
+	ObjectGrid grid(&cache, objectGridParams());
+	grid.update(poses);
+	return grid.getMap(xMin, yMin);
+}
+
+int labelAt(const std::vector<int> & labels)
+{
+	std::vector<std::pair<float, int> > views;
+	for(int label : labels)
+	{
+		views.push_back(std::make_pair(0.05f, label));
+	}
+	float xMin = 0.0f, yMin = 0.0f;
+	const cv::Mat map = assembledMap(views, xMin, yMin);
+	EXPECT_EQ(map.size(), cv::Size(1, 1));
+	return map.at<signed char>(0, 0);
+}
+
+} // namespace
+
+TEST(ObjectGridTest, UnseenSeenAndObjectCells)
+{
+	float xMin = 0.0f, yMin = 0.0f;
+	const cv::Mat map = assembledMap({{0.05f, 3}, {0.25f, 0}}, xMin, yMin);
+	ASSERT_EQ(map.type(), CV_8SC1);
+	ASSERT_EQ(map.size(), cv::Size(3, 1));
+	EXPECT_NEAR(xMin, 0.0f, 1e-6);
+	EXPECT_NEAR(yMin, 0.0f, 1e-6);
+	EXPECT_EQ(map.at<signed char>(0, 0), 3) << "object";
+	EXPECT_EQ(map.at<signed char>(0, 1), -1) << "never seen";
+	EXPECT_EQ(map.at<signed char>(0, 2), 0) << "floor, no object";
+}
+
+TEST(ObjectGridTest, FloorSeenAgainClearsAnObject)
+{
+	EXPECT_EQ(labelAt({3, 0}), 3) << "+0.85 -0.41 = 0.44, still over 0.41";
+	EXPECT_EQ(labelAt({3, 0, 0}), 0);
+}
+
+TEST(ObjectGridTest, LabelWithMostEvidenceHoldsTheCell)
+{
+	EXPECT_EQ(labelAt({3, 3, 3, 5, 5}), 3) << "2.54 - 2*0.85 = 0.85";
+	EXPECT_EQ(labelAt({3, 3, 3, 5, 5, 5, 5}), 5) << "falls to 0 on the third 5, 5 takes it, 0.85";
+	EXPECT_EQ(labelAt({0, 0, 0, 0, 0, 4, 4}), 0) << "floor seen 5 times: clamped at -2, two hits make -0.31";
+	EXPECT_EQ(labelAt({0, 0, 0, 0, 0, 4, 4, 4}), 4) << "three make 0.54";
+}
+
+TEST(ObjectGridTest, NodeVotesOncePerCell)
+{
+	cv::Mat objects(1, 2, CV_32FC3);
+	objects.at<cv::Vec3f>(0, 0) = cv::Vec3f(0.01f, 0.05f, 3.0f);
+	objects.at<cv::Vec3f>(0, 1) = cv::Vec3f(0.09f, 0.05f, 3.0f);
+	LocalGridCache cache;
+	cache.add(1, cv::Mat(), objects, cv::Mat(), 0.1f);
+	addObjectCell(cache, 2, 0.05f, 0.05f, 0);
+	addObjectCell(cache, 3, 0.05f, 0.05f, 0);
+	std::map<int, Transform> poses;
+	for(int id=1; id<=3; ++id)
+	{
+		poses.insert(std::make_pair(id, Transform::getIdentity()));
+	}
+	ObjectGrid grid(&cache, objectGridParams());
+	grid.update(poses);
+	float xMin = 0.0f, yMin = 0.0f;
+	EXPECT_EQ(grid.getMap(xMin, yMin).at<signed char>(0, 0), 0) << "one hit then two misses: 0.04; two hits would keep the object (0.88)";
+}
+
+TEST(ObjectGridTest, LoopClosureMovesTheObjects)
+{
+	LocalGridCache cache;
+	addObjectCell(cache, 1, 0.05f, 0.05f, 3);
+	ObjectGrid grid(&cache, objectGridParams());
+	std::map<int, Transform> poses;
+	poses.insert(std::make_pair(1, Transform::getIdentity()));
+	grid.update(poses);
+
+	poses[1] = Transform(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+	EXPECT_TRUE(grid.update(poses));
+	float xMin = 0.0f, yMin = 0.0f;
+	const cv::Mat map = grid.getMap(xMin, yMin);
+	ASSERT_EQ(map.size(), cv::Size(1, 1));
+	EXPECT_NEAR(xMin, 1.0f, 1e-5);
+	EXPECT_EQ(map.at<signed char>(0, 0), 3);
 }

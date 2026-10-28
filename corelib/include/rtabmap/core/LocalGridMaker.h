@@ -115,6 +115,18 @@ public:
 	cv::Mat createLabelCells(const SensorData & data) const;
 
 	/**
+	 * @brief The object cells of @p data (see @ref ObjectGrid), from the object labels in
+	 * the second channel of @p data's labels, within `Grid/RangeMin`/`Grid/RangeMax` depth:
+	 * a point labelled with an object up to `Grid/ObjectMaxHeight` is a hit of that object,
+	 * a ground point (`Grid/MinGroundHeight` to `Grid/MaxGroundHeight`) labelled with none (0)
+	 * a miss; 128-255 is not seen, neither. One per cell: the object with the most points,
+	 * ground when it has none.
+	 * @return 1×N `CV_32FC3` (x, y, object label or 0) in the robot/base frame; empty when
+	 * the labels have no object channel or do not match the depth image.
+	 */
+	cv::Mat createObjectCells(const SensorData & data) const;
+
+	/**
 	 * @brief Creates a local grid from a @ref Signature's laser scan or depth data.
 	 * @param node Signature with sensor data (pose used for 3D scans).
 	 * @param groundCells Output ground cells (@ref LocalGrid format).
@@ -211,6 +223,7 @@ protected:
 	bool rayTracing_;
 	int labelObstacle_;
 	int labelFloor_;
+	float objectMaxHeight_;
 };
 
 } /* namespace rtabmap */

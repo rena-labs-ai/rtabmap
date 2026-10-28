@@ -816,7 +816,8 @@ public:
 
 	/**
 	 * @brief Sets per-pixel semantic labels aligned with the depth image (cameras side
-	 * by side, like the depth), CV_8UC1. Input of the local grid only (see
+	 * by side, like the depth), CV_8UC1, or CV_8UC2 whose second channel holds object
+	 * labels (see Parameters::kGridObjectMaxHeight()). Input of the local grid only (see
 	 * Parameters::kGridLabelObstacle()): neither compressed nor saved.
 	 */
 	void setLabels(const cv::Mat & labels) {_labelsRaw = labels;}
@@ -832,6 +833,17 @@ public:
 	const cv::Mat & gridLabelCellsCompressed() const {return _labelCellsCompressed;}
 	/// @return The label cells, uncompressed if only compressed ones are set.
 	cv::Mat gridLabelCells() const;
+
+	/**
+	 * @brief Sets the local grid's object cells (see Parameters::kGridObjectMaxHeight()),
+	 * 1×N `CV_32FC3` (x, y, object label or 0 for ground without object) in the
+	 * robot/base frame, or their compressed bytes (`CV_8UC1`, 1 row). Saved with the
+	 * occupancy grid.
+	 */
+	void setGridObjectCells(const cv::Mat & cells);
+	const cv::Mat & gridObjectCellsCompressed() const {return _objectCellsCompressed;}
+	/// @return The object cells, uncompressed if only compressed ones are set.
+	cv::Mat gridObjectCells() const;
 	
 	/**
 	 * @brief Returns the occupancy grid cell size
@@ -1074,9 +1086,11 @@ private:
 	cv::Mat _groundCellsRaw; ///< Raw ground cells matrix
 	cv::Mat _obstacleCellsRaw; ///< Raw obstacle cells matrix
 	cv::Mat _emptyCellsRaw; ///< Raw empty cells matrix
-	cv::Mat _labelsRaw; ///< Per-pixel semantic labels aligned with the depth (CV_8UC1)
+	cv::Mat _labelsRaw; ///< Per-pixel semantic labels aligned with the depth (CV_8UC1, or CV_8UC2 with object labels)
 	cv::Mat _labelCellsCompressed; ///< Compressed label cells (ZIP-compressed bytes)
 	cv::Mat _labelCellsRaw; ///< Raw label cells (1×N CV_32FC3: x, y, label)
+	cv::Mat _objectCellsCompressed; ///< Compressed object cells (ZIP-compressed bytes)
+	cv::Mat _objectCellsRaw; ///< Raw object cells (1×N CV_32FC3: x, y, object label)
 	float _cellSize; ///< Occupancy grid cell size in meters
 	cv::Point3f _viewPoint; ///< Occupancy grid viewpoint/origin (3D point)
 
