@@ -36,11 +36,11 @@ namespace rtabmap {
 
 /**
  * @class ObjectGrid
- * @brief 2D map of object labels, assembled from the nodes' object cells
- * (@ref LocalGridMaker::createObjectCells()) at their poses.
+ * @brief 2D map of one labeler's labels, assembled from the nodes' label rasters
+ * (@ref LocalGridMaker::createLabelRaster(), @ref LabelRaster::cells()) at their poses.
  *
- * In the cache, a node's ground cells are floor seen without an object (misses) and its
- * obstacle cells its objects, `CV_32FC3` (x, y, label). A cell holds one label and the
+ * In the cache, a node's ground cells are cells seen with nothing there (label 0, misses)
+ * and its obstacle cells its labels, `CV_32FC3` (x, y, label). A cell holds one label and the
  * log-odds that it is there, `GridGlobal/Prob*`: a hit of that label adds `ProbHit`, a
  * miss adds `ProbMiss`, a hit of another label takes `ProbHit` away and, once the odds
  * are under `GridGlobal/OccupancyThr`, gives the cell to that label. So the label with

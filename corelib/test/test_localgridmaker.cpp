@@ -1574,73 +1574,87 @@ TEST(LocalGridMakerTest, SegmentCloudPointNormalType)
 // A 3x4 depth image from a camera 0.2 m up looking along x (fx=fy=10, cx=1, cy=2): row 3 sees
 // the floor at x=2.05, row 2 points 0.2 m up over the same cells, row 1 points 0.6 m up
 // at x=4.05, row 0 has no depth.
-TEST(LocalGridMakerTest, CreateObjectCellsFromObjectLabels)
+TEST(LocalGridMakerTest, CreateLabelRasterFromLabels)
 {
 	ParametersMap params;
 	params.insert(ParametersPair(Parameters::kGridCellSize(), "0.1"));
 	params.insert(ParametersPair(Parameters::kGridRangeMax(), "5"));
 	params.insert(ParametersPair(Parameters::kGridMaxGroundHeight(), "0.05"));
+	params.insert(ParametersPair(Parameters::kGridLabelers(), "floor:2 objects:4 second:10"));
 	const LocalGridMaker maker(params);
+	const LabelLayout & layout = maker.labelLayout();
 
 	const cv::Mat depth = (cv::Mat_<float>(4, 3) <<
 			0.0f, 0.0f, 0.0f,
 			4.05f, 4.05f, 4.05f,
 			2.05f, 2.05f, 2.05f,
 			2.05f, 2.05f, 2.05f);
+	const cv::Mat floor = (cv::Mat_<unsigned char>(4, 3) <<
+			1, 1, 1,
+			1, 1, 1,
+			1, 1, 1,
+			0, 1, 0);
 	const cv::Mat objects = (cv::Mat_<unsigned char>(4, 3) <<
 			3, 3, 3,
 			9, 9, 0,
 			7, 0, 0,
 			0, 5, 0);
-	const CameraModel model(10.0, 10.0, 1.0, 2.0,
-			Transform(0, 0, 0.2f, 0, 0, 0) * CameraModel::opticalRotation(), 0.0, cv::Size(3, 4));
-	SensorData data(cv::Mat(4, 3, CV_8UC3, cv::Scalar::all(0)), depth, model);
-	cv::Mat labels;
-	cv::merge(std::vector<cv::Mat>{cv::Mat::zeros(4, 3, CV_8UC1), objects}, labels);
-	data.setLabels(labels);
-	const cv::Mat cells = maker.createObjectCells(data);
-
-	// Column 0 (y=0.25): the object 0.2 m up wins over the floor under it; column 1
-	// (y=0.05): an object on the floor; column 2 (y=-0.25): floor only. Too high or
-	// without depth: nothing. All in the first object channel (1).
-	ASSERT_EQ(cells.type(), CV_32FC4);
-	ASSERT_EQ(cells.cols, 3);
-	std::map<int, int> labelByY;
-	for(int i=0; i<cells.cols; ++i)
-	{
-		const cv::Vec4f & cell = cells.at<cv::Vec4f>(0, i);
-		EXPECT_NEAR(cell[0], 2.05f, 1e-4);
-		EXPECT_EQ(cell[2], 1.0f);
-		labelByY[(int)std::lround(cell[1] * 100.0f)] = (int)cell[3];
-	}
-	EXPECT_EQ(labelByY, (std::map<int, int>{{25, 7}, {5, 5}, {-25, 0}}));
-
-	cv::Mat unseen = objects.clone();
-	unseen.at<unsigned char>(3, 2) = 255;
-	cv::merge(std::vector<cv::Mat>{cv::Mat::zeros(4, 3, CV_8UC1), unseen}, labels);
-	data.setLabels(labels);
-	EXPECT_EQ(maker.createObjectCells(data).cols, 2) << "128-255: not seen, the floor-only cell goes";
-
-	// A second object channel makes its own cells from the same points: floor everywhere
-	// but column 1, where it sees object 2 on the floor.
 	const cv::Mat second = (cv::Mat_<unsigned char>(4, 3) <<
 			0, 0, 0,
 			0, 0, 0,
 			0, 0, 0,
 			0, 2, 0);
-	cv::merge(std::vector<cv::Mat>{cv::Mat::zeros(4, 3, CV_8UC1), objects, second}, labels);
+	const CameraModel model(10.0, 10.0, 1.0, 2.0,
+			Transform(0, 0, 0.2f, 0, 0, 0) * CameraModel::opticalRotation(), 0.0, cv::Size(3, 4));
+	SensorData data(cv::Mat(4, 3, CV_8UC3, cv::Scalar::all(0)), depth, model);
+	cv::Mat labels;
+	cv::merge(std::vector<cv::Mat>{floor, objects, second}, labels);
 	data.setLabels(labels);
-	const cv::Mat both = maker.createObjectCells(data);
-	ASSERT_EQ(both.cols, 6);
-	std::map<std::pair<int, int>, int> labelByChannelY;
-	for(int i=0; i<both.cols; ++i)
-	{
-		const cv::Vec4f & cell = both.at<cv::Vec4f>(0, i);
-		labelByChannelY[std::make_pair((int)cell[2], (int)std::lround(cell[1] * 100.0f))] = (int)cell[3];
-	}
-	EXPECT_EQ(labelByChannelY, (std::map<std::pair<int, int>, int>{
-			{{1, 25}, 7}, {{1, 5}, 5}, {{1, -25}, 0}, {{2, 25}, 0}, {{2, 5}, 2}, {{2, -25}, 0}}));
 
-	data.setLabels(objects);
-	EXPECT_TRUE(maker.createObjectCells(data).empty()) << "one channel: no object labels";
+	// Labeler -> the label of each cell at x=2.05 by y (cm): column 0 (y=25), column 1
+	// (y=5), column 2 (y=-25). Too high or without depth: no vote.
+	const auto labelsByY = [&](const LabelRaster & raster, int labeler)
+	{
+		std::vector<cv::Vec2f> nothing;
+		std::vector<cv::Vec3f> labelled;
+		raster.cells(layout, labeler, nothing, labelled);
+		std::map<int, int> byY;
+		for(const cv::Vec2f & cell : nothing)
+		{
+			EXPECT_NEAR(cell[0], 2.05f, 1e-4);
+			byY[(int)std::lround(cell[1] * 100.0f)] = 0;
+		}
+		for(const cv::Vec3f & cell : labelled)
+		{
+			EXPECT_NEAR(cell[0], 2.05f, 1e-4);
+			byY[(int)std::lround(cell[1] * 100.0f)] = (int)cell[2];
+		}
+		return byY;
+	};
+	const LabelRaster raster = maker.createLabelRaster(data);
+	ASSERT_FALSE(raster.empty());
+	EXPECT_EQ(raster.cols(), 1);
+	EXPECT_EQ(raster.rows(), 6) << "y from -0.25 to 0.25 in 0.1 m cells";
+	// The 0.2 m points vote for labels, not for nothing (above Grid/MaxGroundHeight): the
+	// floor labeler's floor (1) at the 0.2 m points of column 0 and 2 is a label.
+	EXPECT_EQ(labelsByY(raster, 0), (std::map<int, int>{{25, 1}, {5, 1}, {-25, 1}}));
+	EXPECT_EQ(labelsByY(raster, 1), (std::map<int, int>{{25, 7}, {5, 5}, {-25, 0}})) << "an object over the floor wins";
+	EXPECT_EQ(labelsByY(raster, 2), (std::map<int, int>{{25, 0}, {5, 2}, {-25, 0}}));
+
+	cv::Mat unseen = objects.clone();
+	unseen.at<unsigned char>(3, 2) = 255;
+	cv::merge(std::vector<cv::Mat>{floor, unseen, second}, labels);
+	data.setLabels(labels);
+	EXPECT_EQ(labelsByY(maker.createLabelRaster(data), 1), (std::map<int, int>{{25, 7}, {5, 5}}))
+			<< "128-255: not judged, the floor-only cell has no vote";
+
+	cv::Mat tooBig = floor.clone();
+	tooBig.setTo(3);
+	cv::merge(std::vector<cv::Mat>{tooBig, objects, second}, labels);
+	data.setLabels(labels);
+	EXPECT_TRUE(labelsByY(maker.createLabelRaster(data), 0).empty()) << "3 needs more than 2 bits: not judged";
+
+	cv::merge(std::vector<cv::Mat>{floor, objects}, labels);
+	data.setLabels(labels);
+	EXPECT_TRUE(maker.createLabelRaster(data).empty()) << "2 channels for 3 labelers";
 }

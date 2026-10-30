@@ -52,6 +52,7 @@ set(corelib_test_sources
 	test_registration.cpp               #Registration.h
 	test_registrationvis.cpp            #RegistrationVis.h
 	test_registrationicp.cpp            #RegistrationIcp.h
+	test_labelraster.cpp                #LabelRaster.h
 	test_localgridmaker.cpp             #LocalGridMaker.h
 	test_graph.cpp                      #Graph.h
 	test_geodeticcoords.cpp             #GeodeticCoords.h

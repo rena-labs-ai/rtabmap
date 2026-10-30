@@ -120,6 +120,7 @@ SET(SRC_FILES
     stereo/StereoSGBM.cpp
     
     GlobalMap.cpp
+    LabelRaster.cpp
     LocalGridMaker.cpp
     LocalGrid.cpp
     global_map/OccupancyGrid.cpp

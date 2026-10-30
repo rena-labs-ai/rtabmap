@@ -54,8 +54,7 @@ DBDriverSqlite3::DBDriverSqlite3(const ParametersMap & parameters) :
 	DBDriver(parameters),
 	_ppDb(0),
 	_version("0.0.0"),
-	_labelCells(false),
-	_objectCells(false),
+	_labelRaster(false),
 	_memoryUsedEstimate(0),
 	_dbInMemory(Parameters::defaultDbSqlite3InMemory()),
 	_cacheSize(Parameters::defaultDbSqlite3CacheSize()),
@@ -445,11 +444,9 @@ bool DBDriverSqlite3::connectDatabaseQuery(const std::string & url, bool overwri
 			return false;
 	}
 
-	// Label and object cells (see Parameters::kGridLabelObstacle() and
-	// Parameters::kGridObjectMaxHeight()) are columns databases made without them lack:
-	// added on open, or left absent (and unused) when read-only.
-	_labelCells = uStrNumCmp(_version, "0.11.10") >= 0 && addDataColumn("label_cells", readOnly);
-	_objectCells = uStrNumCmp(_version, "0.11.10") >= 0 && addDataColumn("object_cells", readOnly);
+	// The label raster (see Parameters::kGridLabelers()) is a column databases made without
+	// it lack: added on open, or left absent (and unused) when read-only.
+	_labelRaster = uStrNumCmp(_version, "0.11.10") >= 0 && addDataColumn("label_raster", readOnly);
 
 	//Set database optimizations
 	this->setCacheSize(_cacheSize); // this will call the SQL
@@ -1386,7 +1383,7 @@ void DBDriverSqlite3::loadNodeDataQuery(std::list<Signature *> & signatures, boo
 				{
 					fields << "ground_cells, obstacle_cells, cell_size, view_point_x, view_point_y, view_point_z";
 				}
-				fields << (_labelCells ? ", label_cells" : "") << (_objectCells ? ", object_cells" : "");
+				fields << (_labelRaster ? ", label_raster" : "");
 			}
 
 			query << "SELECT " << fields.str().c_str() << " "
@@ -1816,8 +1813,7 @@ void DBDriverSqlite3::loadNodeDataQuery(std::list<Signature *> & signatures, boo
 				cv::Mat groundCellsCompressed;
 				cv::Mat obstacleCellsCompressed;
 				cv::Mat emptyCellsCompressed;
-				cv::Mat labelCellsCompressed;
-				cv::Mat objectCellsCompressed;
+				cv::Mat labelRasterCompressed;
 				float cellSize = 0.0f;
 				cv::Point3f viewPoint;
 				if(uStrNumCmp(_version, "0.11.10") >= 0 && occupancyGrid)
@@ -1857,8 +1853,7 @@ void DBDriverSqlite3::loadNodeDataQuery(std::list<Signature *> & signatures, boo
 					viewPoint.y = sqlite3_column_double(ppStmt, index++);
 					viewPoint.z = sqlite3_column_double(ppStmt, index++);
 
-					labelCellsCompressed = _labelCells ? cellsColumn(ppStmt, index++) : cv::Mat();
-					objectCellsCompressed = _objectCells ? cellsColumn(ppStmt, index++) : cv::Mat();
+					labelRasterCompressed = _labelRaster ? cellsColumn(ppStmt, index++) : cv::Mat();
 				}
 
 				if(scan)
@@ -1893,8 +1888,7 @@ void DBDriverSqlite3::loadNodeDataQuery(std::list<Signature *> & signatures, boo
 				if(occupancyGrid)
 				{
 					(*iter)->sensorData().setOccupancyGrid(groundCellsCompressed, obstacleCellsCompressed, emptyCellsCompressed, cellSize, viewPoint);
-					(*iter)->sensorData().setGridLabelCells(labelCellsCompressed);
-					(*iter)->sensorData().setGridObjectCells(objectCellsCompressed);
+					(*iter)->sensorData().setGridLabelRasterCompressed(labelRasterCompressed);
 				}
 
 				rc = sqlite3_step(ppStmt); // next result...
@@ -6482,8 +6476,8 @@ void DBDriverSqlite3::stepScanUpdate(sqlite3_stmt * ppStmt, int nodeId, const La
 std::string DBDriverSqlite3::queryStepSensorData() const
 {
 	std::string query = queryStepSensorDataColumns(_version);
-	const std::string columns = std::string(_labelCells ? ", label_cells" : "") + (_objectCells ? ", object_cells" : "");
-	const std::string values = std::string(_labelCells ? ",?" : "") + (_objectCells ? ",?" : "");
+	const std::string columns = _labelRaster ? ", label_raster" : "";
+	const std::string values = _labelRaster ? ",?" : "";
 	query.replace(query.find(") VALUES("), 9, columns + ") VALUES(");
 	query.replace(query.rfind(");"), 2, values + ");");
 	return query;
@@ -6842,13 +6836,9 @@ void DBDriverSqlite3::stepSensorData(sqlite3_stmt * ppStmt,
 		rc = sqlite3_bind_double(ppStmt, index++, sensorData.gridViewPoint().z);
 		UASSERT_MSG(rc == SQLITE_OK, uFormat("DB error (%s): %s", _version.c_str(), sqlite3_errmsg(_ppDb)).c_str());
 
-		if(_labelCells)
+		if(_labelRaster)
 		{
-			bindCells(ppStmt, index++, sensorData.gridLabelCellsCompressed());
-		}
-		if(_objectCells)
-		{
-			bindCells(ppStmt, index++, sensorData.gridObjectCellsCompressed());
+			bindCells(ppStmt, index++, sensorData.gridLabelRasterCompressed());
 		}
 	}
 

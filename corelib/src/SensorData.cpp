@@ -672,56 +672,26 @@ void SensorData::setOccupancyGrid(
 	_viewPoint = viewPoint;
 }
 
-// Label cells (1×N CV_32FC3) or object cells (1×N CV_32FC4), or their compressed bytes
-// (CV_8UC1, 1 row).
-static void setCells(const cv::Mat & cells, cv::Mat & raw, cv::Mat & compressed)
+void SensorData::setGridLabelRaster(const LabelRaster & raster)
 {
-	raw = cv::Mat();
-	compressed = cv::Mat();
-	if(cells.empty())
+	_labelRasterRaw = raster;
+	_labelRasterCompressed = raster.empty() ? cv::Mat() : compressData2(raster.encode());
+}
+
+void SensorData::setGridLabelRasterCompressed(const cv::Mat & compressed)
+{
+	UASSERT(compressed.empty() || (compressed.type() == CV_8UC1 && compressed.rows == 1));
+	_labelRasterRaw = LabelRaster();
+	_labelRasterCompressed = compressed;
+}
+
+LabelRaster SensorData::gridLabelRaster() const
+{
+	if(!_labelRasterRaw.empty() || _labelRasterCompressed.empty())
 	{
-		return;
+		return _labelRasterRaw;
 	}
-	if(cells.type() == CV_32FC3 || cells.type() == CV_32FC4)
-	{
-		UASSERT(cells.rows == 1);
-		raw = cells;
-		compressed = compressData2(cells);
-	}
-	else
-	{
-		UASSERT(cells.type() == CV_8UC1 && cells.rows == 1);
-		compressed = cells;
-	}
-}
-
-static cv::Mat uncompressedCells(const cv::Mat & raw, const cv::Mat & compressed)
-{
-	if(!raw.empty() || compressed.empty())
-	{
-		return raw;
-	}
-	return rtabmap::uncompressData(compressed);
-}
-
-void SensorData::setGridLabelCells(const cv::Mat & cells)
-{
-	setCells(cells, _labelCellsRaw, _labelCellsCompressed);
-}
-
-cv::Mat SensorData::gridLabelCells() const
-{
-	return uncompressedCells(_labelCellsRaw, _labelCellsCompressed);
-}
-
-void SensorData::setGridObjectCells(const cv::Mat & cells)
-{
-	setCells(cells, _objectCellsRaw, _objectCellsCompressed);
-}
-
-cv::Mat SensorData::gridObjectCells() const
-{
-	return uncompressedCells(_objectCellsRaw, _objectCellsCompressed);
+	return LabelRaster::decode(rtabmap::uncompressData(_labelRasterCompressed));
 }
 
 void SensorData::uncompressData()
@@ -1112,8 +1082,7 @@ void SensorData::clearCompressedData(bool images, bool scan, bool userData, bool
 		_groundCellsCompressed=cv::Mat();
 		_emptyCellsCompressed=cv::Mat();
 		_obstacleCellsCompressed=cv::Mat();
-		_labelCellsCompressed=cv::Mat();
-		_objectCellsCompressed=cv::Mat();
+		_labelRasterCompressed=cv::Mat();
 		
 		if( _groundCellsCompressed.empty()  && _groundCellsRaw.empty() &&
 			_obstacleCellsCompressed.empty()  && _obstacleCellsRaw.empty() &&
@@ -1149,8 +1118,7 @@ void SensorData::clearRawData(bool images, bool scan, bool userData, bool occupa
 		_groundCellsRaw=cv::Mat();
 		_emptyCellsRaw=cv::Mat();
 		_obstacleCellsRaw=cv::Mat();
-		_labelCellsRaw=cv::Mat();
-		_objectCellsRaw=cv::Mat();
+		_labelRasterRaw=LabelRaster();
 
 		if( _groundCellsCompressed.empty()  && _groundCellsRaw.empty() &&
 			_obstacleCellsCompressed.empty()  && _obstacleCellsRaw.empty() &&

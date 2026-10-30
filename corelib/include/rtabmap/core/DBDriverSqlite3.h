@@ -344,8 +344,7 @@ private:
 protected:
 	sqlite3 * _ppDb; ///< Open SQLite connection (null when disconnected)
 	std::string _version; ///< Schema version read from the database
-	bool _labelCells; ///< The Data table has the label_cells column (added on open when writable)
-	bool _objectCells; ///< The Data table has the object_cells column (added on open when writable)
+	bool _labelRaster; ///< The Data table has the label_raster column (added on open when writable)
 
 private:
 	unsigned long _memoryUsedEstimate;

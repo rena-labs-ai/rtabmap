@@ -225,6 +225,22 @@ bool Memory::init(const std::string & dbUrl, bool dbOverwritten, const Parameter
 		{
 			success = true;
 
+			// A map's label rasters are packed by the labelers it was made with.
+			const ParametersMap saved = _dbDriver->getLastParameters();
+			const ParametersMap::const_iterator made = saved.find(Parameters::kGridLabelers());
+			std::string labelers = Parameters::defaultGridLabelers();
+			Parameters::parse(parameters_, Parameters::kGridLabelers(), labelers);
+			if(made != saved.end() && !made->second.empty() && made->second != labelers)
+			{
+				// Closed unsaved, so that this session's labelers never become the map's.
+				_dbDriver->closeConnection(false);
+				delete _dbDriver;
+				_dbDriver = 0;
+				UFATAL("Database \"%s\" was made with %s \"%s\", not \"%s\": its label rasters do not "
+						"read with them. Start a new map, or migrate it.",
+						dbUrl.c_str(), Parameters::kGridLabelers().c_str(), made->second.c_str(), labelers.c_str());
+			}
+
 			// Before 0.23.12 the octave of a keypoint scaled into a decimated image was
 			// moved the wrong way, which changes the pyramid level its descriptor is
 			// taken from. A map filled that way stays self-consistent only if we keep
@@ -5596,7 +5612,7 @@ Signature * Memory::createSignature(const SensorData & inputData, const Transfor
 
 			if(!data.labelsRaw().empty())
 			{
-				UWARN("Labels are not rotated with %s, they are dropped (no label cells).", Parameters::kMemRotateImagesUpsideUp().c_str());
+				UWARN("Labels are not rotated with %s, they are dropped (no label raster).", Parameters::kMemRotateImagesUpsideUp().c_str());
 				data.setLabels(cv::Mat());
 			}
 
@@ -7017,8 +7033,7 @@ Signature * Memory::createSignature(const SensorData & inputData, const Transfor
 			_localMapMaker->createLocalMap(*s, ground, obstacles, empty, viewPoint);
 			cellSize = _localMapMaker->getCellSize();
 			s->sensorData().setOccupancyGrid(ground, obstacles, empty, cellSize, viewPoint);
-			s->sensorData().setGridLabelCells(_localMapMaker->createLabelCells(data));
-			s->sensorData().setGridObjectCells(_localMapMaker->createObjectCells(data));
+			s->sensorData().setGridLabelRaster(_localMapMaker->createLabelRaster(data));
 
 			t = timer.ticks();
 			if(stats) stats->addStatistic(Statistics::kTimingMemOccupancy_grid(), t*1000.0f);
@@ -7032,8 +7047,7 @@ Signature * Memory::createSignature(const SensorData & inputData, const Transfor
 					data.gridEmptyCellsRaw(),
 					data.gridCellSize(),
 					data.gridViewPoint());
-			s->sensorData().setGridLabelCells(data.gridLabelCells());
-			s->sensorData().setGridObjectCells(data.gridObjectCells());
+			s->sensorData().setGridLabelRasterCompressed(data.gridLabelRasterCompressed());
 		}
 	}
 
