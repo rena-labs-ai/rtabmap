@@ -507,3 +507,23 @@ TEST(OccupancyGridTest, LastNodeMapHoldsTheNewestNodePerCell)
 		}
 	}
 }
+
+TEST(ObjectGridTest, TheLiveFrameKeepsTheNodeThatLastObservedACell)
+{
+	LocalGridCache cache;
+	addObjectCell(cache, 1, 0.05f, 0.05f, 3);
+	addObjectCell(cache, 0, 0.05f, 0.05f, 3);
+	addObjectCell(cache, 0, 0.15f, 0.05f, 0);
+	std::map<int, Transform> poses;
+	poses.insert(std::make_pair(0, Transform::getIdentity()));
+	poses.insert(std::make_pair(1, Transform::getIdentity()));
+	ObjectGrid grid(&cache, objectGridParams());
+	grid.update(poses);
+	float xMin = 0.0f, yMin = 0.0f;
+	const cv::Mat map = grid.getMap(xMin, yMin);
+	const cv::Mat nodes = grid.getLastNodeMap(xMin, yMin);
+	ASSERT_EQ(map.size(), cv::Size(2, 1));
+	EXPECT_EQ(map.at<signed char>(0, 0), 3) << "node 1's object, the live frame agreeing";
+	EXPECT_EQ(nodes.at<int>(0, 0), 1) << "still observed by node 1";
+	EXPECT_EQ(map.at<signed char>(0, 1), -1) << "seen by the live frame only: no node observed it";
+}

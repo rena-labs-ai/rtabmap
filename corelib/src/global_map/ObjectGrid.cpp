@@ -131,7 +131,12 @@ void ObjectGrid::assemble(const std::list<std::pair<int, Transform> > & newPoses
 			{
 				return;
 			}
-			cell[2] = pose.first;
+			if(pose.first > 0)
+			{
+				// The live frame (id <= 0) votes but is no node: it neither marks a cell
+				// observed nor replaces the node that last did, as OccupancyGrid.
+				cell[2] = pose.first;
+			}
 			vote(cell, label);
 		});
 	}
