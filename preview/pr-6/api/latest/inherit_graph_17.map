@@ -1,0 +1,13 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="Node000000" href="$classrtabmap_1_1GlobalMap.html" title="Abstract base for assembling per&#45;node LocalGrid data into a global map." alt="" coords="5,104,160,129"/>
+<area shape="rect" id="Node000001" href="$classrtabmap_1_1CloudMap.html" title=" " alt="" coords="224,5,375,31"/>
+<area shape="poly" id="edge21_Node000000_Node000001" title=" " alt="" coords="111,94,155,66,207,40,240,28,241,33,209,44,158,71,114,98"/>
+<area shape="rect" id="Node000002" href="$classrtabmap_1_1GridMap.html" title=" " alt="" coords="229,55,369,80"/>
+<area shape="poly" id="edge22_Node000000_Node000002" title=" " alt="" coords="152,98,242,77,243,83,153,104"/>
+<area shape="rect" id="Node000003" href="$classrtabmap_1_1ObjectGrid.html" title="2D map of object labels, assembled from the nodes&#39; object cells (LocalGridMaker::createObjectCells())..." alt="" coords="222,104,377,129"/>
+<area shape="poly" id="edge23_Node000000_Node000003" title=" " alt="" coords="173,114,222,114,222,119,173,119"/>
+<area shape="rect" id="Node000004" href="$classrtabmap_1_1OccupancyGrid.html" title=" " alt="" coords="208,153,391,179"/>
+<area shape="poly" id="edge24_Node000000_Node000004" title=" " alt="" coords="153,130,243,151,242,156,152,135"/>
+<area shape="rect" id="Node000005" href="$classrtabmap_1_1OctoMap.html" title=" " alt="" coords="228,203,371,228"/>
+<area shape="poly" id="edge25_Node000000_Node000005" title=" " alt="" coords="115,135,158,162,209,188,245,200,243,205,207,192,156,166,112,139"/>
+</map>
