@@ -1295,9 +1295,9 @@ TEST_F(DbDriverFixture, GetNodeDataLoadsLabelAndObjectCells)
 	cv::Mat labelCells(1, 2, CV_32FC3);
 	labelCells.at<cv::Vec3f>(0, 0) = cv::Vec3f(0.05f, 0.05f, 128.0f);
 	labelCells.at<cv::Vec3f>(0, 1) = cv::Vec3f(0.15f, 0.05f, 255.0f);
-	cv::Mat objectCells(1, 2, CV_32FC3);
-	objectCells.at<cv::Vec3f>(0, 0) = cv::Vec3f(0.05f, 0.15f, 3.0f);
-	objectCells.at<cv::Vec3f>(0, 1) = cv::Vec3f(0.15f, 0.15f, 0.0f);
+	cv::Mat objectCells(1, 2, CV_32FC4);
+	objectCells.at<cv::Vec4f>(0, 0) = cv::Vec4f(0.05f, 0.15f, 1.0f, 3.0f);
+	objectCells.at<cv::Vec4f>(0, 1) = cv::Vec4f(0.15f, 0.15f, 2.0f, 0.0f);
 
 	Signature * sig = new Signature(1);
 	attachSensorDataForDatabaseSave(*sig);

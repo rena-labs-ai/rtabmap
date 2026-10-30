@@ -199,7 +199,7 @@ bool labelsOverDepth(const SensorData & data)
 {
 	const cv::Mat & labels = data.labelsRaw();
 	const cv::Mat & depth = data.depthRaw();
-	if(!depth.empty() && !data.cameraModels().empty() && labels.depth() == CV_8U && labels.channels() <= 2 && labels.size() == depth.size())
+	if(!depth.empty() && !data.cameraModels().empty() && labels.depth() == CV_8U && labels.size() == depth.size())
 	{
 		return true;
 	}
@@ -293,7 +293,8 @@ cv::Mat LocalGridMaker::createLabelCells(const SensorData & data) const
 
 cv::Mat LocalGridMaker::createObjectCells(const SensorData & data) const
 {
-	if(data.labelsRaw().channels() != 2 || !labelsOverDepth(data))
+	const int channels = data.labelsRaw().channels();
+	if(channels < 2 || !labelsOverDepth(data))
 	{
 		return cv::Mat();
 	}
@@ -302,26 +303,37 @@ cv::Mat LocalGridMaker::createObjectCells(const SensorData & data) const
 		UWARN("%s must be set for object cells, none made.", Parameters::kGridMaxGroundHeight().c_str());
 		return cv::Mat();
 	}
-	// Per cell, the points of each object label (0: ground without an object).
-	std::map<std::pair<int, int>, std::map<int, int> > points;
+	// Per object channel and cell, the points of each object label (0: ground without an object).
+	std::map<std::pair<int, std::pair<int, int> >, std::map<int, int> > points;
 	forEachLabelledPoint(data, roiRatios_, rangeMin_, rangeMax_, [&](const unsigned char * labels, const cv::Point3f & point)
 	{
-		const int label = labels[1];
-		if(label > 127 || point.z > (label ? objectMaxHeight_ : maxGroundHeight_) ||
-			(minGroundHeight_ != 0.0f && point.z < minGroundHeight_))
+		if(minGroundHeight_ != 0.0f && point.z < minGroundHeight_)
 		{
 			return;
 		}
-		++points[cellOf(point, cellSize_)][label];
+		const std::pair<int, int> cell = cellOf(point, cellSize_);
+		for(int channel=1; channel<channels; ++channel)
+		{
+			const int label = labels[channel];
+			if(label <= 127 && point.z <= (label ? objectMaxHeight_ : maxGroundHeight_))
+			{
+				++points[std::make_pair(channel, cell)][label];
+			}
+		}
 	});
-	std::map<std::pair<int, int>, int> cells;
-	for(const std::pair<const std::pair<int, int>, std::map<int, int> > & cell : points)
+	cv::Mat out(1, (int)points.size(), CV_32FC4);
+	int n = 0;
+	for(const std::pair<const std::pair<int, std::pair<int, int> >, std::map<int, int> > & cell : points)
 	{
 		const std::map<int, int>::const_iterator best = std::max_element(cell.second.upper_bound(0), cell.second.end(),
 				[](const std::pair<const int, int> & a, const std::pair<const int, int> & b) {return a.second < b.second;});
-		cells.insert(std::make_pair(cell.first, best == cell.second.end() ? 0 : best->first));
+		out.at<cv::Vec4f>(0, n++) = cv::Vec4f(
+				(cell.first.second.first + 0.5f) * cellSize_,
+				(cell.first.second.second + 0.5f) * cellSize_,
+				float(cell.first.first),
+				float(best == cell.second.end() ? 0 : best->first));
 	}
-	return cellsMat(cells, cellSize_);
+	return out;
 }
 
 void LocalGridMaker::createLocalMap(

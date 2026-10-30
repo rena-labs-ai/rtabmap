@@ -1602,15 +1602,16 @@ TEST(LocalGridMakerTest, CreateObjectCellsFromObjectLabels)
 
 	// Column 0 (y=0.25): the object 0.2 m up wins over the floor under it; column 1
 	// (y=0.05): an object on the floor; column 2 (y=-0.25): floor only. Too high or
-	// without depth: nothing.
-	ASSERT_EQ(cells.type(), CV_32FC3);
+	// without depth: nothing. All in the first object channel (1).
+	ASSERT_EQ(cells.type(), CV_32FC4);
 	ASSERT_EQ(cells.cols, 3);
 	std::map<int, int> labelByY;
 	for(int i=0; i<cells.cols; ++i)
 	{
-		const cv::Vec3f & cell = cells.at<cv::Vec3f>(0, i);
+		const cv::Vec4f & cell = cells.at<cv::Vec4f>(0, i);
 		EXPECT_NEAR(cell[0], 2.05f, 1e-4);
-		labelByY[(int)std::lround(cell[1] * 100.0f)] = (int)cell[2];
+		EXPECT_EQ(cell[2], 1.0f);
+		labelByY[(int)std::lround(cell[1] * 100.0f)] = (int)cell[3];
 	}
 	EXPECT_EQ(labelByY, (std::map<int, int>{{25, 7}, {5, 5}, {-25, 0}}));
 
@@ -1619,6 +1620,26 @@ TEST(LocalGridMakerTest, CreateObjectCellsFromObjectLabels)
 	cv::merge(std::vector<cv::Mat>{cv::Mat::zeros(4, 3, CV_8UC1), unseen}, labels);
 	data.setLabels(labels);
 	EXPECT_EQ(maker.createObjectCells(data).cols, 2) << "128-255: not seen, the floor-only cell goes";
+
+	// A second object channel makes its own cells from the same points: floor everywhere
+	// but column 1, where it sees object 2 on the floor.
+	const cv::Mat second = (cv::Mat_<unsigned char>(4, 3) <<
+			0, 0, 0,
+			0, 0, 0,
+			0, 0, 0,
+			0, 2, 0);
+	cv::merge(std::vector<cv::Mat>{cv::Mat::zeros(4, 3, CV_8UC1), objects, second}, labels);
+	data.setLabels(labels);
+	const cv::Mat both = maker.createObjectCells(data);
+	ASSERT_EQ(both.cols, 6);
+	std::map<std::pair<int, int>, int> labelByChannelY;
+	for(int i=0; i<both.cols; ++i)
+	{
+		const cv::Vec4f & cell = both.at<cv::Vec4f>(0, i);
+		labelByChannelY[std::make_pair((int)cell[2], (int)std::lround(cell[1] * 100.0f))] = (int)cell[3];
+	}
+	EXPECT_EQ(labelByChannelY, (std::map<std::pair<int, int>, int>{
+			{{1, 25}, 7}, {{1, 5}, 5}, {{1, -25}, 0}, {{2, 25}, 0}, {{2, 5}, 2}, {{2, -25}, 0}}));
 
 	data.setLabels(objects);
 	EXPECT_TRUE(maker.createObjectCells(data).empty()) << "one channel: no object labels";

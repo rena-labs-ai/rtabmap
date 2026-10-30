@@ -672,7 +672,8 @@ void SensorData::setOccupancyGrid(
 	_viewPoint = viewPoint;
 }
 
-// Label or object cells: 1×N CV_32FC3, or their compressed bytes (CV_8UC1, 1 row).
+// Label cells (1×N CV_32FC3) or object cells (1×N CV_32FC4), or their compressed bytes
+// (CV_8UC1, 1 row).
 static void setCells(const cv::Mat & cells, cv::Mat & raw, cv::Mat & compressed)
 {
 	raw = cv::Mat();
@@ -681,7 +682,7 @@ static void setCells(const cv::Mat & cells, cv::Mat & raw, cv::Mat & compressed)
 	{
 		return;
 	}
-	if(cells.type() == CV_32FC3)
+	if(cells.type() == CV_32FC3 || cells.type() == CV_32FC4)
 	{
 		UASSERT(cells.rows == 1);
 		raw = cells;
