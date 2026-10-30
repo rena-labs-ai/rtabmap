@@ -1288,3 +1288,28 @@ TEST_F(DbDriverFixture, ExecuteNoResultRunsWithoutError)
 	EXPECT_NO_THROW(driver_->executeNoResult("PRAGMA synchronous=NORMAL;"));
 	EXPECT_TRUE(driver_->isConnected());
 }
+
+// The label raster has its own Data column, saved and loaded with the grid.
+TEST_F(DbDriverFixture, GetNodeDataLoadsTheLabelRaster)
+{
+	const LabelLayout layout = LabelLayout::parse("floor:2 objects:4 second:10");
+	LabelRaster raster(-3, 20, 0.05f, 2, 3);
+	raster.set(layout, 0, 0, 0, 1);
+	raster.set(layout, 1, 0, 1, 7);
+	raster.set(layout, 2, 1, 2, 300);
+
+	Signature * sig = new Signature(1);
+	attachSensorDataForDatabaseSave(*sig);
+	sig->sensorData().setOccupancyGrid(cv::Mat(), cv::Mat(1, 1, CV_32FC2, cv::Scalar(0.05f, 0.05f)), cv::Mat(), 0.05f, cv::Point3f());
+	sig->sensorData().setGridLabelRaster(raster);
+	saveSignature(sig);
+
+	SensorData data;
+	driver_->getNodeData(1, data, false, false, false, true);
+	const LabelRaster loaded = data.gridLabelRaster();
+	ASSERT_FALSE(loaded.empty());
+	const cv::Mat bytes = raster.encode();
+	EXPECT_EQ(cv::norm(loaded.encode(), bytes, cv::NORM_INF), 0.0);
+	EXPECT_EQ(loaded.label(layout, 2, 1, 2), 300);
+	EXPECT_EQ(loaded.label(layout, 1, 1, 2), -1);
+}

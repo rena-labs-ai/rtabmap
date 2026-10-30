@@ -120,9 +120,11 @@ SET(SRC_FILES
     stereo/StereoSGBM.cpp
     
     GlobalMap.cpp
+    LabelRaster.cpp
     LocalGridMaker.cpp
     LocalGrid.cpp
     global_map/OccupancyGrid.cpp
+    global_map/ObjectGrid.cpp
     global_map/CloudMap.cpp
     
     MarkerDetector.cpp
@@ -836,6 +838,7 @@ IF(CUVSLAM_FOUND)
     SET(LIBRARIES
 		${LIBRARIES}
 		cuvslam::cuvslam
+		CUDA::cudart
 	)
 ENDIF(CUVSLAM_FOUND)
 

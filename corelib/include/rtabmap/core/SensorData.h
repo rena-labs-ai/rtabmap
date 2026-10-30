@@ -44,6 +44,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <rtabmap/core/EnvSensor.h>
 #include <rtabmap/core/Landmark.h>
 #include <rtabmap/core/GlobalDescriptor.h>
+#include <rtabmap/core/LabelRaster.h>
 
 namespace rtabmap
 {
@@ -815,24 +816,24 @@ public:
 	const cv::Mat & gridEmptyCellsCompressed() const {return _emptyCellsCompressed;}
 
 	/**
-	 * @brief Sets per-pixel semantic labels aligned with the depth image (cameras side
-	 * by side, like the depth), CV_8UC1. Input of the local grid only (see
-	 * Parameters::kGridLabelObstacle()): neither compressed nor saved.
+	 * @brief Sets per-pixel labels aligned with the depth image (cameras side by side, like
+	 * the depth), CV_8UC(N), channel i labeler i of Parameters::kGridLabelers(). Input of the
+	 * local grid's label raster only: neither compressed nor saved.
 	 */
 	void setLabels(const cv::Mat & labels) {_labelsRaw = labels;}
 	const cv::Mat & labelsRaw() const {return _labelsRaw;}
 
 	/**
-	 * @brief Sets the local grid's label cells: ground cells whose label is known,
-	 * 1×N `CV_32FC3` (x, y, label) in the robot/base frame, or their compressed
-	 * bytes (`CV_8UC1`, 1 row). Saved with the occupancy grid.
+	 * @brief Sets the local grid's label raster (see LocalGridMaker::createLabelRaster()),
+	 * saved with the occupancy grid.
 	 */
-	void setGridLabelCells(const cv::Mat & cells);
-	const cv::Mat & gridLabelCellsRaw() const {return _labelCellsRaw;}
-	const cv::Mat & gridLabelCellsCompressed() const {return _labelCellsCompressed;}
-	/// @return The label cells, uncompressed if only compressed ones are set.
-	cv::Mat gridLabelCells() const;
-	
+	void setGridLabelRaster(const LabelRaster & raster);
+	/// Sets the label raster as saved: its encoded bytes, compressed (`CV_8UC1`, 1 row).
+	void setGridLabelRasterCompressed(const cv::Mat & compressed);
+	const cv::Mat & gridLabelRasterCompressed() const {return _labelRasterCompressed;}
+	/// @return The label raster, decoded if only its compressed bytes are set.
+	LabelRaster gridLabelRaster() const;
+
 	/**
 	 * @brief Returns the occupancy grid cell size
 	 * @return Cell size in meters
@@ -1074,9 +1075,9 @@ private:
 	cv::Mat _groundCellsRaw; ///< Raw ground cells matrix
 	cv::Mat _obstacleCellsRaw; ///< Raw obstacle cells matrix
 	cv::Mat _emptyCellsRaw; ///< Raw empty cells matrix
-	cv::Mat _labelsRaw; ///< Per-pixel semantic labels aligned with the depth (CV_8UC1)
-	cv::Mat _labelCellsCompressed; ///< Compressed label cells (ZIP-compressed bytes)
-	cv::Mat _labelCellsRaw; ///< Raw label cells (1×N CV_32FC3: x, y, label)
+	cv::Mat _labelsRaw; ///< Per-pixel labels aligned with the depth, CV_8UC(N): one channel per labeler
+	LabelRaster _labelRasterRaw; ///< The local grid's label raster
+	cv::Mat _labelRasterCompressed; ///< Its encoded bytes, compressed (ZIP-compressed bytes)
 	float _cellSize; ///< Occupancy grid cell size in meters
 	cv::Point3f _viewPoint; ///< Occupancy grid viewpoint/origin (3D point)
 

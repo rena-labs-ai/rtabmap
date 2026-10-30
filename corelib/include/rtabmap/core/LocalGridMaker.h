@@ -33,6 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <pcl/pcl_base.h>
 #include <pcl/point_types.h>
 
+#include <rtabmap/core/LabelRaster.h>
 #include <rtabmap/core/Transform.h>
 #include <rtabmap/core/Parameters.h>
 #include <rtabmap/core/Signature.h>
@@ -105,14 +106,18 @@ public:
 			pcl::IndicesPtr * flatObstacles = 0) const; // output cloud indices
 
 	/**
-	 * @brief The label cells of @p data: ground points (`Grid/MinGroundHeight` to
-	 * `Grid/MaxGroundHeight`, within `Grid/RangeMin`/`Grid/RangeMax` depth) whose label
-	 * in @p data's labels is `Grid/LabelObstacle` or `Grid/LabelFloor`, one per cell,
-	 * obstacle winning: knowledge of low obstacles that height alone cannot give.
-	 * @return 1×N `CV_32FC3` (x, y, label) in the robot/base frame; empty when the
-	 * labels are disabled, absent or do not match the depth image.
+	 * @brief The label raster of @p data (see @ref LabelRaster): every labeler's label per
+	 * cell, from @p data's labels (channel i is labeler i of `Grid/Labelers`), within
+	 * `Grid/RangeMin`/`Grid/RangeMax` depth. Per labeler, a point labelled up to
+	 * `Grid/ObjectMaxHeight` votes for its label, a ground point (`Grid/MinGroundHeight` to
+	 * `Grid/MaxGroundHeight`) labelled 0 for seen with nothing there; a label above the
+	 * labeler's field or 127 is not judged. One label per labeler and cell: the one with the
+	 * most points, 0 when no other has any.
+	 * @return Empty when no labelers are set, or the labels are absent or do not match the
+	 * depth image or the labelers.
 	 */
-	cv::Mat createLabelCells(const SensorData & data) const;
+	LabelRaster createLabelRaster(const SensorData & data) const;
+	const LabelLayout & labelLayout() const {return labelLayout_;}
 
 	/**
 	 * @brief Creates a local grid from a @ref Signature's laser scan or depth data.
@@ -209,8 +214,8 @@ protected:
 	int noiseFilteringMinNeighbors_;
 	bool scan2dUnknownSpaceFilled_;
 	bool rayTracing_;
-	int labelObstacle_;
-	int labelFloor_;
+	float objectMaxHeight_;
+	LabelLayout labelLayout_;
 };
 
 } /* namespace rtabmap */

@@ -37,6 +37,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cstdint>
 #include <exception>
 #include <limits>
+#include <mutex>
+#include <stdexcept>
+#include <string>
 #include <utility>
 #include <vector>
 
@@ -49,6 +52,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <Eigen/Eigenvalues>
 #include <cuvslam/cuvslam2.h>
+#include <cuvslam/cuvslam_gpu.h>
+#include <cuda_runtime.h>
 #include <opencv2/imgproc.hpp>
 #endif
 
@@ -90,6 +95,43 @@ using Vector6d = Eigen::Matrix<double, 6, 1>;
 
 constexpr int kSupportedCuVSLAMMajorVersion = 17;
 constexpr int kMaxConsecutiveTrackingFailures = 10;
+
+// Hands cuVSLAM streams at the device's highest priority, so the GPU
+// scheduler runs odometry kernels ahead of default-priority work.
+class HighPriorityStreamProvider : public cuvslam::ICudaStreamProvider
+{
+public:
+	cudaStream_t acquire(StreamType) override
+	{
+		int least = 0;
+		int greatest = 0;
+		check(cudaDeviceGetStreamPriorityRange(&least, &greatest), "cudaDeviceGetStreamPriorityRange");
+		cudaStream_t stream = nullptr;
+		check(cudaStreamCreateWithPriority(&stream, cudaStreamDefault, greatest), "cudaStreamCreateWithPriority");
+		return stream;
+	}
+
+	void release(cudaStream_t stream, StreamType) override
+	{
+		cudaStreamDestroy(stream);
+	}
+
+private:
+	static void check(cudaError_t error, const char * call)
+	{
+		if(error != cudaSuccess)
+		{
+			throw std::runtime_error(std::string(call) + ": " + cudaGetErrorString(error));
+		}
+	}
+};
+
+void useHighPriorityStreams()
+{
+	static HighPriorityStreamProvider provider;
+	static std::once_flag registered;
+	std::call_once(registered, [] { cuvslam::RegisterCudaStreamProvider(&provider); });
+}
 
 cv::Mat highCovariance()
 {
@@ -759,6 +801,14 @@ OdometryCuVSLAM::OdometryCuVSLAM(const ParametersMap & parameters) : Odometry(pa
 	Parameters::parse(parameters, Parameters::kOdomCuVSLAMImuAccelRandomWalk(), impl_->imuAccelRandomWalk);
 	Parameters::parse(parameters, Parameters::kOdomCuVSLAMImuFrequency(), impl_->imuFrequency);
 	UINFO("%s=%s", Parameters::kOdomCuVSLAMImuFusion().c_str(), impl_->imuFusion ? "true" : "false");
+	bool highPriorityStreams = Parameters::defaultOdomCuVSLAMHighPriorityStreams();
+	Parameters::parse(parameters, Parameters::kOdomCuVSLAMHighPriorityStreams(), highPriorityStreams);
+	if(highPriorityStreams)
+	{
+		// Before the first tracker exists: cuVSLAM takes its streams from the provider then.
+		useHighPriorityStreams();
+	}
+	UINFO("%s=%s", Parameters::kOdomCuVSLAMHighPriorityStreams().c_str(), highPriorityStreams ? "true" : "false");
 #endif
 }
 
