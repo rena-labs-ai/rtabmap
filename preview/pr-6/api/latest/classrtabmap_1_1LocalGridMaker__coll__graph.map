@@ -1,0 +1,5 @@
+<map id="rtabmap::LocalGridMaker" name="rtabmap::LocalGridMaker">
+<area shape="rect" id="Node000001" title="Builds per&#45;node local occupancy grids from laser scans or depth clouds." alt="" coords="5,93,192,119"/>
+<area shape="rect" id="Node000002" href="$classrtabmap_1_1LabelLayout.html" title="The labelers of a labels image and the bits each has in a cell&#39;s 16&#45;bit word (Parameters::kGridLabele..." alt="" coords="17,5,181,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="101,45,101,93,96,93,96,45"/>
+</map>

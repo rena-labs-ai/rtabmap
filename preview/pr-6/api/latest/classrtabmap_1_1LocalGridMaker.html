@@ -110,6 +110,16 @@ $(document).ready(function(){initNavTree('classrtabmap_1_1LocalGridMaker.html','
  <a href="classrtabmap_1_1LocalGridMaker.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>&gt;</code></p>
+<div class="dynheader">
+Collaboration diagram for rtabmap::LocalGridMaker:</div>
+<div class="dyncontent">
+<div class="center"><img src="classrtabmap_1_1LocalGridMaker__coll__graph.png" border="0" usemap="#artabmap_1_1LocalGridMaker_coll__map" alt="Collaboration graph"/></div>
+<map name="artabmap_1_1LocalGridMaker_coll__map" id="artabmap_1_1LocalGridMaker_coll__map">
+<area shape="rect" title="Builds per&#45;node local occupancy grids from laser scans or depth clouds." alt="" coords="5,93,192,119"/>
+<area shape="rect" href="classrtabmap_1_1LabelLayout.html" title="The labelers of a labels image and the bits each has in a cell&#39;s 16&#45;bit word (Parameters::kGridLabele..." alt="" coords="17,5,181,31"/>
+<area shape="poly" title=" " alt="" coords="101,45,101,93,96,93,96,45"/>
+</map>
+<center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -131,12 +141,11 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>parseParamete
 <tr class="memitem:ad54b92f6d04b76a550483a7a68f45bda"><td class="memTemplItemLeft" align="right" valign="top">pcl::PointCloud&lt; PointT &gt;::Ptr&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classrtabmap_1_1LocalGridMaker.html#ad54b92f6d04b76a550483a7a68f45bda">segmentCloud</a> (const typename pcl::PointCloud&lt; PointT &gt;::Ptr &amp;cloud, const pcl::IndicesPtr &amp;indices, const <a class="el" href="classrtabmap_1_1Transform.html">Transform</a> &amp;pose, const cv::Point3f &amp;viewPoint, pcl::IndicesPtr &amp;groundIndices, pcl::IndicesPtr &amp;obstaclesIndices, pcl::IndicesPtr *flatObstacles=0) const</td></tr>
 <tr class="memdesc:ad54b92f6d04b76a550483a7a68f45bda"><td class="mdescLeft">&#160;</td><td class="mdescRight">Segments a point cloud into ground and obstacle indices.  <br /></td></tr>
 <tr class="separator:ad54b92f6d04b76a550483a7a68f45bda"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a848ce43f312b96bb4bbf5ed0283d08fc" id="r_a848ce43f312b96bb4bbf5ed0283d08fc"><td class="memItemLeft" align="right" valign="top">cv::Mat&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrtabmap_1_1LocalGridMaker.html#a848ce43f312b96bb4bbf5ed0283d08fc">createLabelCells</a> (const <a class="el" href="classrtabmap_1_1SensorData.html">SensorData</a> &amp;data) const</td></tr>
-<tr class="memdesc:a848ce43f312b96bb4bbf5ed0283d08fc"><td class="mdescLeft">&#160;</td><td class="mdescRight">The label cells of <code>data:</code> ground points (<code>Grid/MinGroundHeight</code> to <code>Grid/MaxGroundHeight</code>, within <code>Grid/RangeMin</code>/<code>Grid/RangeMax</code> depth) whose label in <code>data's</code> labels is <code>Grid/LabelObstacle</code> or <code>Grid/LabelFloor</code>, one per cell, obstacle winning: knowledge of low obstacles that height alone cannot give.  <br /></td></tr>
-<tr class="separator:a848ce43f312b96bb4bbf5ed0283d08fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a21d861413578f6d99db6f3c334224ed5" id="r_a21d861413578f6d99db6f3c334224ed5"><td class="memItemLeft" align="right" valign="top">cv::Mat&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrtabmap_1_1LocalGridMaker.html#a21d861413578f6d99db6f3c334224ed5">createObjectCells</a> (const <a class="el" href="classrtabmap_1_1SensorData.html">SensorData</a> &amp;data) const</td></tr>
-<tr class="memdesc:a21d861413578f6d99db6f3c334224ed5"><td class="mdescLeft">&#160;</td><td class="mdescRight">The object cells of <code>data</code> (see <a class="el" href="classrtabmap_1_1ObjectGrid.html">ObjectGrid</a>), from each object channel of <code>data's</code> labels (every channel after the first), within <code>Grid/RangeMin</code>/<code>Grid/RangeMax</code> depth: per channel, a point labelled with an object up to <code>Grid/ObjectMaxHeight</code> is a hit of that object, a ground point (<code>Grid/MinGroundHeight</code> to <code>Grid/MaxGroundHeight</code>) labelled with none (0) a miss; 128-255 is not seen, neither. One per channel and cell: the object with the most points, ground when it has none.  <br /></td></tr>
-<tr class="separator:a21d861413578f6d99db6f3c334224ed5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a25e8238d722bc028cc1469a420f1091c" id="r_a25e8238d722bc028cc1469a420f1091c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classrtabmap_1_1LabelRaster.html">LabelRaster</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrtabmap_1_1LocalGridMaker.html#a25e8238d722bc028cc1469a420f1091c">createLabelRaster</a> (const <a class="el" href="classrtabmap_1_1SensorData.html">SensorData</a> &amp;data) const</td></tr>
+<tr class="memdesc:a25e8238d722bc028cc1469a420f1091c"><td class="mdescLeft">&#160;</td><td class="mdescRight">The label raster of <code>data</code> (see <a class="el" href="classrtabmap_1_1LabelRaster.html">LabelRaster</a>): every labeler's label per cell, from <code>data's</code> labels (channel i is labeler i of <code>Grid/Labelers</code>), within <code>Grid/RangeMin</code>/<code>Grid/RangeMax</code> depth. Per labeler, a point labelled up to <code>Grid/ObjectMaxHeight</code> votes for its label, a ground point (<code>Grid/MinGroundHeight</code> to <code>Grid/MaxGroundHeight</code>) labelled 0 for seen with nothing there; a label above the labeler's field or 127 is not judged. One label per labeler and cell: the one with the most points, 0 when no other has any.  <br /></td></tr>
+<tr class="separator:a25e8238d722bc028cc1469a420f1091c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad21c1e3d472414e17b4e7a6da6903f03" id="r_ad21c1e3d472414e17b4e7a6da6903f03"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classrtabmap_1_1LabelLayout.html">LabelLayout</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrtabmap_1_1LocalGridMaker.html#ad21c1e3d472414e17b4e7a6da6903f03">labelLayout</a> () const</td></tr>
+<tr class="separator:ad21c1e3d472414e17b4e7a6da6903f03"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a97d17a585226dcffe580406736e00117" id="r_a97d17a585226dcffe580406736e00117"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrtabmap_1_1LocalGridMaker.html#a97d17a585226dcffe580406736e00117">createLocalMap</a> (const <a class="el" href="classrtabmap_1_1Signature.html">Signature</a> &amp;node, cv::Mat &amp;groundCells, cv::Mat &amp;obstacleCells, cv::Mat &amp;emptyCells, cv::Point3f &amp;viewPoint)</td></tr>
 <tr class="memdesc:a97d17a585226dcffe580406736e00117"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a local grid from a <a class="el" href="classrtabmap_1_1Signature.html">Signature</a>'s laser scan or depth data.  <br /></td></tr>
 <tr class="separator:a97d17a585226dcffe580406736e00117"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -204,12 +213,10 @@ Protected Attributes</h2></td></tr>
 <tr class="separator:a4cf44341f8a24a7ddacd21d5f8c41379"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad59c93ac4c1ca5a74e4fd87a647a7eb2" id="r_ad59c93ac4c1ca5a74e4fd87a647a7eb2"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrtabmap_1_1LocalGridMaker.html#ad59c93ac4c1ca5a74e4fd87a647a7eb2">rayTracing_</a></td></tr>
 <tr class="separator:ad59c93ac4c1ca5a74e4fd87a647a7eb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a79440f056775a3ad449f0c15a094c27d" id="r_a79440f056775a3ad449f0c15a094c27d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrtabmap_1_1LocalGridMaker.html#a79440f056775a3ad449f0c15a094c27d">labelObstacle_</a></td></tr>
-<tr class="separator:a79440f056775a3ad449f0c15a094c27d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad0aa42e6d5b6bcf73bc3ca6eaa6bd22d" id="r_ad0aa42e6d5b6bcf73bc3ca6eaa6bd22d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrtabmap_1_1LocalGridMaker.html#ad0aa42e6d5b6bcf73bc3ca6eaa6bd22d">labelFloor_</a></td></tr>
-<tr class="separator:ad0aa42e6d5b6bcf73bc3ca6eaa6bd22d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0033bbff41cb00698db079af1ed5bd90" id="r_a0033bbff41cb00698db079af1ed5bd90"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrtabmap_1_1LocalGridMaker.html#a0033bbff41cb00698db079af1ed5bd90">objectMaxHeight_</a></td></tr>
 <tr class="separator:a0033bbff41cb00698db079af1ed5bd90"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2cb7b5bce8ae422bc3077ff0f03c560e" id="r_a2cb7b5bce8ae422bc3077ff0f03c560e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classrtabmap_1_1LabelLayout.html">LabelLayout</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrtabmap_1_1LocalGridMaker.html#a2cb7b5bce8ae422bc3077ff0f03c560e">labelLayout_</a></td></tr>
+<tr class="separator:a2cb7b5bce8ae422bc3077ff0f03c560e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Builds per-node local occupancy grids from laser scans or depth clouds. </p>
@@ -225,7 +232,7 @@ Protected Attributes</h2></td></tr>
 <dd>
 <a class="el" href="classrtabmap_1_1Memory.html" title="Three-tiered memory management (STM, WM, LTM) for RTAB-Map.">Memory</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00064">64</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00065">65</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a305865c8f98b498b13a35ef0b790f926" name="a305865c8f98b498b13a35ef0b790f926"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a305865c8f98b498b13a35ef0b790f926">&#9670;&#160;</a></span>getCellSize()</h2>
@@ -251,7 +258,7 @@ Protected Attributes</h2></td></tr>
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd>Current <code>Grid/CellSize</code> (m). </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00075">75</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00076">76</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
 
 </div>
 </div>
@@ -279,7 +286,7 @@ Protected Attributes</h2></td></tr>
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd>True if occupancy is built from depth (<code>Grid/Sensor</code> is 1 or 2). </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00077">77</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00078">78</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
 
 </div>
 </div>
@@ -307,7 +314,7 @@ Protected Attributes</h2></td></tr>
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd>True if <code>Grid/MapFrameProjection</code> is enabled. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00079">79</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00080">80</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
 
 </div>
 </div>
@@ -389,14 +396,14 @@ template&lt;typename PointT &gt; </div>
 
 </div>
 </div>
-<a id="a848ce43f312b96bb4bbf5ed0283d08fc" name="a848ce43f312b96bb4bbf5ed0283d08fc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a848ce43f312b96bb4bbf5ed0283d08fc">&#9670;&#160;</a></span>createLabelCells()</h2>
+<a id="a25e8238d722bc028cc1469a420f1091c" name="a25e8238d722bc028cc1469a420f1091c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a25e8238d722bc028cc1469a420f1091c">&#9670;&#160;</a></span>createLabelRaster()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">cv::Mat rtabmap::LocalGridMaker::createLabelCells </td>
+          <td class="memname"><a class="el" href="classrtabmap_1_1LabelRaster.html">LabelRaster</a> rtabmap::LocalGridMaker::createLabelRaster </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classrtabmap_1_1SensorData.html">SensorData</a> &amp;&#160;</td>
           <td class="paramname"><em>data</em></td><td>)</td>
@@ -405,29 +412,35 @@ template&lt;typename PointT &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>The label cells of <code>data:</code> ground points (<code>Grid/MinGroundHeight</code> to <code>Grid/MaxGroundHeight</code>, within <code>Grid/RangeMin</code>/<code>Grid/RangeMax</code> depth) whose label in <code>data's</code> labels is <code>Grid/LabelObstacle</code> or <code>Grid/LabelFloor</code>, one per cell, obstacle winning: knowledge of low obstacles that height alone cannot give. </p>
-<dl class="section return"><dt>Returns</dt><dd>1×N <code>CV_32FC3</code> (x, y, label) in the robot/base frame; empty when the labels are disabled, absent or do not match the depth image. </dd></dl>
+<p>The label raster of <code>data</code> (see <a class="el" href="classrtabmap_1_1LabelRaster.html">LabelRaster</a>): every labeler's label per cell, from <code>data's</code> labels (channel i is labeler i of <code>Grid/Labelers</code>), within <code>Grid/RangeMin</code>/<code>Grid/RangeMax</code> depth. Per labeler, a point labelled up to <code>Grid/ObjectMaxHeight</code> votes for its label, a ground point (<code>Grid/MinGroundHeight</code> to <code>Grid/MaxGroundHeight</code>) labelled 0 for seen with nothing there; a label above the labeler's field or 127 is not judged. One label per labeler and cell: the one with the most points, 0 when no other has any. </p>
+<dl class="section return"><dt>Returns</dt><dd>Empty when no labelers are set, or the labels are absent or do not match the depth image or the labelers. </dd></dl>
 
 </div>
 </div>
-<a id="a21d861413578f6d99db6f3c334224ed5" name="a21d861413578f6d99db6f3c334224ed5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a21d861413578f6d99db6f3c334224ed5">&#9670;&#160;</a></span>createObjectCells()</h2>
+<a id="ad21c1e3d472414e17b4e7a6da6903f03" name="ad21c1e3d472414e17b4e7a6da6903f03"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad21c1e3d472414e17b4e7a6da6903f03">&#9670;&#160;</a></span>labelLayout()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">cv::Mat rtabmap::LocalGridMaker::createObjectCells </td>
+          <td class="memname">const <a class="el" href="classrtabmap_1_1LabelLayout.html">LabelLayout</a> &amp; rtabmap::LocalGridMaker::labelLayout </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classrtabmap_1_1SensorData.html">SensorData</a> &amp;&#160;</td>
-          <td class="paramname"><em>data</em></td><td>)</td>
+          <td class="paramname"></td><td>)</td>
           <td> const</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
-<p>The object cells of <code>data</code> (see <a class="el" href="classrtabmap_1_1ObjectGrid.html">ObjectGrid</a>), from each object channel of <code>data's</code> labels (every channel after the first), within <code>Grid/RangeMin</code>/<code>Grid/RangeMax</code> depth: per channel, a point labelled with an object up to <code>Grid/ObjectMaxHeight</code> is a hit of that object, a ground point (<code>Grid/MinGroundHeight</code> to <code>Grid/MaxGroundHeight</code>) labelled with none (0) a miss; 128-255 is not seen, neither. One per channel and cell: the object with the most points, ground when it has none. </p>
-<dl class="section return"><dt>Returns</dt><dd>1×N <code>CV_32FC4</code> (x, y, channel, object label or 0) in the robot/base frame, the channel 1 for the labels' second; empty when the labels have no object channel or do not match the depth image. </dd></dl>
+<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00120">120</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
 
 </div>
 </div>
@@ -579,7 +592,7 @@ template&lt;typename PointT &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00195">195</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00187">187</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
 
 </div>
 </div>
@@ -603,7 +616,7 @@ template&lt;typename PointT &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00197">197</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00189">189</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
 
 </div>
 </div>
@@ -627,7 +640,7 @@ template&lt;typename PointT &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00198">198</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00190">190</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
 
 </div>
 </div>
@@ -651,7 +664,7 @@ template&lt;typename PointT &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00199">199</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00191">191</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
 
 </div>
 </div>
@@ -675,7 +688,7 @@ template&lt;typename PointT &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00200">200</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00192">192</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
 
 </div>
 </div>
@@ -699,7 +712,7 @@ template&lt;typename PointT &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00201">201</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00193">193</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
 
 </div>
 </div>
@@ -723,7 +736,7 @@ template&lt;typename PointT &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00202">202</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00194">194</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
 
 </div>
 </div>
@@ -747,7 +760,7 @@ template&lt;typename PointT &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00203">203</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00195">195</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
 
 </div>
 </div>
@@ -771,7 +784,7 @@ template&lt;typename PointT &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00204">204</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00196">196</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
 
 </div>
 </div>
@@ -795,7 +808,7 @@ template&lt;typename PointT &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00205">205</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00197">197</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
 
 </div>
 </div>
@@ -819,7 +832,7 @@ template&lt;typename PointT &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00206">206</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00198">198</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
 
 </div>
 </div>
@@ -843,7 +856,7 @@ template&lt;typename PointT &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00207">207</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00199">199</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
 
 </div>
 </div>
@@ -867,7 +880,7 @@ template&lt;typename PointT &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00208">208</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00200">200</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
 
 </div>
 </div>
@@ -891,7 +904,7 @@ template&lt;typename PointT &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00209">209</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00201">201</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
 
 </div>
 </div>
@@ -915,7 +928,7 @@ template&lt;typename PointT &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00210">210</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00202">202</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
 
 </div>
 </div>
@@ -939,7 +952,7 @@ template&lt;typename PointT &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00211">211</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00203">203</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
 
 </div>
 </div>
@@ -963,7 +976,7 @@ template&lt;typename PointT &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00212">212</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00204">204</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
 
 </div>
 </div>
@@ -987,7 +1000,7 @@ template&lt;typename PointT &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00213">213</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00205">205</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
 
 </div>
 </div>
@@ -1011,7 +1024,7 @@ template&lt;typename PointT &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00214">214</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00206">206</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
 
 </div>
 </div>
@@ -1035,7 +1048,7 @@ template&lt;typename PointT &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00215">215</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00207">207</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
 
 </div>
 </div>
@@ -1059,7 +1072,7 @@ template&lt;typename PointT &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00216">216</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00208">208</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
 
 </div>
 </div>
@@ -1083,7 +1096,7 @@ template&lt;typename PointT &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00217">217</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00209">209</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
 
 </div>
 </div>
@@ -1107,7 +1120,7 @@ template&lt;typename PointT &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00218">218</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00210">210</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
 
 </div>
 </div>
@@ -1131,7 +1144,7 @@ template&lt;typename PointT &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00219">219</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00211">211</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
 
 </div>
 </div>
@@ -1155,7 +1168,7 @@ template&lt;typename PointT &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00220">220</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00212">212</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
 
 </div>
 </div>
@@ -1179,7 +1192,7 @@ template&lt;typename PointT &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00221">221</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00213">213</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
 
 </div>
 </div>
@@ -1203,7 +1216,7 @@ template&lt;typename PointT &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00222">222</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00214">214</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
 
 </div>
 </div>
@@ -1227,7 +1240,7 @@ template&lt;typename PointT &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00223">223</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00215">215</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
 
 </div>
 </div>
@@ -1251,55 +1264,7 @@ template&lt;typename PointT &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00224">224</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
-
-</div>
-</div>
-<a id="a79440f056775a3ad449f0c15a094c27d" name="a79440f056775a3ad449f0c15a094c27d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a79440f056775a3ad449f0c15a094c27d">&#9670;&#160;</a></span>labelObstacle_</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">int rtabmap::LocalGridMaker::labelObstacle_</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00225">225</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
-
-</div>
-</div>
-<a id="ad0aa42e6d5b6bcf73bc3ca6eaa6bd22d" name="ad0aa42e6d5b6bcf73bc3ca6eaa6bd22d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad0aa42e6d5b6bcf73bc3ca6eaa6bd22d">&#9670;&#160;</a></span>labelFloor_</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">int rtabmap::LocalGridMaker::labelFloor_</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00226">226</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00216">216</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
 
 </div>
 </div>
@@ -1323,7 +1288,31 @@ template&lt;typename PointT &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00227">227</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00217">217</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
+
+</div>
+</div>
+<a id="a2cb7b5bce8ae422bc3077ff0f03c560e" name="a2cb7b5bce8ae422bc3077ff0f03c560e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2cb7b5bce8ae422bc3077ff0f03c560e">&#9670;&#160;</a></span>labelLayout_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classrtabmap_1_1LabelLayout.html">LabelLayout</a> rtabmap::LocalGridMaker::labelLayout_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="LocalGridMaker_8h_source.html#l00218">218</a> of file <a class="el" href="LocalGridMaker_8h_source.html">LocalGridMaker.h</a>.</p>
 
 </div>
 </div>

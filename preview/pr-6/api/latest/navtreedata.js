@@ -127,22 +127,22 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "BayesFilter_8h_source.html",
-"UStl_8h.html#ab1862437019327ce8419569e3c2ea90f",
+"UStl_8h.html#aa8bd447989a2ac6dbd4537cabdb9b8a2",
 "classrtabmap_1_1BayesFilter.html#a60ad13fd18ac4e595359f3c86c430a80",
 "classrtabmap_1_1CameraStereoZed.html#a80088853404d1c4e89b5f29933d7b020",
-"classrtabmap_1_1FeatureBA.html#a7db630b2f418b05d2fbd772d1caadf48",
-"classrtabmap_1_1LaserScan.html#a38f5602d1411c204d54be9b3c7320007a09e67f9495016103a162854b8e852bbc",
-"classrtabmap_1_1Memory.html#a634e2fdc0e1c93a2cb01f07c9cbac33f",
-"classrtabmap_1_1OdometryEvent.html#aaf1fc834b6016a79b28883d20f336020",
-"classrtabmap_1_1Optimizer.html#a93fb09dac068e64de000f692bcb8216f",
-"classrtabmap_1_1Rtabmap.html#a5d18002c7eb7cee234471686413d201c",
-"classrtabmap_1_1SensorCapture.html#a7830e571e45752f9d8f30fa806f6aa64",
-"classrtabmap_1_1SensorData.html#ac2bae4f0747795f778275102b4ebf1b3",
-"classrtabmap_1_1Statistics.html#a8c1e9a5c04232909f62447656d6bcbce",
-"classrtabmap_1_1Transform.html#aa68c9c3b75ad7b66ca8bbf66742b0cc5",
-"functions_k.html",
-"index.html",
-"pages.html"
+"classrtabmap_1_1FeatureBA.html#a8db953b6f93249d5c28c25073cd4e095",
+"classrtabmap_1_1Landmark.html#ac6bfc77e153b0877c4c1cc3d97327a88",
+"classrtabmap_1_1Memory.html#a5058d8b44e4f76f1fedb76645087a1ac",
+"classrtabmap_1_1OdometryEvent.html",
+"classrtabmap_1_1Optimizer.html#a32f53d408ef0372c5c196ee89ff5ad79",
+"classrtabmap_1_1Rtabmap.html#a4d1e329f0c0fcc341d14f6853ec86750",
+"classrtabmap_1_1SensorCapture.html",
+"classrtabmap_1_1SensorData.html#ab3c515b23322cd31c3fcbcb054588e43",
+"classrtabmap_1_1Statistics.html#a747aee7cd90f8318de6d0b82bedcd971",
+"classrtabmap_1_1Transform.html#a82b851897ce2ca729d62fb92dcc48b9f",
+"functions_func_u.html",
+"group__VoxelFiltering.html#ga8fce5075a28203045c3865b1d068c084",
+"namespacertabmap_1_1util3d.html#aee34b5fe56014a9fa058fbdbf90cab71"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

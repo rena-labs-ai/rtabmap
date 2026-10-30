@@ -10,6 +10,5 @@ var classrtabmap_1_1DBDriverSqlite3 =
     [ "setTempStore", "classrtabmap_1_1DBDriverSqlite3.html#a8f4adea749a2d30340715002056f9062", null ],
     [ "_ppDb", "classrtabmap_1_1DBDriverSqlite3.html#a073748d5c4dac2e01966147c022ea943", null ],
     [ "_version", "classrtabmap_1_1DBDriverSqlite3.html#a0aa18124e40d2ac53e0e1b450d7399b8", null ],
-    [ "_labelCells", "classrtabmap_1_1DBDriverSqlite3.html#aef058b1205efb23e1153bdce730b4874", null ],
-    [ "_objectCells", "classrtabmap_1_1DBDriverSqlite3.html#a0ed259b7007c3cac8d5d930310ff7d56", null ]
+    [ "_labelRaster", "classrtabmap_1_1DBDriverSqlite3.html#a8515f06c73a5b8562db5b299b008f6c3", null ]
 ];

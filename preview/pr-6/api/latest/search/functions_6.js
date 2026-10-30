@@ -99,7 +99,7 @@ var searchData=
   ['getminmax3d_96',['getminmax3d',['../namespacertabmap_1_1util3d.html#ad857475644e8de6d7d84b920637b2018',1,'rtabmap::util3d::getMinMax3D(const cv::Mat &amp;laserScan, cv::Point3f &amp;min, cv::Point3f &amp;max)'],['../namespacertabmap_1_1util3d.html#afc22f82c00f6dcc8a4ec1963891f4b7e',1,'rtabmap::util3d::getMinMax3D(const cv::Mat &amp;laserScan, pcl::PointXYZ &amp;min, pcl::PointXYZ &amp;max)']]],
   ['getminvisualcorrespondences_97',['getMinVisualCorrespondences',['../classrtabmap_1_1Registration.html#abc02df4842af900fbb5da75b8e5318e0',1,'rtabmap::Registration']]],
   ['getmsg_98',['getMsg',['../classULogEvent.html#a460976b037ecf8357fc3fa3f613e5817',1,'ULogEvent']]],
-  ['getname_99',['getname',['../classUFile.html#af7e7f5995b05cda098037ca1cdcd63f4',1,'UFile::getName()'],['../classUFile.html#a3e7905705a69b747e1ed6b6e37b19f3f',1,'UFile::getName(const std::string &amp;filePath)']]],
+  ['getname_99',['getname',['../classUFile.html#a3e7905705a69b747e1ed6b6e37b19f3f',1,'UFile::getName(const std::string &amp;filePath)'],['../classUFile.html#af7e7f5995b05cda098037ca1cdcd63f4',1,'UFile::getName()']]],
   ['getneighborlinks_100',['getNeighborLinks',['../classrtabmap_1_1Memory.html#a172f0d3046c0b7d6b37cdf11af153bee',1,'rtabmap::Memory']]],
   ['getneighborsid_101',['getNeighborsId',['../classrtabmap_1_1Memory.html#a521305f39adcdfbedebbe5bdae9efbc6',1,'rtabmap::Memory']]],
   ['getneighborsidradius_102',['getNeighborsIdRadius',['../classrtabmap_1_1Memory.html#a10c44ee8a5d84480b41aa4980665d894',1,'rtabmap::Memory']]],
@@ -205,10 +205,9 @@ var searchData=
   ['gridemptycellsraw_202',['gridEmptyCellsRaw',['../classrtabmap_1_1SensorData.html#a490e96f3f1d16cc559b3a004e2ec4fbe',1,'rtabmap::SensorData']]],
   ['gridgroundcellscompressed_203',['gridGroundCellsCompressed',['../classrtabmap_1_1SensorData.html#ab3c515b23322cd31c3fcbcb054588e43',1,'rtabmap::SensorData']]],
   ['gridgroundcellsraw_204',['gridGroundCellsRaw',['../classrtabmap_1_1SensorData.html#a2db9b9dbbe3d0943a47cdc4a5a9051d4',1,'rtabmap::SensorData']]],
-  ['gridlabelcells_205',['gridLabelCells',['../classrtabmap_1_1SensorData.html#a61b5ae1de75033417e573865ca13fb3e',1,'rtabmap::SensorData']]],
-  ['gridobjectcells_206',['gridObjectCells',['../classrtabmap_1_1SensorData.html#aafb9f045a7a821f5f010cdf80cbe2c37',1,'rtabmap::SensorData']]],
-  ['gridobstaclecellscompressed_207',['gridObstacleCellsCompressed',['../classrtabmap_1_1SensorData.html#a50b09c52de6c8c6a6a95ee08886845a0',1,'rtabmap::SensorData']]],
-  ['gridobstaclecellsraw_208',['gridObstacleCellsRaw',['../classrtabmap_1_1SensorData.html#a0f2e804ebbcff5be648a43f0a41e9dfc',1,'rtabmap::SensorData']]],
-  ['gridviewpoint_209',['gridViewPoint',['../classrtabmap_1_1SensorData.html#a51f21b98088ceec4c5d108d0fbe03200',1,'rtabmap::SensorData']]],
-  ['groundtruth_210',['groundTruth',['../classrtabmap_1_1SensorData.html#aef9e0c36efdc8915536c3bc082108689',1,'rtabmap::SensorData']]]
+  ['gridlabelraster_205',['gridLabelRaster',['../classrtabmap_1_1SensorData.html#a2296d2ca99a2841ca795f64583f4137d',1,'rtabmap::SensorData']]],
+  ['gridobstaclecellscompressed_206',['gridObstacleCellsCompressed',['../classrtabmap_1_1SensorData.html#a50b09c52de6c8c6a6a95ee08886845a0',1,'rtabmap::SensorData']]],
+  ['gridobstaclecellsraw_207',['gridObstacleCellsRaw',['../classrtabmap_1_1SensorData.html#a0f2e804ebbcff5be648a43f0a41e9dfc',1,'rtabmap::SensorData']]],
+  ['gridviewpoint_208',['gridViewPoint',['../classrtabmap_1_1SensorData.html#a51f21b98088ceec4c5d108d0fbe03200',1,'rtabmap::SensorData']]],
+  ['groundtruth_209',['groundTruth',['../classrtabmap_1_1SensorData.html#aef9e0c36efdc8915536c3bc082108689',1,'rtabmap::SensorData']]]
 ];

@@ -1,5 +1,5 @@
 <map id="rtabmap::ObjectGrid" name="rtabmap::ObjectGrid">
-<area shape="rect" id="Node000001" title="2D map of object labels, assembled from the nodes&#39; object cells (LocalGridMaker::createObjectCells())..." alt="" coords="5,79,160,104"/>
+<area shape="rect" id="Node000001" title="2D map of one labeler&#39;s labels, assembled from the nodes&#39; label rasters (LocalGridMaker::createLabelR..." alt="" coords="5,79,160,104"/>
 <area shape="rect" id="Node000002" href="$classrtabmap_1_1GlobalMap.html" title="Abstract base for assembling per&#45;node LocalGrid data into a global map." alt="" coords="5,5,160,31"/>
 <area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="85,44,85,79,80,79,80,44"/>
 </map>

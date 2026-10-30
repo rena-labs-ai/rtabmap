@@ -671,12 +671,9 @@ Protected Attributes</h2></td></tr>
 <tr class="memitem:a0aa18124e40d2ac53e0e1b450d7399b8" id="r_a0aa18124e40d2ac53e0e1b450d7399b8"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrtabmap_1_1DBDriverSqlite3.html#a0aa18124e40d2ac53e0e1b450d7399b8">_version</a></td></tr>
 <tr class="memdesc:a0aa18124e40d2ac53e0e1b450d7399b8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Schema version read from the database.  <br /></td></tr>
 <tr class="separator:a0aa18124e40d2ac53e0e1b450d7399b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aef058b1205efb23e1153bdce730b4874" id="r_aef058b1205efb23e1153bdce730b4874"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrtabmap_1_1DBDriverSqlite3.html#aef058b1205efb23e1153bdce730b4874">_labelCells</a></td></tr>
-<tr class="memdesc:aef058b1205efb23e1153bdce730b4874"><td class="mdescLeft">&#160;</td><td class="mdescRight">The Data table has the label_cells column (added on open when writable)  <br /></td></tr>
-<tr class="separator:aef058b1205efb23e1153bdce730b4874"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0ed259b7007c3cac8d5d930310ff7d56" id="r_a0ed259b7007c3cac8d5d930310ff7d56"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrtabmap_1_1DBDriverSqlite3.html#a0ed259b7007c3cac8d5d930310ff7d56">_objectCells</a></td></tr>
-<tr class="memdesc:a0ed259b7007c3cac8d5d930310ff7d56"><td class="mdescLeft">&#160;</td><td class="mdescRight">The Data table has the object_cells column (added on open when writable)  <br /></td></tr>
-<tr class="separator:a0ed259b7007c3cac8d5d930310ff7d56"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8515f06c73a5b8562db5b299b008f6c3" id="r_a8515f06c73a5b8562db5b299b008f6c3"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrtabmap_1_1DBDriverSqlite3.html#a8515f06c73a5b8562db5b299b008f6c3">_labelRaster</a></td></tr>
+<tr class="memdesc:a8515f06c73a5b8562db5b299b008f6c3"><td class="mdescLeft">&#160;</td><td class="mdescRight">The Data table has the label_raster column (added on open when writable)  <br /></td></tr>
+<tr class="separator:a8515f06c73a5b8562db5b299b008f6c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
@@ -3404,8 +3401,8 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a id="aef058b1205efb23e1153bdce730b4874" name="aef058b1205efb23e1153bdce730b4874"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aef058b1205efb23e1153bdce730b4874">&#9670;&#160;</a></span>_labelCells</h2>
+<a id="a8515f06c73a5b8562db5b299b008f6c3" name="a8515f06c73a5b8562db5b299b008f6c3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8515f06c73a5b8562db5b299b008f6c3">&#9670;&#160;</a></span>_labelRaster</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -3414,7 +3411,7 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool rtabmap::DBDriverSqlite3::_labelCells</td>
+          <td class="memname">bool rtabmap::DBDriverSqlite3::_labelRaster</td>
         </tr>
       </table>
   </td>
@@ -3424,35 +3421,9 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>The Data table has the label_cells column (added on open when writable) </p>
+<p>The Data table has the label_raster column (added on open when writable) </p>
 
 <p class="definition">Definition at line <a class="el" href="DBDriverSqlite3_8h_source.html#l00347">347</a> of file <a class="el" href="DBDriverSqlite3_8h_source.html">DBDriverSqlite3.h</a>.</p>
-
-</div>
-</div>
-<a id="a0ed259b7007c3cac8d5d930310ff7d56" name="a0ed259b7007c3cac8d5d930310ff7d56"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0ed259b7007c3cac8d5d930310ff7d56">&#9670;&#160;</a></span>_objectCells</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool rtabmap::DBDriverSqlite3::_objectCells</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>The Data table has the object_cells column (added on open when writable) </p>
-
-<p class="definition">Definition at line <a class="el" href="DBDriverSqlite3_8h_source.html#l00348">348</a> of file <a class="el" href="DBDriverSqlite3_8h_source.html">DBDriverSqlite3.h</a>.</p>
 
 </div>
 </div>

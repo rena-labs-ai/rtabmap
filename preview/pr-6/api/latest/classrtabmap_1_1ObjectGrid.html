@@ -106,7 +106,7 @@ $(document).ready(function(){initNavTree('classrtabmap_1_1ObjectGrid.html',''); 
 </div><!--header-->
 <div class="contents">
 
-<p>2D map of object labels, assembled from the nodes' object cells (<a class="el" href="classrtabmap_1_1LocalGridMaker.html#a21d861413578f6d99db6f3c334224ed5">LocalGridMaker::createObjectCells()</a>) at their poses.  
+<p>2D map of one labeler's labels, assembled from the nodes' label rasters (<a class="el" href="classrtabmap_1_1LocalGridMaker.html#a25e8238d722bc028cc1469a420f1091c">LocalGridMaker::createLabelRaster()</a>, <a class="el" href="classrtabmap_1_1LabelRaster.html#a311cb0e9eaa6818f5a53b7dbab82eed8">LabelRaster::cells()</a>) at their poses.  
  <a href="classrtabmap_1_1ObjectGrid.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="ObjectGrid_8h_source.html">ObjectGrid.h</a>&gt;</code></p>
@@ -115,7 +115,7 @@ Inheritance diagram for rtabmap::ObjectGrid:</div>
 <div class="dyncontent">
 <div class="center"><img src="classrtabmap_1_1ObjectGrid__inherit__graph.png" border="0" usemap="#artabmap_1_1ObjectGrid_inherit__map" alt="Inheritance graph"/></div>
 <map name="artabmap_1_1ObjectGrid_inherit__map" id="artabmap_1_1ObjectGrid_inherit__map">
-<area shape="rect" title="2D map of object labels, assembled from the nodes&#39; object cells (LocalGridMaker::createObjectCells())..." alt="" coords="5,79,160,104"/>
+<area shape="rect" title="2D map of one labeler&#39;s labels, assembled from the nodes&#39; label rasters (LocalGridMaker::createLabelR..." alt="" coords="5,79,160,104"/>
 <area shape="rect" href="classrtabmap_1_1GlobalMap.html" title="Abstract base for assembling per&#45;node LocalGrid data into a global map." alt="" coords="5,5,160,31"/>
 <area shape="poly" title=" " alt="" coords="85,44,85,79,80,79,80,44"/>
 </map>
@@ -125,7 +125,7 @@ Collaboration diagram for rtabmap::ObjectGrid:</div>
 <div class="dyncontent">
 <div class="center"><img src="classrtabmap_1_1ObjectGrid__coll__graph.png" border="0" usemap="#artabmap_1_1ObjectGrid_coll__map" alt="Collaboration graph"/></div>
 <map name="artabmap_1_1ObjectGrid_coll__map" id="artabmap_1_1ObjectGrid_coll__map">
-<area shape="rect" title="2D map of object labels, assembled from the nodes&#39; object cells (LocalGridMaker::createObjectCells())..." alt="" coords="5,79,160,104"/>
+<area shape="rect" title="2D map of one labeler&#39;s labels, assembled from the nodes&#39; label rasters (LocalGridMaker::createLabelR..." alt="" coords="5,79,160,104"/>
 <area shape="rect" href="classrtabmap_1_1GlobalMap.html" title="Abstract base for assembling per&#45;node LocalGrid data into a global map." alt="" coords="5,5,160,31"/>
 <area shape="poly" title=" " alt="" coords="85,44,85,79,80,79,80,44"/>
 </map>
@@ -222,8 +222,8 @@ Additional Inherited Members</h2></td></tr>
 <tr class="separator:afa437824f1ccbe1c88c4f11dd18d2186 inherit pro_attribs_classrtabmap_1_1GlobalMap"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>2D map of object labels, assembled from the nodes' object cells (<a class="el" href="classrtabmap_1_1LocalGridMaker.html#a21d861413578f6d99db6f3c334224ed5">LocalGridMaker::createObjectCells()</a>) at their poses. </p>
-<p>In the cache, a node's ground cells are floor seen without an object (misses) and its obstacle cells its objects, <code>CV_32FC3</code> (x, y, label). A cell holds one label and the log-odds that it is there, <code>GridGlobal/Prob*</code>: a hit of that label adds <code>ProbHit</code>, a miss adds <code>ProbMiss</code>, a hit of another label takes <code>ProbHit</code> away and, once the odds are under <code>GridGlobal/OccupancyThr</code>, gives the cell to that label. So the label with the most evidence holds a cell. A node votes once per cell. </p>
+<div class="textblock"><p>2D map of one labeler's labels, assembled from the nodes' label rasters (<a class="el" href="classrtabmap_1_1LocalGridMaker.html#a25e8238d722bc028cc1469a420f1091c">LocalGridMaker::createLabelRaster()</a>, <a class="el" href="classrtabmap_1_1LabelRaster.html#a311cb0e9eaa6818f5a53b7dbab82eed8">LabelRaster::cells()</a>) at their poses. </p>
+<p>In the cache, a node's ground cells are cells seen with nothing there (label 0, misses) and its obstacle cells its labels, <code>CV_32FC3</code> (x, y, label). A cell holds one label and the log-odds that it is there, <code>GridGlobal/Prob*</code>: a hit of that label adds <code>ProbHit</code>, a miss adds <code>ProbMiss</code>, a hit of another label takes <code>ProbHit</code> away and, once the odds are under <code>GridGlobal/OccupancyThr</code>, gives the cell to that label. So the label with the most evidence holds a cell. A node votes once per cell. </p>
 
 <p class="definition">Definition at line <a class="el" href="ObjectGrid_8h_source.html#l00049">49</a> of file <a class="el" href="ObjectGrid_8h_source.html">ObjectGrid.h</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>

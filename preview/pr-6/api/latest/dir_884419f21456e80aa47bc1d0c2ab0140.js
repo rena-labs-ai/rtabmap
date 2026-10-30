@@ -36,6 +36,7 @@ var dir_884419f21456e80aa47bc1d0c2ab0140 =
     [ "IMU.h", "IMU_8h_source.html", null ],
     [ "IMUFilter.h", "IMUFilter_8h_source.html", null ],
     [ "IMUThread.h", "IMUThread_8h_source.html", null ],
+    [ "LabelRaster.h", "LabelRaster_8h_source.html", null ],
     [ "Landmark.h", "Landmark_8h_source.html", null ],
     [ "LaserScan.h", "LaserScan_8h_source.html", null ],
     [ "LASWriter.h", "LASWriter_8h_source.html", null ],
