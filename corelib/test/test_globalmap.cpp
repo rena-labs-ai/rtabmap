@@ -452,6 +452,16 @@ TEST(ObjectGridTest, LoopClosureMovesTheObjects)
 	EXPECT_EQ(map.at<signed char>(0, 0), 3);
 }
 
+TEST(ObjectGridTest, NoVotesYetMeansNoMapAndNoLastNodes)
+{
+	LocalGridCache cache;
+	ObjectGrid grid(&cache, objectGridParams());
+	grid.update({{1, Transform::getIdentity()}});
+	float xMin = 0.0f, yMin = 0.0f;
+	EXPECT_TRUE(grid.getMap(xMin, yMin).empty());
+	EXPECT_TRUE(grid.getLastNodeMap(xMin, yMin).empty()) << "a labeler that has not voted yet";
+}
+
 TEST(ObjectGridTest, LastNodeMapHoldsTheNewestNodePerCell)
 {
 	LocalGridCache cache;
