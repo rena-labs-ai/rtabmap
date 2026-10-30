@@ -1574,6 +1574,15 @@ TEST(LocalGridMakerTest, SegmentCloudPointNormalType)
 // A 3x4 depth image from a camera 0.2 m up looking along x (fx=fy=10, cx=1, cy=2): row 3 sees
 // the floor at x=2.05, row 2 points 0.2 m up over the same cells, row 1 points 0.6 m up
 // at x=4.05, row 0 has no depth.
+TEST(LocalGridMakerTest, KeepsItsLabelersWhenOtherParametersChange)
+{
+	LocalGridMaker maker(ParametersMap{{Parameters::kGridLabelers(), "floor:2 objects:4"}});
+	maker.parseParameters(ParametersMap{{Parameters::kGridScan2dUnknownSpaceFilled(), "true"}});
+	EXPECT_EQ(maker.labelLayout().size(), 2) << "MapsManager passes single parameters while it builds a grid";
+	maker.parseParameters(ParametersMap{{Parameters::kGridLabelers(), ""}});
+	EXPECT_EQ(maker.labelLayout().size(), 0);
+}
+
 TEST(LocalGridMakerTest, CreateLabelRasterFromLabels)
 {
 	ParametersMap params;

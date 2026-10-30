@@ -126,9 +126,11 @@ void LocalGridMaker::parseParameters(const ParametersMap & parameters)
 	Parameters::parse(parameters, Parameters::kGridScan2dUnknownSpaceFilled(), scan2dUnknownSpaceFilled_);
 	Parameters::parse(parameters, Parameters::kGridRayTracing(), rayTracing_);
 	Parameters::parse(parameters, Parameters::kGridObjectMaxHeight(), objectMaxHeight_);
-	std::string labelers = Parameters::defaultGridLabelers();
-	Parameters::parse(parameters, Parameters::kGridLabelers(), labelers);
-	labelLayout_ = LabelLayout::parse(labelers);
+	std::string labelers;
+	if(Parameters::parse(parameters, Parameters::kGridLabelers(), labelers))
+	{
+		labelLayout_ = LabelLayout::parse(labelers);
+	}
 
 	// convert ROI from string to vector
 	ParametersMap::const_iterator iter;
