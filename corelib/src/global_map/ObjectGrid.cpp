@@ -89,6 +89,16 @@ cv::Mat ObjectGrid::getMap(float & xMin, float & yMin) const
 	return map;
 }
 
+cv::Mat ObjectGrid::getLastNodeMap(float & xMin, float & yMin) const
+{
+	xMin = minValues_[0];
+	yMin = minValues_[1];
+	cv::Mat nodes;
+	cv::extractChannel(cells_, nodes, 2);
+	nodes.convertTo(nodes, CV_32SC1);
+	return nodes;
+}
+
 void ObjectGrid::assemble(const std::list<std::pair<int, Transform> > & newPoses)
 {
 	cv::Rect bounds;

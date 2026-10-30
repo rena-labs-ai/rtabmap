@@ -451,3 +451,59 @@ TEST(ObjectGridTest, LoopClosureMovesTheObjects)
 	EXPECT_NEAR(xMin, 1.0f, 1e-5);
 	EXPECT_EQ(map.at<signed char>(0, 0), 3);
 }
+
+TEST(ObjectGridTest, LastNodeMapHoldsTheNewestNodePerCell)
+{
+	LocalGridCache cache;
+	addObjectCell(cache, 1, 0.05f, 0.05f, 3);
+	addObjectCell(cache, 2, 0.05f, 0.05f, 0);
+	addObjectCell(cache, 3, 0.25f, 0.05f, 0);
+	std::map<int, Transform> poses;
+	for(int id=1; id<=3; ++id)
+	{
+		poses.insert(std::make_pair(id, Transform::getIdentity()));
+	}
+	ObjectGrid grid(&cache, objectGridParams());
+	grid.update(poses);
+	float xMin = 0.0f, yMin = 0.0f, nodesXMin = 1.0f, nodesYMin = 1.0f;
+	const cv::Mat map = grid.getMap(xMin, yMin);
+	const cv::Mat nodes = grid.getLastNodeMap(nodesXMin, nodesYMin);
+	ASSERT_EQ(nodes.type(), CV_32SC1);
+	ASSERT_EQ(nodes.size(), map.size());
+	EXPECT_EQ(nodesXMin, xMin);
+	EXPECT_EQ(nodesYMin, yMin);
+	EXPECT_EQ(nodes.at<int>(0, 0), 2);
+	EXPECT_EQ(nodes.at<int>(0, 1), 0) << "never seen";
+	EXPECT_EQ(nodes.at<int>(0, 2), 3);
+}
+
+TEST(OccupancyGridTest, LastNodeMapHoldsTheNewestNodePerCell)
+{
+	const float cellSize = 0.2f;
+	LocalGridCache cache;
+	addWallGridToCache(cache, 1, /*cols=*/5, cellSize);
+	addWallGridToCache(cache, 2, /*cols=*/5, cellSize);
+	ParametersMap parameters;
+	parameters.insert(ParametersPair(Parameters::kGridCellSize(), uNumber2Str(cellSize)));
+	OccupancyGrid grid(&cache, parameters);
+	std::map<int, Transform> poses;
+	poses.insert(std::make_pair(1, Transform::getIdentity()));
+	poses.insert(std::make_pair(2, Transform::getIdentity()));
+	grid.update(poses);
+
+	float xMin = 0.0f, yMin = 0.0f, nodesXMin = 1.0f, nodesYMin = 1.0f;
+	const cv::Mat map = grid.getMap(xMin, yMin);
+	const cv::Mat nodes = grid.getLastNodeMap(nodesXMin, nodesYMin);
+	ASSERT_EQ(nodes.type(), CV_32SC1);
+	ASSERT_EQ(nodes.size(), map.size());
+	EXPECT_EQ(nodesXMin, xMin);
+	EXPECT_EQ(nodesYMin, yMin);
+	for(int y = 0; y < map.rows; ++y)
+	{
+		for(int x = 0; x < map.cols; ++x)
+		{
+			EXPECT_EQ(nodes.at<int>(y, x), map.at<signed char>(y, x) == -1 ? 0 : 2)
+					<< "cell (" << x << ", " << y << "): node 2 saw every cell node 1 did";
+		}
+	}
+}

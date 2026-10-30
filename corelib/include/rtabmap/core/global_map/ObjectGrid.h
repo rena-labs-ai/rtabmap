@@ -60,6 +60,10 @@ public:
 	 * object there. Empty if nothing is assembled.
 	 */
 	cv::Mat getMap(float & xMin, float & yMin) const;
+	/**
+	 * @return `CV_32SC1` on getMap()'s cells: the newest node that voted on each cell (0: none).
+	 */
+	cv::Mat getLastNodeMap(float & xMin, float & yMin) const;
 
 protected:
 	virtual void assemble(const std::list<std::pair<int, Transform> > & newPoses);
