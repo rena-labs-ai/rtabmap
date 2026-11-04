@@ -75,7 +75,8 @@ LocalGridMaker::LocalGridMaker(const ParametersMap & parameters) :
 	scan2dUnknownSpaceFilled_(Parameters::defaultGridScan2dUnknownSpaceFilled()),
 	rayTracing_(Parameters::defaultGridRayTracing()),
 	objectMaxHeight_(Parameters::defaultGridObjectMaxHeight()),
-	labelLayout_(LabelLayout::parse(Parameters::defaultGridLabelers()))
+	labelLayout_(LabelLayout::parse(Parameters::defaultGridLabelers())),
+	groundLabeler_(Parameters::defaultGridGroundLabeler())
 {
 	this->parseParameters(parameters);
 }
@@ -131,6 +132,7 @@ void LocalGridMaker::parseParameters(const ParametersMap & parameters)
 	{
 		labelLayout_ = LabelLayout::parse(labelers);
 	}
+	Parameters::parse(parameters, Parameters::kGridGroundLabeler(), groundLabeler_);
 
 	// convert ROI from string to vector
 	ParametersMap::const_iterator iter;
@@ -326,6 +328,73 @@ LabelRaster LocalGridMaker::createLabelRaster(const SensorData & data) const
 	return raster;
 }
 
+bool LocalGridMaker::createSemanticCells(
+		const SensorData & data,
+		const Transform & pose,
+		cv::Point3f viewPoint,
+		cv::Mat & groundCells,
+		cv::Mat & obstacleCells,
+		cv::Mat & emptyCells) const
+{
+	if(groundLabeler_.empty())
+	{
+		return false;
+	}
+	const int labeler = labelLayout_.index(groundLabeler_);
+	if(labeler < 0 || grid3D_ || data.labelsRaw().empty() || !labelsOverDepth(data) ||
+		data.labelsRaw().channels() != labelLayout_.size())
+	{
+		UWARN("%s=\"%s\": not a labeler of %s, %s is true, or the labels are absent or do not match "
+				"them; ground from heights or normals.", Parameters::kGridGroundLabeler().c_str(),
+				groundLabeler_.c_str(), Parameters::kGridLabelers().c_str(), Parameters::kGrid3D().c_str());
+		return false;
+	}
+	// level the points as segmentCloud() does: the robot's roll and pitch, not its yaw
+	float roll, pitch, yaw;
+	pose.getEulerAngles(roll, pitch, yaw);
+	const Transform level(0, 0, projMapFrame_?pose.z():0, roll, pitch, 0);
+	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
+	pcl::IndicesPtr groundIndices(new std::vector<int>);
+	pcl::IndicesPtr obstaclesIndices(new std::vector<int>);
+	forEachLabelledPoint(data, roiRatios_, rangeMin_, rangeMax_, [&](const unsigned char * labels, const cv::Point3f & point)
+	{
+		const int label = labels[labeler];
+		if(label > 127)
+		{
+			return; // not judged
+		}
+		const cv::Point3f p = util3d::transformPoint(point, level);
+		if(label == 0)
+		{
+			groundIndices->push_back((int)cloud->size());
+		}
+		else if(maxObstacleHeight_ <= 0.0f || p.z <= maxObstacleHeight_)
+		{
+			obstaclesIndices->push_back((int)cloud->size());
+		}
+		else
+		{
+			return; // the robot passes under it
+		}
+		cloud->push_back(pcl::PointXYZ(p.x, p.y, p.z));
+	});
+	util3d::occupancy2DFromGroundObstacles<pcl::PointXYZ>(cloud, groundIndices, obstaclesIndices, groundCells, obstacleCells, cellSize_);
+	if(rayTracing_ && (!obstacleCells.empty() || !groundCells.empty()))
+	{
+		if(projMapFrame_)
+		{
+			viewPoint = util3d::transformPoint(viewPoint, Transform(0,0,0,roll,pitch,0));
+		}
+		const cv::Mat hits = obstacleCells;
+		const cv::Mat noHits = groundCells;
+		obstacleCells = cv::Mat();
+		groundCells = cv::Mat();
+		util3d::occupancy2DFromLaserScan(hits, noHits, viewPoint, emptyCells, obstacleCells, cellSize_, false, rangeMax_);
+	}
+	UDEBUG("semantic: ground=%d obstacles=%d empty=%d", groundCells.cols, obstacleCells.cols, emptyCells.cols);
+	return true;
+}
+
 void LocalGridMaker::createLocalMap(
 		const Signature & node,
 		cv::Mat & groundCells,
@@ -428,13 +497,11 @@ void LocalGridMaker::createLocalMap(
 
 		if(occupancySensor_ >= 1)
 		{
-			pcl::IndicesPtr indices(new std::vector<int>);
-			pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud;
 			UDEBUG("Depth image : decimation=%d max=%f min=%f",
 					cloudDecimation_,
 					rangeMax_,
 					rangeMin_);
-			cloud = util3d::cloudRGBFromSensorData(
+			const auto depthCloud = [&](pcl::IndicesPtr & indices) {return util3d::cloudRGBFromSensorData(
 					node.sensorData(),
 					cloudDecimation_,
 #ifdef RTABMAP_OCTOMAP
@@ -447,7 +514,7 @@ void LocalGridMaker::createLocalMap(
 					rangeMin_,
 					indices.get(),
 					parameters_,
-					roiRatios_);
+					roiRatios_);};
 
 			// update viewpoint
 			viewPoint = cv::Point3f(0,0,0);
@@ -510,7 +577,12 @@ void LocalGridMaker::createLocalMap(
 				emptyCells = cv::Mat();
 			}
 
-			createLocalMap(LaserScan(util3d::laserScanFromPointCloud(*cloud, indices), 0, 0.0f), node.getPose(), groundCells, obstacleCells, emptyCells, viewPoint);
+			if(!createSemanticCells(node.sensorData(), node.getPose(), viewPoint, groundCells, obstacleCells, emptyCells))
+			{
+				pcl::IndicesPtr indices(new std::vector<int>);
+				const pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud = depthCloud(indices);
+				createLocalMap(LaserScan(util3d::laserScanFromPointCloud(*cloud, indices), 0, 0.0f), node.getPose(), groundCells, obstacleCells, emptyCells, viewPoint);
+			}
 
 			if(occupancySensor_ == 2)
 			{

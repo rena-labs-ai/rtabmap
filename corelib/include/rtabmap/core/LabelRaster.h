@@ -48,7 +48,8 @@ typedef uint8_t LabelWord;
  *     word = [ floorplan: 6 bits | floorseg: 2 bits ]
  *
  * Labeler i is the labels image's channel i. A labeler's field is 0 for no vote (it did
- * not judge the cell), else its label + 1; label 0 is seen with nothing there.
+ * not judge the cell), else its label + 1; label 0 is seen with nothing there. A labeler of
+ * 0 bits stores nothing: its channel is an input only (Parameters::kGridGroundLabeler()).
  */
 class RTABMAP_CORE_EXPORT LabelLayout
 {
@@ -59,7 +60,9 @@ public:
 
 	int size() const {return (int)names_.size();}
 	const std::string & name(int labeler) const {return names_.at(labeler);}
-	/// The highest label labeler's field holds.
+	/// The labeler named @p name, -1 for none.
+	int index(const std::string & name) const;
+	/// The highest label labeler's field holds, -1 for a labeler of 0 bits.
 	int maxLabel(int labeler) const {return (1 << bits_.at(labeler)) - 2;}
 
 	LabelWord pack(LabelWord word, int labeler, int label) const;

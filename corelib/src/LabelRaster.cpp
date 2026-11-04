@@ -74,7 +74,7 @@ LabelLayout LabelLayout::parse(const std::string & labelers)
 		const std::list<std::string> nameBits = uSplit(labeler, ':');
 		UASSERT_MSG(nameBits.size() == 2, uFormat("Labeler \"%s\" is not name:bits (labelers \"%s\")", labeler.c_str(), labelers.c_str()).c_str());
 		const int bits = uStr2Int(nameBits.back());
-		UASSERT_MSG(bits >= 1, uFormat("Labeler \"%s\" needs at least 1 bit (labelers \"%s\")", labeler.c_str(), labelers.c_str()).c_str());
+		UASSERT_MSG(bits >= 0, uFormat("Labeler \"%s\" has negative bits (labelers \"%s\")", labeler.c_str(), labelers.c_str()).c_str());
 		layout.names_.push_back(nameBits.front());
 		layout.bits_.push_back(bits);
 		layout.shifts_.push_back(shift);
@@ -83,6 +83,12 @@ LabelLayout LabelLayout::parse(const std::string & labelers)
 	const int wordBits = 8 * int(sizeof(LabelWord));
 	UASSERT_MSG(shift <= wordBits, uFormat("Labelers \"%s\" need %d bits, a cell holds %d", labelers.c_str(), shift, wordBits).c_str());
 	return layout;
+}
+
+int LabelLayout::index(const std::string & name) const
+{
+	const std::vector<std::string>::const_iterator it = std::find(names_.begin(), names_.end(), name);
+	return it == names_.end() ? -1 : int(it - names_.begin());
 }
 
 LabelWord LabelLayout::pack(LabelWord word, int labeler, int label) const

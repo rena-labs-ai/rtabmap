@@ -120,6 +120,16 @@ public:
 	const LabelLayout & labelLayout() const {return labelLayout_;}
 
 	/**
+	 * @brief Ground and obstacle cells of @p data's depth from its `Grid/GroundLabeler`
+	 * labels (2D grids only): label 0 is ground at any height, any other label an obstacle
+	 * up to `Grid/MaxObstacleHeight`, 128-255 left out; ray traced as the height path is.
+	 * @return False (cells untouched) when the labeler is not set or the labels are absent
+	 * or do not match: the caller maps by heights or normals instead.
+	 */
+	bool createSemanticCells(const SensorData & data, const Transform & pose, cv::Point3f viewPoint,
+			cv::Mat & groundCells, cv::Mat & obstacleCells, cv::Mat & emptyCells) const;
+
+	/**
 	 * @brief Creates a local grid from a @ref Signature's laser scan or depth data.
 	 * @param node Signature with sensor data (pose used for 3D scans).
 	 * @param groundCells Output ground cells (@ref LocalGrid format).
@@ -216,6 +226,7 @@ protected:
 	bool rayTracing_;
 	float objectMaxHeight_;
 	LabelLayout labelLayout_;
+	std::string groundLabeler_;
 };
 
 } /* namespace rtabmap */

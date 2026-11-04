@@ -31,7 +31,7 @@ TEST(LabelLayoutTest, RefusesWhatDoesNotFit)
 	EXPECT_EQ(LabelLayout::parse("").size(), 0);
 	EXPECT_THROW(LabelLayout::parse("a:4 b:5"), UException) << "9 bits";
 	EXPECT_THROW(LabelLayout::parse("floorseg"), UException) << "no bits";
-	EXPECT_THROW(LabelLayout::parse("a:0"), UException);
+	EXPECT_THROW(LabelLayout::parse("a:-1"), UException) << "0 bits is an input only, fewer is nothing";
 	EXPECT_THROW(LabelLayout::parse("a:2").pack(0, 0, 3), UException) << "3 needs more than 2 bits";
 }
 
@@ -84,4 +84,18 @@ TEST(LabelRasterTest, EncodesAndDecodes)
 	cv::Mat other = bytes.clone();
 	other.at<unsigned char>(0, 0) = 1;
 	EXPECT_THROW(LabelRaster::decode(other), UException) << "version 1, 16-bit words";
+}
+
+TEST(LabelLayoutTest, ALabelerOfZeroBitsIsAnInputOnly)
+{
+	const LabelLayout layout = LabelLayout::parse("floorseg:0 floorplan:8");
+	ASSERT_EQ(layout.size(), 2);
+	EXPECT_EQ(layout.index("floorseg"), 0);
+	EXPECT_EQ(layout.index("floorplan"), 1);
+	EXPECT_EQ(layout.index("objseg"), -1);
+	EXPECT_EQ(layout.maxLabel(0), -1) << "stores no label";
+	EXPECT_EQ(layout.maxLabel(1), 254);
+	const LabelWord word = layout.pack(0, 1, 254);
+	EXPECT_EQ(layout.label(word, 1), 254);
+	EXPECT_EQ(layout.label(word, 0), -1);
 }
