@@ -5596,7 +5596,7 @@ Signature * Memory::createSignature(const SensorData & inputData, const Transfor
 
 			if(!data.labelsRaw().empty())
 			{
-				UWARN("Labels are not rotated with %s, they are dropped (no label cells).", Parameters::kMemRotateImagesUpsideUp().c_str());
+				UWARN("Labels are not rotated with %s, they are dropped (no semantic segmentation).", Parameters::kMemRotateImagesUpsideUp().c_str());
 				data.setLabels(cv::Mat());
 			}
 
@@ -6960,6 +6960,7 @@ Signature * Memory::createSignature(const SensorData & inputData, const Transfor
 	if(!cameraModels.empty())
 	{
 		s->sensorData().setRGBDImage(image, depthOrRightImage, depthConfidence, cameraModels, false);
+		s->sensorData().setLabels(data.labelsRaw()); // the local grid's ground mask
 	}
 	else
 	{
@@ -7017,7 +7018,6 @@ Signature * Memory::createSignature(const SensorData & inputData, const Transfor
 			_localMapMaker->createLocalMap(*s, ground, obstacles, empty, viewPoint);
 			cellSize = _localMapMaker->getCellSize();
 			s->sensorData().setOccupancyGrid(ground, obstacles, empty, cellSize, viewPoint);
-			s->sensorData().setGridLabelCells(_localMapMaker->createLabelCells(data));
 
 			t = timer.ticks();
 			if(stats) stats->addStatistic(Statistics::kTimingMemOccupancy_grid(), t*1000.0f);
@@ -7031,7 +7031,6 @@ Signature * Memory::createSignature(const SensorData & inputData, const Transfor
 					data.gridEmptyCellsRaw(),
 					data.gridCellSize(),
 					data.gridViewPoint());
-			s->sensorData().setGridLabelCells(data.gridLabelCells());
 		}
 	}
 

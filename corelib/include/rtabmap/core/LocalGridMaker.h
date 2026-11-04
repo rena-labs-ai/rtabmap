@@ -105,14 +105,15 @@ public:
 			pcl::IndicesPtr * flatObstacles = 0) const; // output cloud indices
 
 	/**
-	 * @brief The label cells of @p data: ground points (`Grid/MinGroundHeight` to
-	 * `Grid/MaxGroundHeight`, within `Grid/RangeMin`/`Grid/RangeMax` depth) whose label
-	 * in @p data's labels is `Grid/LabelObstacle` or `Grid/LabelFloor`, one per cell,
-	 * obstacle winning: knowledge of low obstacles that height alone cannot give.
-	 * @return 1×N `CV_32FC3` (x, y, label) in the robot/base frame; empty when the
-	 * labels are disabled, absent or do not match the depth image.
+	 * @brief Ground and obstacle cells of @p data's depth from its labels, a ground mask
+	 * (`Grid/SemanticSegmentation`, 2D grids only): 0 is ground at any height, 1-127 an
+	 * obstacle up to `Grid/MaxObstacleHeight`, 128-255 left out; ray traced as the height
+	 * path is.
+	 * @return False (cells untouched) when `Grid/SemanticSegmentation` is off or the labels are
+	 * absent or do not match: the caller maps by heights or normals instead.
 	 */
-	cv::Mat createLabelCells(const SensorData & data) const;
+	bool createSemanticCells(const SensorData & data, const Transform & pose, cv::Point3f viewPoint,
+			cv::Mat & groundCells, cv::Mat & obstacleCells, cv::Mat & emptyCells) const;
 
 	/**
 	 * @brief Creates a local grid from a @ref Signature's laser scan or depth data.
@@ -209,8 +210,7 @@ protected:
 	int noiseFilteringMinNeighbors_;
 	bool scan2dUnknownSpaceFilled_;
 	bool rayTracing_;
-	int labelObstacle_;
-	int labelFloor_;
+	bool semanticSegmentation_;
 };
 
 } /* namespace rtabmap */

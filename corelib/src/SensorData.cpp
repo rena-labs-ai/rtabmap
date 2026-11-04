@@ -672,36 +672,6 @@ void SensorData::setOccupancyGrid(
 	_viewPoint = viewPoint;
 }
 
-void SensorData::setGridLabelCells(const cv::Mat & cells)
-{
-	_labelCellsRaw = cv::Mat();
-	_labelCellsCompressed = cv::Mat();
-	if(cells.empty())
-	{
-		return;
-	}
-	if(cells.type() == CV_32FC3)
-	{
-		UASSERT(cells.rows == 1);
-		_labelCellsRaw = cells;
-		_labelCellsCompressed = compressData2(cells);
-	}
-	else
-	{
-		UASSERT(cells.type() == CV_8UC1 && cells.rows == 1);
-		_labelCellsCompressed = cells;
-	}
-}
-
-cv::Mat SensorData::gridLabelCells() const
-{
-	if(!_labelCellsRaw.empty() || _labelCellsCompressed.empty())
-	{
-		return _labelCellsRaw;
-	}
-	return rtabmap::uncompressData(_labelCellsCompressed);
-}
-
 void SensorData::uncompressData()
 {
 	cv::Mat tmpA, tmpB, tmpD, tmpE, tmpF, tmpG, tmpH;
@@ -1090,7 +1060,6 @@ void SensorData::clearCompressedData(bool images, bool scan, bool userData, bool
 		_groundCellsCompressed=cv::Mat();
 		_emptyCellsCompressed=cv::Mat();
 		_obstacleCellsCompressed=cv::Mat();
-		_labelCellsCompressed=cv::Mat();
 		
 		if( _groundCellsCompressed.empty()  && _groundCellsRaw.empty() &&
 			_obstacleCellsCompressed.empty()  && _obstacleCellsRaw.empty() &&
@@ -1126,7 +1095,6 @@ void SensorData::clearRawData(bool images, bool scan, bool userData, bool occupa
 		_groundCellsRaw=cv::Mat();
 		_emptyCellsRaw=cv::Mat();
 		_obstacleCellsRaw=cv::Mat();
-		_labelCellsRaw=cv::Mat();
 
 		if( _groundCellsCompressed.empty()  && _groundCellsRaw.empty() &&
 			_obstacleCellsCompressed.empty()  && _obstacleCellsRaw.empty() &&

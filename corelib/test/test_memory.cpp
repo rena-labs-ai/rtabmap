@@ -178,6 +178,45 @@ TEST(MemoryTest, InitFileDatabaseCreatesFile)
 	UFile::erase(dbPath.c_str());
 }
 
+// Memory makes each node's local grid from the node it creates: the labels come along, or
+// Grid/SemanticSegmentation silently maps from heights. A camera 0.2 m up, looking along x,
+// sees a ramp 0.2 m up that the labels call ground: heights would make it an obstacle.
+TEST(MemoryTest, TheNodesLocalGridTakesItsLabels)
+{
+	ParametersMap params = defaultMemoryParams();
+	params[Parameters::kRGBDCreateOccupancyGrid()] = "true";
+	params[Parameters::kGridSensor()] = "1";
+	params[Parameters::kGridCellSize()] = "0.1";
+	params[Parameters::kGridRangeMax()] = "5";
+	params[Parameters::kGridMaxGroundHeight()] = "0.05";
+	params[Parameters::kGridMaxObstacleHeight()] = "0.5";
+	params[Parameters::kGridRayTracing()] = "false";
+	params[Parameters::kGrid3D()] = "false";
+	params[Parameters::kGridSemanticSegmentation()] = "true";
+	Memory memory(params);
+
+	const cv::Mat depth = (cv::Mat_<float>(4, 3) <<
+			0.0f, 0.0f, 0.0f,
+			0.0f, 0.0f, 0.0f,
+			2.05f, 2.05f, 2.05f,
+			0.0f, 0.0f, 0.0f);
+	const cv::Mat labels = (cv::Mat_<unsigned char>(4, 3) <<
+			255, 255, 255,
+			255, 255, 255,
+			255, 0, 255,
+			255, 255, 255);
+	const CameraModel model(10.0, 10.0, 1.0, 2.0,
+			Transform(0, 0, 0.2f, 0, 0, 0) * CameraModel::opticalRotation(), 0.0, cv::Size(3, 4));
+	SensorData data(cv::Mat(4, 3, CV_8UC3, cv::Scalar::all(0)), depth, model);
+	data.setLabels(labels);
+	ASSERT_TRUE(memory.update(data, Transform::getIdentity(), cv::Mat::eye(6, 6, CV_64FC1)));
+
+	const Signature * node = memory.getLastWorkingSignature(false);
+	ASSERT_TRUE(node != nullptr);
+	EXPECT_EQ(node->sensorData().gridGroundCellsRaw().cols, 1) << "the ramp is ground, from the labels";
+	EXPECT_EQ(node->sensorData().gridObstacleCellsRaw().cols, 0);
+}
+
 TEST(MemoryTest, CloseWithoutInitIsSafe)
 {
 	Memory memory(defaultMemoryParams());
