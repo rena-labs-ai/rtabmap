@@ -817,7 +817,7 @@ public:
 
 	/**
 	 * @brief Sets per-pixel labels aligned with the depth image (cameras side by side, like
-	 * the depth), CV_8UC(N), channel i labeler i of Parameters::kGridLabelers(). Input of the
+	 * the depth), CV_8UC1, see Parameters::kGridSemanticSegmentation(). Input of the
 	 * local grid's label raster only: neither compressed nor saved.
 	 */
 	void setLabels(const cv::Mat & labels) {_labelsRaw = labels;}

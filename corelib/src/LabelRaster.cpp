@@ -29,7 +29,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <rtabmap/utilite/ULogger.h>
 #include <rtabmap/utilite/UConversion.h>
-#include <rtabmap/utilite/UStl.h>
 
 #include <cstring>
 
@@ -37,8 +36,9 @@ namespace rtabmap {
 
 namespace {
 
-// 2: 8-bit words (1 had 16)
-const unsigned char kVersion = 2;
+// 3: one label per cell (2 packed labelers in 8 bits, 1 in 16)
+const unsigned char kVersion = 3;
+const unsigned char kNoVote = 255;
 
 // version, cell size, x0, y0, rows, cols: packed one after the other.
 const size_t kHeaderBytes = sizeof(unsigned char) + sizeof(float) + 2*sizeof(int32_t) + 2*sizeof(uint16_t);
@@ -61,75 +61,34 @@ T take(const unsigned char *& in)
 
 } // namespace
 
-LabelLayout LabelLayout::parse(const std::string & labelers)
-{
-	LabelLayout layout;
-	int shift = 0;
-	for(const std::string & labeler : uSplit(labelers, ' '))
-	{
-		if(labeler.empty())
-		{
-			continue;
-		}
-		const std::list<std::string> nameBits = uSplit(labeler, ':');
-		UASSERT_MSG(nameBits.size() == 2, uFormat("Labeler \"%s\" is not name:bits (labelers \"%s\")", labeler.c_str(), labelers.c_str()).c_str());
-		const int bits = uStr2Int(nameBits.back());
-		UASSERT_MSG(bits >= 0, uFormat("Labeler \"%s\" has negative bits (labelers \"%s\")", labeler.c_str(), labelers.c_str()).c_str());
-		layout.names_.push_back(nameBits.front());
-		layout.bits_.push_back(bits);
-		layout.shifts_.push_back(shift);
-		shift += bits;
-	}
-	const int wordBits = 8 * int(sizeof(LabelWord));
-	UASSERT_MSG(shift <= wordBits, uFormat("Labelers \"%s\" need %d bits, a cell holds %d", labelers.c_str(), shift, wordBits).c_str());
-	return layout;
-}
-
-int LabelLayout::index(const std::string & name) const
-{
-	const std::vector<std::string>::const_iterator it = std::find(names_.begin(), names_.end(), name);
-	return it == names_.end() ? -1 : int(it - names_.begin());
-}
-
-LabelWord LabelLayout::pack(LabelWord word, int labeler, int label) const
-{
-	UASSERT(label >= 0 && label <= maxLabel(labeler));
-	const int mask = (1 << bits_[labeler]) - 1;
-	return LabelWord((word & ~(mask << shifts_[labeler])) | ((label + 1) << shifts_[labeler]));
-}
-
-int LabelLayout::label(LabelWord word, int labeler) const
-{
-	return ((word >> shifts_.at(labeler)) & ((1 << bits_[labeler]) - 1)) - 1;
-}
-
 LabelRaster::LabelRaster(int x0, int y0, float cellSize, int rows, int cols) :
 		x0_(x0),
 		y0_(y0),
 		cellSize_(cellSize),
-		words_(cv::Mat::zeros(rows, cols, CV_8UC1))
+		labels_(rows, cols, CV_8UC1, cv::Scalar(kNoVote))
 {
 	UASSERT(cellSize > 0.0f && rows > 0 && cols > 0 && rows <= UINT16_MAX && cols <= UINT16_MAX);
 }
 
-void LabelRaster::set(const LabelLayout & layout, int labeler, int row, int col, int label)
+void LabelRaster::set(int row, int col, int label)
 {
-	LabelWord & word = words_.at<LabelWord>(row, col);
-	word = layout.pack(word, labeler, label);
+	UASSERT(label >= 0 && label <= 127);
+	labels_.at<unsigned char>(row, col) = (unsigned char)label;
 }
 
-int LabelRaster::label(const LabelLayout & layout, int labeler, int row, int col) const
+int LabelRaster::label(int row, int col) const
 {
-	return layout.label(words_.at<LabelWord>(row, col), labeler);
+	const unsigned char label = labels_.at<unsigned char>(row, col);
+	return label == kNoVote ? -1 : label;
 }
 
-void LabelRaster::cells(const LabelLayout & layout, int labeler, std::vector<cv::Vec2f> & nothing, std::vector<cv::Vec3f> & labelled) const
+void LabelRaster::cells(std::vector<cv::Vec2f> & nothing, std::vector<cv::Vec3f> & labelled) const
 {
-	for(int row=0; row<words_.rows; ++row)
+	for(int row=0; row<labels_.rows; ++row)
 	{
-		for(int col=0; col<words_.cols; ++col)
+		for(int col=0; col<labels_.cols; ++col)
 		{
-			const int l = label(layout, labeler, row, col);
+			const int l = label(row, col);
 			if(l < 0)
 			{
 				continue;
@@ -154,16 +113,16 @@ cv::Mat LabelRaster::encode() const
 	{
 		return cv::Mat();
 	}
-	const size_t words = words_.total() * sizeof(LabelWord);
-	cv::Mat bytes(1, int(kHeaderBytes + words), CV_8UC1);
+	const size_t cells = labels_.total();
+	cv::Mat bytes(1, int(kHeaderBytes + cells), CV_8UC1);
 	unsigned char * out = bytes.data;
 	put(out, kVersion);
 	put(out, cellSize_);
 	put(out, int32_t(x0_));
 	put(out, int32_t(y0_));
-	put(out, uint16_t(words_.rows));
-	put(out, uint16_t(words_.cols));
-	std::memcpy(out, words_.data, words);
+	put(out, uint16_t(labels_.rows));
+	put(out, uint16_t(labels_.cols));
+	std::memcpy(out, labels_.data, cells);
 	return bytes;
 }
 
@@ -182,9 +141,9 @@ LabelRaster LabelRaster::decode(const cv::Mat & bytes)
 	const int32_t y0 = take<int32_t>(in);
 	const uint16_t rows = take<uint16_t>(in);
 	const uint16_t cols = take<uint16_t>(in);
-	UASSERT(bytes.total() == kHeaderBytes + size_t(rows) * cols * sizeof(LabelWord));
+	UASSERT(bytes.total() == kHeaderBytes + size_t(rows) * cols);
 	LabelRaster raster(x0, y0, cellSize, rows, cols);
-	std::memcpy(raster.words_.data, in, raster.words_.total() * sizeof(LabelWord));
+	std::memcpy(raster.labels_.data, in, raster.labels_.total());
 	return raster;
 }
 

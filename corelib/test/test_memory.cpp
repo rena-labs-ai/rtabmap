@@ -179,34 +179,6 @@ TEST(MemoryTest, InitFileDatabaseCreatesFile)
 	UFile::erase(dbPath.c_str());
 }
 
-TEST(MemoryTest, RefusesAMapMadeWithOtherLabelers)
-{
-	const std::string dbPath = uniqueDbPath();
-	ParametersMap made = defaultMemoryParams();
-	made[Parameters::kGridLabelers()] = "floorseg:2 floorplan:6";
-	ParametersMap other = made;
-	other[Parameters::kGridLabelers()] = "floorseg:2 floorplan:4";
-	{
-		Memory memory(made);
-		ASSERT_TRUE(memory.init(dbPath, true, made));
-		memory.close(true);
-	}
-	{
-		Memory memory(other);
-		EXPECT_THROW(memory.init(dbPath, false, other), UException);
-	}
-	{
-		Memory memory(made);
-		EXPECT_TRUE(memory.init(dbPath, false, made)) << "the refused session left the map as it was";
-		memory.close(false);
-	}
-	{
-		Memory memory(other);
-		EXPECT_THROW(memory.init(dbPath, false, other), UException);
-	}
-	UFile::erase(dbPath.c_str());
-}
-
 TEST(MemoryTest, CloseWithoutInitIsSafe)
 {
 	Memory memory(defaultMemoryParams());

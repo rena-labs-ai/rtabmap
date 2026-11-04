@@ -444,7 +444,7 @@ bool DBDriverSqlite3::connectDatabaseQuery(const std::string & url, bool overwri
 			return false;
 	}
 
-	// The label raster (see Parameters::kGridLabelers()) is a column databases made without
+	// The label raster (see LabelRaster) is a column databases made without
 	// it lack: added on open, or left absent (and unused) when read-only.
 	_labelRaster = uStrNumCmp(_version, "0.11.10") >= 0 && addDataColumn("label_raster", readOnly);
 

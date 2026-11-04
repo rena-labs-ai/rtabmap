@@ -74,9 +74,7 @@ LocalGridMaker::LocalGridMaker(const ParametersMap & parameters) :
 	noiseFilteringMinNeighbors_(Parameters::defaultGridNoiseFilteringMinNeighbors()),
 	scan2dUnknownSpaceFilled_(Parameters::defaultGridScan2dUnknownSpaceFilled()),
 	rayTracing_(Parameters::defaultGridRayTracing()),
-	objectMaxHeight_(Parameters::defaultGridObjectMaxHeight()),
-	labelLayout_(LabelLayout::parse(Parameters::defaultGridLabelers())),
-	groundLabeler_(Parameters::defaultGridGroundLabeler())
+	semanticSegmentation_(Parameters::defaultGridSemanticSegmentation())
 {
 	this->parseParameters(parameters);
 }
@@ -126,13 +124,7 @@ void LocalGridMaker::parseParameters(const ParametersMap & parameters)
 	Parameters::parse(parameters, Parameters::kGridNoiseFilteringMinNeighbors(), noiseFilteringMinNeighbors_);
 	Parameters::parse(parameters, Parameters::kGridScan2dUnknownSpaceFilled(), scan2dUnknownSpaceFilled_);
 	Parameters::parse(parameters, Parameters::kGridRayTracing(), rayTracing_);
-	Parameters::parse(parameters, Parameters::kGridObjectMaxHeight(), objectMaxHeight_);
-	std::string labelers;
-	if(Parameters::parse(parameters, Parameters::kGridLabelers(), labelers))
-	{
-		labelLayout_ = LabelLayout::parse(labelers);
-	}
-	Parameters::parse(parameters, Parameters::kGridGroundLabeler(), groundLabeler_);
+	Parameters::parse(parameters, Parameters::kGridSemanticSegmentation(), semanticSegmentation_);
 
 	// convert ROI from string to vector
 	ParametersMap::const_iterator iter;
@@ -253,49 +245,33 @@ std::pair<int, int> cellOf(const cv::Point3f & point, float cellSize)
 
 } // namespace
 
-LabelRaster LocalGridMaker::createLabelRaster(const SensorData & data) const
+LabelRaster LocalGridMaker::createLabelRaster(const std::vector<std::pair<SensorData, Transform> > & frames) const
 {
-	if(labelLayout_.size() == 0 || data.labelsRaw().empty() || !labelsOverDepth(data))
-	{
-		return LabelRaster();
-	}
-	const int labelers = data.labelsRaw().channels();
-	if(labelers != labelLayout_.size())
-	{
-		UWARN("The labels have %d channels, %s names %d labelers: no label raster.",
-				labelers, Parameters::kGridLabelers().c_str(), labelLayout_.size());
-		return LabelRaster();
-	}
 	if(maxGroundHeight_ <= 0.0f)
 	{
 		UWARN("%s must be set for a label raster, none made.", Parameters::kGridMaxGroundHeight().c_str());
 		return LabelRaster();
 	}
-	// Per cell and labeler, the points of each label (0: seen with nothing there).
-	std::map<std::pair<int, int>, std::vector<std::map<int, int> > > points;
-	forEachLabelledPoint(data, roiRatios_, rangeMin_, rangeMax_, [&](const unsigned char * labels, const cv::Point3f & point)
+	// Per cell, the points of each label (0: seen with nothing there).
+	std::map<std::pair<int, int>, std::map<int, int> > points;
+	for(const std::pair<SensorData, Transform> & frame : frames)
 	{
-		if(minGroundHeight_ != 0.0f && point.z < minGroundHeight_)
+		if(frame.first.labelsRaw().empty() || !labelsOverDepth(frame.first))
 		{
-			return;
+			continue;
 		}
-		std::vector<std::map<int, int> > * cell = 0;
-		for(int labeler=0; labeler<labelers; ++labeler)
+		forEachLabelledPoint(frame.first, roiRatios_, rangeMin_, rangeMax_, [&](const unsigned char * labels, const cv::Point3f & framePoint)
 		{
-			const int label = labels[labeler];
-			if(label > 127 || label > labelLayout_.maxLabel(labeler) ||
-				point.z > (label ? objectMaxHeight_ : maxGroundHeight_))
+			const int label = labels[0];
+			const cv::Point3f point = util3d::transformPoint(framePoint, frame.second);
+			if(label > 127 || (minGroundHeight_ != 0.0f && point.z < minGroundHeight_) ||
+				(label ? (maxObstacleHeight_ > 0.0f && point.z > maxObstacleHeight_) : point.z > maxGroundHeight_))
 			{
-				continue;
+				return;
 			}
-			if(!cell)
-			{
-				cell = &points[cellOf(point, cellSize_)];
-				cell->resize(labelers);
-			}
-			++(*cell)[labeler][label];
-		}
-	});
+			++points[cellOf(point, cellSize_)][label];
+		});
+	}
 	if(points.empty())
 	{
 		return LabelRaster();
@@ -304,26 +280,18 @@ LabelRaster LocalGridMaker::createLabelRaster(const SensorData & data) const
 	const int x1 = points.rbegin()->first.first;
 	int y0 = points.begin()->first.second;
 	int y1 = y0;
-	for(const std::pair<const std::pair<int, int>, std::vector<std::map<int, int> > > & cell : points)
+	for(const std::pair<const std::pair<int, int>, std::map<int, int> > & cell : points)
 	{
 		y0 = std::min(y0, cell.first.second);
 		y1 = std::max(y1, cell.first.second);
 	}
 	LabelRaster raster(x0, y0, cellSize_, y1 - y0 + 1, x1 - x0 + 1);
-	for(const std::pair<const std::pair<int, int>, std::vector<std::map<int, int> > > & cell : points)
+	for(const std::pair<const std::pair<int, int>, std::map<int, int> > & cell : points)
 	{
-		for(int labeler=0; labeler<labelers; ++labeler)
-		{
-			const std::map<int, int> & votes = cell.second[labeler];
-			if(votes.empty())
-			{
-				continue;
-			}
-			const std::map<int, int>::const_iterator best = std::max_element(votes.upper_bound(0), votes.end(),
-					[](const std::pair<const int, int> & a, const std::pair<const int, int> & b) {return a.second < b.second;});
-			raster.set(labelLayout_, labeler, cell.first.second - y0, cell.first.first - x0,
-					best == votes.end() ? 0 : best->first);
-		}
+		const std::map<int, int> & votes = cell.second;
+		const std::map<int, int>::const_iterator best = std::max_element(votes.upper_bound(0), votes.end(),
+				[](const std::pair<const int, int> & a, const std::pair<const int, int> & b) {return a.second < b.second;});
+		raster.set(cell.first.second - y0, cell.first.first - x0, best == votes.end() ? 0 : best->first);
 	}
 	return raster;
 }
@@ -336,17 +304,14 @@ bool LocalGridMaker::createSemanticCells(
 		cv::Mat & obstacleCells,
 		cv::Mat & emptyCells) const
 {
-	if(groundLabeler_.empty())
+	if(!semanticSegmentation_)
 	{
 		return false;
 	}
-	const int labeler = labelLayout_.index(groundLabeler_);
-	if(labeler < 0 || grid3D_ || data.labelsRaw().empty() || !labelsOverDepth(data) ||
-		data.labelsRaw().channels() != labelLayout_.size())
+	if(grid3D_ || data.labelsRaw().empty() || !labelsOverDepth(data))
 	{
-		UWARN("%s=\"%s\": not a labeler of %s, %s is true, or the labels are absent or do not match "
-				"them; ground from heights or normals.", Parameters::kGridGroundLabeler().c_str(),
-				groundLabeler_.c_str(), Parameters::kGridLabelers().c_str(), Parameters::kGrid3D().c_str());
+		UWARN("%s is true but %s is true, or the labels are absent or do not match the depth; "
+				"ground from heights or normals.", Parameters::kGridSemanticSegmentation().c_str(), Parameters::kGrid3D().c_str());
 		return false;
 	}
 	// level the points as segmentCloud() does: the robot's roll and pitch, not its yaw
@@ -358,7 +323,7 @@ bool LocalGridMaker::createSemanticCells(
 	pcl::IndicesPtr obstaclesIndices(new std::vector<int>);
 	forEachLabelledPoint(data, roiRatios_, rangeMin_, rangeMax_, [&](const unsigned char * labels, const cv::Point3f & point)
 	{
-		const int label = labels[labeler];
+		const int label = labels[0];
 		if(label > 127)
 		{
 			return; // not judged

@@ -1292,11 +1292,10 @@ TEST_F(DbDriverFixture, ExecuteNoResultRunsWithoutError)
 // The label raster has its own Data column, saved and loaded with the grid.
 TEST_F(DbDriverFixture, GetNodeDataLoadsTheLabelRaster)
 {
-	const LabelLayout layout = LabelLayout::parse("floor:2 objects:4 second:2");
 	LabelRaster raster(-3, 20, 0.05f, 2, 3);
-	raster.set(layout, 0, 0, 0, 1);
-	raster.set(layout, 1, 0, 1, 7);
-	raster.set(layout, 2, 1, 2, 2);
+	raster.set(0, 0, 1);
+	raster.set(0, 1, 7);
+	raster.set(1, 2, 2);
 
 	Signature * sig = new Signature(1);
 	attachSensorDataForDatabaseSave(*sig);
@@ -1310,6 +1309,6 @@ TEST_F(DbDriverFixture, GetNodeDataLoadsTheLabelRaster)
 	ASSERT_FALSE(loaded.empty());
 	const cv::Mat bytes = raster.encode();
 	EXPECT_EQ(cv::norm(loaded.encode(), bytes, cv::NORM_INF), 0.0);
-	EXPECT_EQ(loaded.label(layout, 2, 1, 2), 2);
-	EXPECT_EQ(loaded.label(layout, 1, 1, 2), -1);
+	EXPECT_EQ(loaded.label(1, 2), 2);
+	EXPECT_EQ(loaded.label(1, 1), -1);
 }

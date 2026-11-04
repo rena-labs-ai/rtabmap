@@ -106,25 +106,24 @@ public:
 			pcl::IndicesPtr * flatObstacles = 0) const; // output cloud indices
 
 	/**
-	 * @brief The label raster of @p data (see @ref LabelRaster): every labeler's label per
-	 * cell, from @p data's labels (channel i is labeler i of `Grid/Labelers`), within
-	 * `Grid/RangeMin`/`Grid/RangeMax` depth. Per labeler, a point labelled up to
-	 * `Grid/ObjectMaxHeight` votes for its label, a ground point (`Grid/MinGroundHeight` to
-	 * `Grid/MaxGroundHeight`) labelled 0 for seen with nothing there; a label above the
-	 * labeler's field or 127 is not judged. One label per labeler and cell: the one with the
-	 * most points, 0 when no other has any.
-	 * @return Empty when no labelers are set, or the labels are absent or do not match the
-	 * depth image or the labelers.
+	 * @brief A node's label raster (see @ref LabelRaster) from label frames: each a camera
+	 * frame (depth, its camera models, one label per depth pixel) and the pose of that frame's
+	 * base in the node's base frame, any rate, any time. Within `Grid/RangeMin`/`Grid/RangeMax`
+	 * depth, a point labelled 1-127 up to `Grid/MaxObstacleHeight` votes for its label, a
+	 * ground point (`Grid/MinGroundHeight` to `Grid/MaxGroundHeight`) labelled 0 for seen
+	 * with nothing there; 128-255 is not judged. One label per cell: the one with the most
+	 * points, 0 when no other has any.
+	 * @return Empty without labelled points.
 	 */
-	LabelRaster createLabelRaster(const SensorData & data) const;
-	const LabelLayout & labelLayout() const {return labelLayout_;}
+	LabelRaster createLabelRaster(const std::vector<std::pair<SensorData, Transform> > & frames) const;
 
 	/**
-	 * @brief Ground and obstacle cells of @p data's depth from its `Grid/GroundLabeler`
-	 * labels (2D grids only): label 0 is ground at any height, any other label an obstacle
-	 * up to `Grid/MaxObstacleHeight`, 128-255 left out; ray traced as the height path is.
-	 * @return False (cells untouched) when the labeler is not set or the labels are absent
-	 * or do not match: the caller maps by heights or normals instead.
+	 * @brief Ground and obstacle cells of @p data's depth from its labels, a ground mask
+	 * (`Grid/SemanticSegmentation`, 2D grids only): 0 is ground at any height, 1-127 an
+	 * obstacle up to `Grid/MaxObstacleHeight`, 128-255 left out; ray traced as the height
+	 * path is.
+	 * @return False (cells untouched) when `Grid/SemanticSegmentation` is off or the labels are
+	 * absent or do not match: the caller maps by heights or normals instead.
 	 */
 	bool createSemanticCells(const SensorData & data, const Transform & pose, cv::Point3f viewPoint,
 			cv::Mat & groundCells, cv::Mat & obstacleCells, cv::Mat & emptyCells) const;
@@ -224,9 +223,7 @@ protected:
 	int noiseFilteringMinNeighbors_;
 	bool scan2dUnknownSpaceFilled_;
 	bool rayTracing_;
-	float objectMaxHeight_;
-	LabelLayout labelLayout_;
-	std::string groundLabeler_;
+	bool semanticSegmentation_;
 };
 
 } /* namespace rtabmap */
