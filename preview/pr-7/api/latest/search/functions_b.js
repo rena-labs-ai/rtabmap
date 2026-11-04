@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['label_0',['label',['../classrtabmap_1_1LabelRaster.html#abe59ffc443ff4c2f721a49ee6ce0bdbf',1,'rtabmap::LabelRaster::label()'],['../classrtabmap_1_1LabelLayout.html#a7f32ca9242b188873559b5c7ca8a8a64',1,'rtabmap::LabelLayout::label()']]],
+  ['label_0',['label',['../classrtabmap_1_1LabelRaster.html#a94f09e78bcca0515f8334ceb605ab664',1,'rtabmap::LabelRaster']]],
   ['labellocation_1',['labelLocation',['../classrtabmap_1_1Rtabmap.html#af1fe8ed393237bc9ffa1ea93adf0ec9b',1,'rtabmap::Rtabmap']]],
   ['labelraster_2',['LabelRaster',['../classrtabmap_1_1LabelRaster.html#ac5bba4d1566016b15a82ced1459bbf52',1,'rtabmap::LabelRaster']]],
   ['labels_3',['labels',['../classrtabmap_1_1Statistics.html#afeb2fd18d35f6a760ffa46ca0ebe4e49',1,'rtabmap::Statistics']]],
@@ -31,7 +31,7 @@ var searchData=
   ['latitude_28',['latitude',['../classrtabmap_1_1GeodeticCoords.html#ac6f662384e5b4ac613d5678307eb95a7',1,'rtabmap::GeodeticCoords::latitude()'],['../classrtabmap_1_1GPS.html#a9b20f8a5bf2cba909b53ecd83d2b4c08',1,'rtabmap::GPS::latitude()']]],
   ['left_29',['left',['../classrtabmap_1_1StereoCameraModel.html#a064d29601c0ba13fc47584849e26b81b',1,'rtabmap::StereoCameraModel']]],
   ['length_30',['length',['../classUFile.html#ae1415739da256633ad417ac7d5fc2c11',1,'UFile::length(const std::string &amp;filePath)'],['../classUFile.html#a0c42f32c914b349d13103d0397c1b3c1',1,'UFile::length()']]],
-  ['lidar_31',['lidar',['../classrtabmap_1_1Lidar.html#a9d14987cd20918960d6b3705b66241ed',1,'rtabmap::Lidar::Lidar()'],['../classrtabmap_1_1SensorCaptureThread.html#aa6e5a6a53d621cda6e0b7f2ff35d33f0',1,'rtabmap::SensorCaptureThread::lidar()']]],
+  ['lidar_31',['lidar',['../classrtabmap_1_1SensorCaptureThread.html#aa6e5a6a53d621cda6e0b7f2ff35d33f0',1,'rtabmap::SensorCaptureThread::lidar()'],['../classrtabmap_1_1Lidar.html#a9d14987cd20918960d6b3705b66241ed',1,'rtabmap::Lidar::Lidar()']]],
   ['likelihood_32',['likelihood',['../classrtabmap_1_1Statistics.html#a4f3492b5cf6ff082d0061c9d7c67536f',1,'rtabmap::Statistics']]],
   ['limitkeypoints_33',['limitKeypoints',['../classrtabmap_1_1Feature2D.html#aa5c0258ede589769bc50c6d6071d595c',1,'rtabmap::Feature2D']]],
   ['linearacceleration_34',['linearAcceleration',['../classrtabmap_1_1IMU.html#a8fde3445664329d6432b632fca9db17a',1,'rtabmap::IMU']]],

@@ -49,7 +49,6 @@ var hierarchy =
     [ "rtabmap::GPS", "classrtabmap_1_1GPS.html", null ],
     [ "rtabmap::IMU", "classrtabmap_1_1IMU.html", null ],
     [ "rtabmap::IMUFilter", "classrtabmap_1_1IMUFilter.html", null ],
-    [ "rtabmap::LabelLayout", "classrtabmap_1_1LabelLayout.html", null ],
     [ "rtabmap::LabelRaster", "classrtabmap_1_1LabelRaster.html", null ],
     [ "rtabmap::Landmark", "classrtabmap_1_1Landmark.html", null ],
     [ "rtabmap::LaserScan", "classrtabmap_1_1LaserScan.html", null ],

@@ -106,7 +106,7 @@ $(document).ready(function(){initNavTree('classrtabmap_1_1LabelRaster.html','');
 </div><!--header-->
 <div class="contents">
 
-<p>One node's labels per local grid cell (see <a class="el" href="classrtabmap_1_1LocalGridMaker.html#a25e8238d722bc028cc1469a420f1091c" title="The label raster of data (see LabelRaster): every labeler&#39;s label per cell, from data&#39;s labels (chann...">LocalGridMaker::createLabelRaster()</a>): a raster over the cells its labelled points fall in, robot/base frame, each cell one 8-bit word of every labeler's label there, packed by a <a class="el" href="classrtabmap_1_1LabelLayout.html" title="The labelers of a labels image and the bits each has in a cell&#39;s 8-bit word (Parameters::kGridLabeler...">LabelLayout</a>. Saved with the node's occupancy grid (<a class="el" href="classrtabmap_1_1LabelRaster.html#aafbbecb93c23df2269ebeb5963648718" title="1×N CV_8UC1: version, cell size, x0, y0, rows, cols, then the words row by row.">encode()</a>); the layout is the map's (<a class="el" href="classrtabmap_1_1Parameters.html#ad7fb026f92cd0a2e4520de4f57d8ddaa" title="Key of parameter Grid/Labelers : uFormat(&quot;Labelers of the sensor data&#39;s labels (per-pixel labels alig...">Parameters::kGridLabelers()</a>).  
+<p>One node's labels per local grid cell (see <a class="el" href="classrtabmap_1_1LocalGridMaker.html#a07740a166654a7ac136cbf28351d7cb1" title="A node&#39;s label raster (see LabelRaster) from label frames: each a camera frame (depth,...">LocalGridMaker::createLabelRaster()</a>): a raster over the cells its label frames' points fall in, robot/base frame, each cell one label (1 byte): 0 seen with nothing there, 1-127 a label, 255 no vote. Saved with the node's occupancy grid (<a class="el" href="classrtabmap_1_1LabelRaster.html#aafbbecb93c23df2269ebeb5963648718" title="1×N CV_8UC1: version, cell size, x0, y0, rows, cols, then the labels row by row.">encode()</a>).  
  <a href="classrtabmap_1_1LabelRaster.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="LabelRaster_8h_source.html">LabelRaster.h</a>&gt;</code></p>
@@ -114,40 +114,41 @@ $(document).ready(function(){initNavTree('classrtabmap_1_1LabelRaster.html','');
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ac5bba4d1566016b15a82ced1459bbf52" id="r_ac5bba4d1566016b15a82ced1459bbf52"><td class="memItemLeft" align="right" valign="top"><a id="ac5bba4d1566016b15a82ced1459bbf52" name="ac5bba4d1566016b15a82ced1459bbf52"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>LabelRaster</b> (int x0, int y0, float cellSize, int rows, int cols)</td></tr>
+&#160;</td><td class="memItemRight" valign="bottom"><b>LabelRaster</b> (<a class="el" href="classrtabmap_1_1LabelRaster.html#adcfc213fdbc0abf9f317ffa1de422e9d">int</a> <a class="el" href="classrtabmap_1_1LabelRaster.html#adcfc213fdbc0abf9f317ffa1de422e9d">x0</a>, <a class="el" href="classrtabmap_1_1LabelRaster.html#adcfc213fdbc0abf9f317ffa1de422e9d">int</a> <a class="el" href="classrtabmap_1_1LabelRaster.html#adcfc213fdbc0abf9f317ffa1de422e9d">y0</a>, <a class="el" href="classrtabmap_1_1LabelRaster.html#adcfc213fdbc0abf9f317ffa1de422e9d">float</a> cellSize, <a class="el" href="classrtabmap_1_1LabelRaster.html#adcfc213fdbc0abf9f317ffa1de422e9d">int</a> rows, <a class="el" href="classrtabmap_1_1LabelRaster.html#adcfc213fdbc0abf9f317ffa1de422e9d">int</a> cols)</td></tr>
 <tr class="memdesc:ac5bba4d1566016b15a82ced1459bbf52"><td class="mdescLeft">&#160;</td><td class="mdescRight">Every cell no vote: row r, column c is the cell (x0 + c, y0 + r) of cellSize meters. <br /></td></tr>
 <tr class="separator:ac5bba4d1566016b15a82ced1459bbf52"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acf1f17109a2b8292e6a20c9e9ce3c3bf" id="r_acf1f17109a2b8292e6a20c9e9ce3c3bf"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrtabmap_1_1LabelRaster.html#acf1f17109a2b8292e6a20c9e9ce3c3bf">empty</a> () const</td></tr>
+<tr class="memitem:acf1f17109a2b8292e6a20c9e9ce3c3bf" id="r_acf1f17109a2b8292e6a20c9e9ce3c3bf"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classrtabmap_1_1LabelRaster.html#adcfc213fdbc0abf9f317ffa1de422e9d">bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrtabmap_1_1LabelRaster.html#acf1f17109a2b8292e6a20c9e9ce3c3bf">empty</a> () <a class="el" href="classrtabmap_1_1LabelRaster.html#adcfc213fdbc0abf9f317ffa1de422e9d">const</a></td></tr>
 <tr class="separator:acf1f17109a2b8292e6a20c9e9ce3c3bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4d7d07928a7d2cca4ec3c67934176eed" id="r_a4d7d07928a7d2cca4ec3c67934176eed"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrtabmap_1_1LabelRaster.html#a4d7d07928a7d2cca4ec3c67934176eed">rows</a> () const</td></tr>
+<tr class="memitem:a4d7d07928a7d2cca4ec3c67934176eed" id="r_a4d7d07928a7d2cca4ec3c67934176eed"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classrtabmap_1_1LabelRaster.html#adcfc213fdbc0abf9f317ffa1de422e9d">int</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrtabmap_1_1LabelRaster.html#a4d7d07928a7d2cca4ec3c67934176eed">rows</a> () <a class="el" href="classrtabmap_1_1LabelRaster.html#adcfc213fdbc0abf9f317ffa1de422e9d">const</a></td></tr>
 <tr class="separator:a4d7d07928a7d2cca4ec3c67934176eed"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab0a9d84fc4bbd69c9207a2e21d5e5f7f" id="r_ab0a9d84fc4bbd69c9207a2e21d5e5f7f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrtabmap_1_1LabelRaster.html#ab0a9d84fc4bbd69c9207a2e21d5e5f7f">cols</a> () const</td></tr>
+<tr class="memitem:ab0a9d84fc4bbd69c9207a2e21d5e5f7f" id="r_ab0a9d84fc4bbd69c9207a2e21d5e5f7f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classrtabmap_1_1LabelRaster.html#adcfc213fdbc0abf9f317ffa1de422e9d">int</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrtabmap_1_1LabelRaster.html#ab0a9d84fc4bbd69c9207a2e21d5e5f7f">cols</a> () <a class="el" href="classrtabmap_1_1LabelRaster.html#adcfc213fdbc0abf9f317ffa1de422e9d">const</a></td></tr>
 <tr class="separator:ab0a9d84fc4bbd69c9207a2e21d5e5f7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae49a05335ec557a1402982588d013266" id="r_ae49a05335ec557a1402982588d013266"><td class="memItemLeft" align="right" valign="top"><a id="ae49a05335ec557a1402982588d013266" name="ae49a05335ec557a1402982588d013266"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>set</b> (const <a class="el" href="classrtabmap_1_1LabelLayout.html">LabelLayout</a> &amp;layout, int labeler, int row, int col, int <a class="el" href="classrtabmap_1_1LabelRaster.html#abe59ffc443ff4c2f721a49ee6ce0bdbf">label</a>)</td></tr>
-<tr class="separator:ae49a05335ec557a1402982588d013266"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abe59ffc443ff4c2f721a49ee6ce0bdbf" id="r_abe59ffc443ff4c2f721a49ee6ce0bdbf"><td class="memItemLeft" align="right" valign="top"><a id="abe59ffc443ff4c2f721a49ee6ce0bdbf" name="abe59ffc443ff4c2f721a49ee6ce0bdbf"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>label</b> (const <a class="el" href="classrtabmap_1_1LabelLayout.html">LabelLayout</a> &amp;layout, int labeler, int row, int col) const</td></tr>
-<tr class="memdesc:abe59ffc443ff4c2f721a49ee6ce0bdbf"><td class="mdescLeft">&#160;</td><td class="mdescRight">labeler's label at cell (row, col), -1 for no vote. <br /></td></tr>
-<tr class="separator:abe59ffc443ff4c2f721a49ee6ce0bdbf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a311cb0e9eaa6818f5a53b7dbab82eed8" id="r_a311cb0e9eaa6818f5a53b7dbab82eed8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrtabmap_1_1LabelRaster.html#a311cb0e9eaa6818f5a53b7dbab82eed8">cells</a> (const <a class="el" href="classrtabmap_1_1LabelLayout.html">LabelLayout</a> &amp;layout, int labeler, std::vector&lt; cv::Vec2f &gt; &amp;nothing, std::vector&lt; cv::Vec3f &gt; &amp;labelled) const</td></tr>
-<tr class="separator:a311cb0e9eaa6818f5a53b7dbab82eed8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adcfc213fdbc0abf9f317ffa1de422e9d" id="r_adcfc213fdbc0abf9f317ffa1de422e9d"><td class="memItemLeft" align="right" valign="top"><a id="adcfc213fdbc0abf9f317ffa1de422e9d" name="adcfc213fdbc0abf9f317ffa1de422e9d"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>set</b> (int row, int col, int <a class="el" href="classrtabmap_1_1LabelRaster.html#a94f09e78bcca0515f8334ceb605ab664">label</a>)</td></tr>
+<tr class="memdesc:adcfc213fdbc0abf9f317ffa1de422e9d"><td class="mdescLeft">&#160;</td><td class="mdescRight">label: 0-127. <br /></td></tr>
+<tr class="separator:adcfc213fdbc0abf9f317ffa1de422e9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a94f09e78bcca0515f8334ceb605ab664" id="r_a94f09e78bcca0515f8334ceb605ab664"><td class="memItemLeft" align="right" valign="top"><a id="a94f09e78bcca0515f8334ceb605ab664" name="a94f09e78bcca0515f8334ceb605ab664"></a>
+<a class="el" href="classrtabmap_1_1LabelRaster.html#adcfc213fdbc0abf9f317ffa1de422e9d">int</a>&#160;</td><td class="memItemRight" valign="bottom"><b>label</b> (<a class="el" href="classrtabmap_1_1LabelRaster.html#adcfc213fdbc0abf9f317ffa1de422e9d">int</a> <a class="el" href="classrtabmap_1_1LabelRaster.html#adcfc213fdbc0abf9f317ffa1de422e9d">row</a>, <a class="el" href="classrtabmap_1_1LabelRaster.html#adcfc213fdbc0abf9f317ffa1de422e9d">int</a> <a class="el" href="classrtabmap_1_1LabelRaster.html#adcfc213fdbc0abf9f317ffa1de422e9d">col</a>) <a class="el" href="classrtabmap_1_1LabelRaster.html#adcfc213fdbc0abf9f317ffa1de422e9d">const</a></td></tr>
+<tr class="memdesc:a94f09e78bcca0515f8334ceb605ab664"><td class="mdescLeft">&#160;</td><td class="mdescRight">The label at cell (row, col), -1 for no vote. <br /></td></tr>
+<tr class="separator:a94f09e78bcca0515f8334ceb605ab664"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a665f8c593c448d0dbee6bfb9bd4a7d2c" id="r_a665f8c593c448d0dbee6bfb9bd4a7d2c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classrtabmap_1_1LabelRaster.html#adcfc213fdbc0abf9f317ffa1de422e9d">void</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrtabmap_1_1LabelRaster.html#a665f8c593c448d0dbee6bfb9bd4a7d2c">cells</a> (std::vector&lt; cv::Vec2f &gt; &amp;<a class="el" href="classrtabmap_1_1LabelRaster.html#adcfc213fdbc0abf9f317ffa1de422e9d">nothing</a>, std::vector&lt; cv::Vec3f &gt; &amp;<a class="el" href="classrtabmap_1_1LabelRaster.html#adcfc213fdbc0abf9f317ffa1de422e9d">labelled</a>) <a class="el" href="classrtabmap_1_1LabelRaster.html#adcfc213fdbc0abf9f317ffa1de422e9d">const</a></td></tr>
+<tr class="separator:a665f8c593c448d0dbee6bfb9bd4a7d2c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aafbbecb93c23df2269ebeb5963648718" id="r_aafbbecb93c23df2269ebeb5963648718"><td class="memItemLeft" align="right" valign="top"><a id="aafbbecb93c23df2269ebeb5963648718" name="aafbbecb93c23df2269ebeb5963648718"></a>
-cv::Mat&#160;</td><td class="memItemRight" valign="bottom"><b>encode</b> () const</td></tr>
-<tr class="memdesc:aafbbecb93c23df2269ebeb5963648718"><td class="mdescLeft">&#160;</td><td class="mdescRight">1×N <code>CV_8UC1</code>: version, cell size, x0, y0, rows, cols, then the words row by row. <br /></td></tr>
+cv::Mat&#160;</td><td class="memItemRight" valign="bottom"><b>encode</b> () <a class="el" href="classrtabmap_1_1LabelRaster.html#adcfc213fdbc0abf9f317ffa1de422e9d">const</a></td></tr>
+<tr class="memdesc:aafbbecb93c23df2269ebeb5963648718"><td class="mdescLeft">&#160;</td><td class="mdescRight">1×N <code>CV_8UC1</code>: version, cell size, x0, y0, rows, cols, then the labels row by row. <br /></td></tr>
 <tr class="separator:aafbbecb93c23df2269ebeb5963648718"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a6a540cb7abbe821dbafa3cba0b3ef1f2" id="r_a6a540cb7abbe821dbafa3cba0b3ef1f2"><td class="memItemLeft" align="right" valign="top"><a id="a6a540cb7abbe821dbafa3cba0b3ef1f2" name="a6a540cb7abbe821dbafa3cba0b3ef1f2"></a>
-static <a class="el" href="classrtabmap_1_1LabelRaster.html">LabelRaster</a>&#160;</td><td class="memItemRight" valign="bottom"><b>decode</b> (const cv::Mat &amp;bytes)</td></tr>
-<tr class="memdesc:a6a540cb7abbe821dbafa3cba0b3ef1f2"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classrtabmap_1_1LabelRaster.html#aafbbecb93c23df2269ebeb5963648718" title="1×N CV_8UC1: version, cell size, x0, y0, rows, cols, then the words row by row.">encode()</a>'s bytes back; empty for no bytes, an error for another version. <br /></td></tr>
+<a class="el" href="classrtabmap_1_1LabelRaster.html#adcfc213fdbc0abf9f317ffa1de422e9d">static</a> <a class="el" href="classrtabmap_1_1LabelRaster.html">LabelRaster</a>&#160;</td><td class="memItemRight" valign="bottom"><b>decode</b> (<a class="el" href="classrtabmap_1_1LabelRaster.html#adcfc213fdbc0abf9f317ffa1de422e9d">const</a> cv::Mat &amp;<a class="el" href="classrtabmap_1_1LabelRaster.html#adcfc213fdbc0abf9f317ffa1de422e9d">bytes</a>)</td></tr>
+<tr class="memdesc:a6a540cb7abbe821dbafa3cba0b3ef1f2"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classrtabmap_1_1LabelRaster.html#aafbbecb93c23df2269ebeb5963648718" title="1×N CV_8UC1: version, cell size, x0, y0, rows, cols, then the labels row by row.">encode()</a>'s bytes back; empty for no bytes, an error for another version. <br /></td></tr>
 <tr class="separator:a6a540cb7abbe821dbafa3cba0b3ef1f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>One node's labels per local grid cell (see <a class="el" href="classrtabmap_1_1LocalGridMaker.html#a25e8238d722bc028cc1469a420f1091c" title="The label raster of data (see LabelRaster): every labeler&#39;s label per cell, from data&#39;s labels (chann...">LocalGridMaker::createLabelRaster()</a>): a raster over the cells its labelled points fall in, robot/base frame, each cell one 8-bit word of every labeler's label there, packed by a <a class="el" href="classrtabmap_1_1LabelLayout.html" title="The labelers of a labels image and the bits each has in a cell&#39;s 8-bit word (Parameters::kGridLabeler...">LabelLayout</a>. Saved with the node's occupancy grid (<a class="el" href="classrtabmap_1_1LabelRaster.html#aafbbecb93c23df2269ebeb5963648718" title="1×N CV_8UC1: version, cell size, x0, y0, rows, cols, then the words row by row.">encode()</a>); the layout is the map's (<a class="el" href="classrtabmap_1_1Parameters.html#ad7fb026f92cd0a2e4520de4f57d8ddaa" title="Key of parameter Grid/Labelers : uFormat(&quot;Labelers of the sensor data&#39;s labels (per-pixel labels alig...">Parameters::kGridLabelers()</a>). </p>
+<div class="textblock"><p>One node's labels per local grid cell (see <a class="el" href="classrtabmap_1_1LocalGridMaker.html#a07740a166654a7ac136cbf28351d7cb1" title="A node&#39;s label raster (see LabelRaster) from label frames: each a camera frame (depth,...">LocalGridMaker::createLabelRaster()</a>): a raster over the cells its label frames' points fall in, robot/base frame, each cell one label (1 byte): 0 seen with nothing there, 1-127 a label, 255 no vote. Saved with the node's occupancy grid (<a class="el" href="classrtabmap_1_1LabelRaster.html#aafbbecb93c23df2269ebeb5963648718" title="1×N CV_8UC1: version, cell size, x0, y0, rows, cols, then the labels row by row.">encode()</a>). </p>
 
-<p class="definition">Definition at line <a class="el" href="LabelRaster_8h_source.html#l00085">85</a> of file <a class="el" href="LabelRaster_8h_source.html">LabelRaster.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LabelRaster_8h_source.html#l00045">45</a> of file <a class="el" href="LabelRaster_8h_source.html">LabelRaster.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a8934f3b5ff93b374d799d95d1c44c75b" name="a8934f3b5ff93b374d799d95d1c44c75b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a8934f3b5ff93b374d799d95d1c44c75b">&#9670;&#160;</a></span>LabelRaster()</h2>
@@ -172,7 +173,7 @@ static <a class="el" href="classrtabmap_1_1LabelRaster.html">LabelRaster</a>&#16
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="LabelRaster_8h_source.html#l00088">88</a> of file <a class="el" href="LabelRaster_8h_source.html">LabelRaster.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LabelRaster_8h_source.html#l00048">48</a> of file <a class="el" href="LabelRaster_8h_source.html">LabelRaster.h</a>.</p>
 
 </div>
 </div>
@@ -187,7 +188,7 @@ static <a class="el" href="classrtabmap_1_1LabelRaster.html">LabelRaster</a>&#16
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool rtabmap::LabelRaster::empty </td>
+          <td class="memname"><a class="el" href="classrtabmap_1_1LabelRaster.html#adcfc213fdbc0abf9f317ffa1de422e9d">bool</a> rtabmap::LabelRaster::empty </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -200,7 +201,7 @@ static <a class="el" href="classrtabmap_1_1LabelRaster.html">LabelRaster</a>&#16
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="LabelRaster_8h_source.html#l00092">92</a> of file <a class="el" href="LabelRaster_8h_source.html">LabelRaster.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LabelRaster_8h_source.html#l00052">52</a> of file <a class="el" href="LabelRaster_8h_source.html">LabelRaster.h</a>.</p>
 
 </div>
 </div>
@@ -214,7 +215,7 @@ static <a class="el" href="classrtabmap_1_1LabelRaster.html">LabelRaster</a>&#16
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">int rtabmap::LabelRaster::rows </td>
+          <td class="memname"><a class="el" href="classrtabmap_1_1LabelRaster.html#adcfc213fdbc0abf9f317ffa1de422e9d">int</a> rtabmap::LabelRaster::rows </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -227,7 +228,7 @@ static <a class="el" href="classrtabmap_1_1LabelRaster.html">LabelRaster</a>&#16
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="LabelRaster_8h_source.html#l00093">93</a> of file <a class="el" href="LabelRaster_8h_source.html">LabelRaster.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LabelRaster_8h_source.html#l00053">53</a> of file <a class="el" href="LabelRaster_8h_source.html">LabelRaster.h</a>.</p>
 
 </div>
 </div>
@@ -241,7 +242,7 @@ static <a class="el" href="classrtabmap_1_1LabelRaster.html">LabelRaster</a>&#16
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">int rtabmap::LabelRaster::cols </td>
+          <td class="memname"><a class="el" href="classrtabmap_1_1LabelRaster.html#adcfc213fdbc0abf9f317ffa1de422e9d">int</a> rtabmap::LabelRaster::cols </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -254,31 +255,19 @@ static <a class="el" href="classrtabmap_1_1LabelRaster.html">LabelRaster</a>&#16
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="LabelRaster_8h_source.html#l00094">94</a> of file <a class="el" href="LabelRaster_8h_source.html">LabelRaster.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LabelRaster_8h_source.html#l00054">54</a> of file <a class="el" href="LabelRaster_8h_source.html">LabelRaster.h</a>.</p>
 
 </div>
 </div>
-<a id="a311cb0e9eaa6818f5a53b7dbab82eed8" name="a311cb0e9eaa6818f5a53b7dbab82eed8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a311cb0e9eaa6818f5a53b7dbab82eed8">&#9670;&#160;</a></span>cells()</h2>
+<a id="a665f8c593c448d0dbee6bfb9bd4a7d2c" name="a665f8c593c448d0dbee6bfb9bd4a7d2c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a665f8c593c448d0dbee6bfb9bd4a7d2c">&#9670;&#160;</a></span>cells()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void rtabmap::LabelRaster::cells </td>
+          <td class="memname"><a class="el" href="classrtabmap_1_1LabelRaster.html#adcfc213fdbc0abf9f317ffa1de422e9d">void</a> rtabmap::LabelRaster::cells </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classrtabmap_1_1LabelLayout.html">LabelLayout</a> &amp;&#160;</td>
-          <td class="paramname"><em>layout</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>labeler</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
           <td class="paramtype">std::vector&lt; cv::Vec2f &gt; &amp;&#160;</td>
           <td class="paramname"><em>nothing</em>, </td>
         </tr>
@@ -295,7 +284,7 @@ static <a class="el" href="classrtabmap_1_1LabelRaster.html">LabelRaster</a>&#16
         </tr>
       </table>
 </div><div class="memdoc">
-<p>The cells labeler voted on, centres in the robot/base frame: seen with nothing there (label 0) in <code>nothing</code>, (x, y, label) in <code>labelled</code>. </p>
+<p>The cells voted on, centres in the robot/base frame: seen with nothing there (label 0) in <code>nothing</code>, (x, y, label) in <code>labelled</code>. </p>
 
 </div>
 </div>

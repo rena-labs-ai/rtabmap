@@ -67,7 +67,6 @@ var annotated_dup =
       [ "IMUFilter", "classrtabmap_1_1IMUFilter.html", "classrtabmap_1_1IMUFilter" ],
       [ "IMUThread", "classrtabmap_1_1IMUThread.html", "classrtabmap_1_1IMUThread" ],
       [ "KAZE", "classrtabmap_1_1KAZE.html", null ],
-      [ "LabelLayout", "classrtabmap_1_1LabelLayout.html", "classrtabmap_1_1LabelLayout" ],
       [ "LabelRaster", "classrtabmap_1_1LabelRaster.html", "classrtabmap_1_1LabelRaster" ],
       [ "Landmark", "classrtabmap_1_1Landmark.html", "classrtabmap_1_1Landmark" ],
       [ "LaserScan", "classrtabmap_1_1LaserScan.html", "classrtabmap_1_1LaserScan" ],

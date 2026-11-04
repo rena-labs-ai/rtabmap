@@ -5294,33 +5294,15 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a7a8caafd0dece0ff8292b697f523b3b6" id="r_a7a8caafd0dece0ff8292b697f523b3b6"><td class="memItemLeft" align="right" valign="top">static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrtabmap_1_1Parameters.html#a7a8caafd0dece0ff8292b697f523b3b6">typeGridMaxGroundHeight</a> ()</td></tr>
 <tr class="memdesc:a7a8caafd0dece0ff8292b697f523b3b6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of parameter Grid/MaxGroundHeight , as a string: float .  <br /></td></tr>
 <tr class="separator:a7a8caafd0dece0ff8292b697f523b3b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad7fb026f92cd0a2e4520de4f57d8ddaa" id="r_ad7fb026f92cd0a2e4520de4f57d8ddaa"><td class="memItemLeft" align="right" valign="top">static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrtabmap_1_1Parameters.html#ad7fb026f92cd0a2e4520de4f57d8ddaa">kGridLabelers</a> ()</td></tr>
-<tr class="memdesc:ad7fb026f92cd0a2e4520de4f57d8ddaa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Key of parameter Grid/Labelers : uFormat("Labelers of the sensor data's labels (per-pixel labels aligned with the depth image), one per channel in order, as name:bits, e.g. \"floorseg:2 floorplan:6\" (8 bits in all at most). Each node's label raster packs every labeler's label per local grid cell into its bits (0=no vote, else label + 1; labels 1-127, 0=seen with nothing, 128-255=not judged): what each labeler's ObjectGrid is assembled from. A map keeps the labelers it was made with and refuses others. Empty=disabled. See \"%s\".", <a class="el" href="classrtabmap_1_1Parameters.html#a307086147a3e8ad7bd739b1c3d0a6b80" title="Key of parameter Grid/ObjectMaxHeight : uFormat(&quot;[%s] Maximum height of labelled points: points label...">kGridObjectMaxHeight()</a>.c_str()) Default value: "" (string).  <br /></td></tr>
-<tr class="separator:ad7fb026f92cd0a2e4520de4f57d8ddaa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a70f55af61c708d485e38dae5db3005fa" id="r_a70f55af61c708d485e38dae5db3005fa"><td class="memItemLeft" align="right" valign="top">static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrtabmap_1_1Parameters.html#a70f55af61c708d485e38dae5db3005fa">defaultGridLabelers</a> ()</td></tr>
-<tr class="memdesc:a70f55af61c708d485e38dae5db3005fa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default value of parameter Grid/Labelers : "" .  <br /></td></tr>
-<tr class="separator:a70f55af61c708d485e38dae5db3005fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af8783609ec0c994d08815ad4fc39e22f" id="r_af8783609ec0c994d08815ad4fc39e22f"><td class="memItemLeft" align="right" valign="top">static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrtabmap_1_1Parameters.html#af8783609ec0c994d08815ad4fc39e22f">typeGridLabelers</a> ()</td></tr>
-<tr class="memdesc:af8783609ec0c994d08815ad4fc39e22f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of parameter Grid/Labelers , as a string: string.  <br /></td></tr>
-<tr class="separator:af8783609ec0c994d08815ad4fc39e22f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a860363fae41f48948010810682e97f91" id="r_a860363fae41f48948010810682e97f91"><td class="memItemLeft" align="right" valign="top">static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrtabmap_1_1Parameters.html#a860363fae41f48948010810682e97f91">kGridGroundLabeler</a> ()</td></tr>
-<tr class="memdesc:a860363fae41f48948010810682e97f91"><td class="mdescLeft">&#160;</td><td class="mdescRight">Key of parameter Grid/GroundLabeler : uFormat("A labeler of \"%s\" (0 bits when only this uses it) whose labels decide ground and obstacles of a depth image instead of heights or normals: label 0 is ground at any height, any other label an obstacle up to \"%s\", 128-255 not judged (left out). Ramps are ground; anything the labeler does not judge is not mapped. Empty=disabled.", <a class="el" href="classrtabmap_1_1Parameters.html#ad7fb026f92cd0a2e4520de4f57d8ddaa" title="Key of parameter Grid/Labelers : uFormat(&quot;Labelers of the sensor data&#39;s labels (per-pixel labels alig...">kGridLabelers()</a>.c_str(), <a class="el" href="classrtabmap_1_1Parameters.html#a3537ee9eac938f50656016ab342a4d2a" title="Key of parameter Grid/MaxObstacleHeight : &quot;Maximum obstacles height (0=disabled).&quot; Default value: 0....">kGridMaxObstacleHeight()</a>.c_str()) Default value: "" (string).  <br /></td></tr>
-<tr class="separator:a860363fae41f48948010810682e97f91"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a49934f3dd8c11a4005d7c75d93861711" id="r_a49934f3dd8c11a4005d7c75d93861711"><td class="memItemLeft" align="right" valign="top">static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrtabmap_1_1Parameters.html#a49934f3dd8c11a4005d7c75d93861711">defaultGridGroundLabeler</a> ()</td></tr>
-<tr class="memdesc:a49934f3dd8c11a4005d7c75d93861711"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default value of parameter Grid/GroundLabeler : "" .  <br /></td></tr>
-<tr class="separator:a49934f3dd8c11a4005d7c75d93861711"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a848481c70f34ea73b49a9c4d5d80d22f" id="r_a848481c70f34ea73b49a9c4d5d80d22f"><td class="memItemLeft" align="right" valign="top">static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrtabmap_1_1Parameters.html#a848481c70f34ea73b49a9c4d5d80d22f">typeGridGroundLabeler</a> ()</td></tr>
-<tr class="memdesc:a848481c70f34ea73b49a9c4d5d80d22f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of parameter Grid/GroundLabeler , as a string: string.  <br /></td></tr>
-<tr class="separator:a848481c70f34ea73b49a9c4d5d80d22f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a307086147a3e8ad7bd739b1c3d0a6b80" id="r_a307086147a3e8ad7bd739b1c3d0a6b80"><td class="memItemLeft" align="right" valign="top">static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrtabmap_1_1Parameters.html#a307086147a3e8ad7bd739b1c3d0a6b80">kGridObjectMaxHeight</a> ()</td></tr>
-<tr class="memdesc:a307086147a3e8ad7bd739b1c3d0a6b80"><td class="mdescLeft">&#160;</td><td class="mdescRight">Key of parameter Grid/ObjectMaxHeight : uFormat("[%s] Maximum height of labelled points: points labelled up to this height, and ground points (under \"%s\") labelled 0, vote for their cell's label.", <a class="el" href="classrtabmap_1_1Parameters.html#ad7fb026f92cd0a2e4520de4f57d8ddaa" title="Key of parameter Grid/Labelers : uFormat(&quot;Labelers of the sensor data&#39;s labels (per-pixel labels alig...">kGridLabelers()</a>.c_str(), <a class="el" href="classrtabmap_1_1Parameters.html#a85aa414c16d0b4dd0081358e165d1c90" title="Key of parameter Grid/MaxGroundHeight : uFormat(&quot;Maximum ground height (0=disabled)....">kGridMaxGroundHeight()</a>.c_str()) Default value: 0.5 ( float ).  <br /></td></tr>
-<tr class="separator:a307086147a3e8ad7bd739b1c3d0a6b80"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aadc595c505895e4e069f1f8853bb9a5f" id="r_aadc595c505895e4e069f1f8853bb9a5f"><td class="memItemLeft" align="right" valign="top">static float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrtabmap_1_1Parameters.html#aadc595c505895e4e069f1f8853bb9a5f">defaultGridObjectMaxHeight</a> ()</td></tr>
-<tr class="memdesc:aadc595c505895e4e069f1f8853bb9a5f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default value of parameter Grid/ObjectMaxHeight : 0.5 .  <br /></td></tr>
-<tr class="separator:aadc595c505895e4e069f1f8853bb9a5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac141f1728dfd87b5703cc2ad4bdacaba" id="r_ac141f1728dfd87b5703cc2ad4bdacaba"><td class="memItemLeft" align="right" valign="top">static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrtabmap_1_1Parameters.html#ac141f1728dfd87b5703cc2ad4bdacaba">typeGridObjectMaxHeight</a> ()</td></tr>
-<tr class="memdesc:ac141f1728dfd87b5703cc2ad4bdacaba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of parameter Grid/ObjectMaxHeight , as a string: float .  <br /></td></tr>
-<tr class="separator:ac141f1728dfd87b5703cc2ad4bdacaba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3727d53bcb883ea1498793d63d96ea04" id="r_a3727d53bcb883ea1498793d63d96ea04"><td class="memItemLeft" align="right" valign="top">static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrtabmap_1_1Parameters.html#a3727d53bcb883ea1498793d63d96ea04">kGridSemanticSegmentation</a> ()</td></tr>
+<tr class="memdesc:a3727d53bcb883ea1498793d63d96ea04"><td class="mdescLeft">&#160;</td><td class="mdescRight">Key of parameter Grid/SemanticSegmentation : uFormat("Segment ground from obstacles of a depth image using the sensor data's labels (a ground mask per pixel, aligned with the depth) instead of heights or normals (2D grids only): 0 ground at any height, 1-127 an obstacle up to \"%s\", 128-255 not judged (left out).", <a class="el" href="classrtabmap_1_1Parameters.html#a3537ee9eac938f50656016ab342a4d2a" title="Key of parameter Grid/MaxObstacleHeight : &quot;Maximum obstacles height (0=disabled).&quot; Default value: 0....">kGridMaxObstacleHeight()</a>.c_str()) Default value: false ( bool ).  <br /></td></tr>
+<tr class="separator:a3727d53bcb883ea1498793d63d96ea04"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a691de2bf5c102198fbf7c8722e5d1af6" id="r_a691de2bf5c102198fbf7c8722e5d1af6"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrtabmap_1_1Parameters.html#a691de2bf5c102198fbf7c8722e5d1af6">defaultGridSemanticSegmentation</a> ()</td></tr>
+<tr class="memdesc:a691de2bf5c102198fbf7c8722e5d1af6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default value of parameter Grid/SemanticSegmentation : false .  <br /></td></tr>
+<tr class="separator:a691de2bf5c102198fbf7c8722e5d1af6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a221a25f38ef9869c924eb529806a50cb" id="r_a221a25f38ef9869c924eb529806a50cb"><td class="memItemLeft" align="right" valign="top">static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrtabmap_1_1Parameters.html#a221a25f38ef9869c924eb529806a50cb">typeGridSemanticSegmentation</a> ()</td></tr>
+<tr class="memdesc:a221a25f38ef9869c924eb529806a50cb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of parameter Grid/SemanticSegmentation , as a string: bool .  <br /></td></tr>
+<tr class="separator:a221a25f38ef9869c924eb529806a50cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0de6af7ecde2f2dd63297cd2f4cb2574" id="r_a0de6af7ecde2f2dd63297cd2f4cb2574"><td class="memItemLeft" align="right" valign="top">static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrtabmap_1_1Parameters.html#a0de6af7ecde2f2dd63297cd2f4cb2574">kGridMaxGroundAngle</a> ()</td></tr>
 <tr class="memdesc:a0de6af7ecde2f2dd63297cd2f4cb2574"><td class="mdescLeft">&#160;</td><td class="mdescRight">Key of parameter Grid/MaxGroundAngle : uFormat("[%s=true] Maximum angle (degrees) between point's normal to ground's normal to label it as ground. Points with higher angle difference are considered as obstacles.", <a class="el" href="classrtabmap_1_1Parameters.html#a70947485e501b5de0351fef74c55aca9" title="Key of parameter Grid/NormalsSegmentation : &quot;Segment ground from obstacles using point normals,...">kGridNormalsSegmentation()</a>.c_str()) Default value: 45 ( float ).  <br /></td></tr>
 <tr class="separator:a0de6af7ecde2f2dd63297cd2f4cb2574"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -5843,7 +5825,7 @@ static std::string&#160;</td><td class="memItemRight" valign="bottom"><b>createD
 <div class="line"><span class="keywordtype">int</span> width = Parameters::defaultVideoImageWidth(); <span class="comment">// theDefaultValue = 640</span></div>
 <div class="line">std::string theKey = Parameters::kVideoImageWidth(); <span class="comment">// theKey = &quot;Video/ImageWidth&quot;</span></div>
 <div class="line">std::string strValue = Util::value(<a class="code hl_function" href="classrtabmap_1_1Parameters.html#a3921b82495e0308f8cfcbdb8ef072e21">Parameters::getDefaultParameters</a>(), theKey); <span class="comment">// strValue = &quot;640&quot;</span></div>
-<div class="ttc" id="aclassrtabmap_1_1Parameters_html_a3921b82495e0308f8cfcbdb8ef072e21"><div class="ttname"><a href="classrtabmap_1_1Parameters.html#a3921b82495e0308f8cfcbdb8ef072e21">rtabmap::Parameters::getDefaultParameters</a></div><div class="ttdeci">static const ParametersMap &amp; getDefaultParameters()</div><div class="ttdef"><b>Definition</b> <a href="Parameters_8h_source.html#l01003">Parameters.h:1003</a></div></div>
+<div class="ttc" id="aclassrtabmap_1_1Parameters_html_a3921b82495e0308f8cfcbdb8ef072e21"><div class="ttname"><a href="classrtabmap_1_1Parameters.html#a3921b82495e0308f8cfcbdb8ef072e21">rtabmap::Parameters::getDefaultParameters</a></div><div class="ttdeci">static const ParametersMap &amp; getDefaultParameters()</div><div class="ttdef"><b>Definition</b> <a href="Parameters_8h_source.html#l01001">Parameters.h:1001</a></div></div>
 </div><!-- fragment --> <dl class="section see"><dt>See also</dt><dd><a class="el" href="classrtabmap_1_1Parameters.html#a3921b82495e0308f8cfcbdb8ef072e21">getDefaultParameters()</a> </dd>
 <dd>
 The <a class="el" href="parameters.html">Parameter reference</a> page, which lists every parameter with its type, default value and description. </dd></dl>
@@ -55962,8 +55944,8 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 </div>
 </div>
-<a id="ad7fb026f92cd0a2e4520de4f57d8ddaa" name="ad7fb026f92cd0a2e4520de4f57d8ddaa"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad7fb026f92cd0a2e4520de4f57d8ddaa">&#9670;&#160;</a></span>kGridLabelers()</h2>
+<a id="a3727d53bcb883ea1498793d63d96ea04" name="a3727d53bcb883ea1498793d63d96ea04"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3727d53bcb883ea1498793d63d96ea04">&#9670;&#160;</a></span>kGridSemanticSegmentation()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -55972,7 +55954,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static std::string rtabmap::Parameters::kGridLabelers </td>
+          <td class="memname">static std::string rtabmap::Parameters::kGridSemanticSegmentation </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -55985,14 +55967,14 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 </table>
 </div><div class="memdoc">
 
-<p>Key of parameter Grid/Labelers : uFormat("Labelers of the sensor data's labels (per-pixel labels aligned with the depth image), one per channel in order, as name:bits, e.g. \"floorseg:2 floorplan:6\" (8 bits in all at most). Each node's label raster packs every labeler's label per local grid cell into its bits (0=no vote, else label + 1; labels 1-127, 0=seen with nothing, 128-255=not judged): what each labeler's ObjectGrid is assembled from. A map keeps the labelers it was made with and refuses others. Empty=disabled. See \"%s\".", <a class="el" href="classrtabmap_1_1Parameters.html#a307086147a3e8ad7bd739b1c3d0a6b80" title="Key of parameter Grid/ObjectMaxHeight : uFormat(&quot;[%s] Maximum height of labelled points: points label...">kGridObjectMaxHeight()</a>.c_str()) Default value: "" (string). </p>
+<p>Key of parameter Grid/SemanticSegmentation : uFormat("Segment ground from obstacles of a depth image using the sensor data's labels (a ground mask per pixel, aligned with the depth) instead of heights or normals (2D grids only): 0 ground at any height, 1-127 an obstacle up to \"%s\", 128-255 not judged (left out).", <a class="el" href="classrtabmap_1_1Parameters.html#a3537ee9eac938f50656016ab342a4d2a" title="Key of parameter Grid/MaxObstacleHeight : &quot;Maximum obstacles height (0=disabled).&quot; Default value: 0....">kGridMaxObstacleHeight()</a>.c_str()) Default value: false ( bool ). </p>
 
 <p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00934">934</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
-<a id="a70f55af61c708d485e38dae5db3005fa" name="a70f55af61c708d485e38dae5db3005fa"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a70f55af61c708d485e38dae5db3005fa">&#9670;&#160;</a></span>defaultGridLabelers()</h2>
+<a id="a691de2bf5c102198fbf7c8722e5d1af6" name="a691de2bf5c102198fbf7c8722e5d1af6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a691de2bf5c102198fbf7c8722e5d1af6">&#9670;&#160;</a></span>defaultGridSemanticSegmentation()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -56001,7 +55983,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static std::string rtabmap::Parameters::defaultGridLabelers </td>
+          <td class="memname">static bool rtabmap::Parameters::defaultGridSemanticSegmentation </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -56014,14 +55996,14 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 </table>
 </div><div class="memdoc">
 
-<p>Default value of parameter Grid/Labelers : "" . </p>
+<p>Default value of parameter Grid/SemanticSegmentation : false . </p>
 
 <p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00934">934</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
-<a id="af8783609ec0c994d08815ad4fc39e22f" name="af8783609ec0c994d08815ad4fc39e22f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af8783609ec0c994d08815ad4fc39e22f">&#9670;&#160;</a></span>typeGridLabelers()</h2>
+<a id="a221a25f38ef9869c924eb529806a50cb" name="a221a25f38ef9869c924eb529806a50cb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a221a25f38ef9869c924eb529806a50cb">&#9670;&#160;</a></span>typeGridSemanticSegmentation()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -56030,7 +56012,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static std::string rtabmap::Parameters::typeGridLabelers </td>
+          <td class="memname">static std::string rtabmap::Parameters::typeGridSemanticSegmentation </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -56043,183 +56025,9 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 </table>
 </div><div class="memdoc">
 
-<p>Type of parameter Grid/Labelers , as a string: string. </p>
+<p>Type of parameter Grid/SemanticSegmentation , as a string: bool . </p>
 
 <p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00934">934</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
-
-</div>
-</div>
-<a id="a860363fae41f48948010810682e97f91" name="a860363fae41f48948010810682e97f91"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a860363fae41f48948010810682e97f91">&#9670;&#160;</a></span>kGridGroundLabeler()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static std::string rtabmap::Parameters::kGridGroundLabeler </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Key of parameter Grid/GroundLabeler : uFormat("A labeler of \"%s\" (0 bits when only this uses it) whose labels decide ground and obstacles of a depth image instead of heights or normals: label 0 is ground at any height, any other label an obstacle up to \"%s\", 128-255 not judged (left out). Ramps are ground; anything the labeler does not judge is not mapped. Empty=disabled.", <a class="el" href="classrtabmap_1_1Parameters.html#ad7fb026f92cd0a2e4520de4f57d8ddaa" title="Key of parameter Grid/Labelers : uFormat(&quot;Labelers of the sensor data&#39;s labels (per-pixel labels alig...">kGridLabelers()</a>.c_str(), <a class="el" href="classrtabmap_1_1Parameters.html#a3537ee9eac938f50656016ab342a4d2a" title="Key of parameter Grid/MaxObstacleHeight : &quot;Maximum obstacles height (0=disabled).&quot; Default value: 0....">kGridMaxObstacleHeight()</a>.c_str()) Default value: "" (string). </p>
-
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00935">935</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
-
-</div>
-</div>
-<a id="a49934f3dd8c11a4005d7c75d93861711" name="a49934f3dd8c11a4005d7c75d93861711"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a49934f3dd8c11a4005d7c75d93861711">&#9670;&#160;</a></span>defaultGridGroundLabeler()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static std::string rtabmap::Parameters::defaultGridGroundLabeler </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Default value of parameter Grid/GroundLabeler : "" . </p>
-
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00935">935</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
-
-</div>
-</div>
-<a id="a848481c70f34ea73b49a9c4d5d80d22f" name="a848481c70f34ea73b49a9c4d5d80d22f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a848481c70f34ea73b49a9c4d5d80d22f">&#9670;&#160;</a></span>typeGridGroundLabeler()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static std::string rtabmap::Parameters::typeGridGroundLabeler </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Type of parameter Grid/GroundLabeler , as a string: string. </p>
-
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00935">935</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
-
-</div>
-</div>
-<a id="a307086147a3e8ad7bd739b1c3d0a6b80" name="a307086147a3e8ad7bd739b1c3d0a6b80"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a307086147a3e8ad7bd739b1c3d0a6b80">&#9670;&#160;</a></span>kGridObjectMaxHeight()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static std::string rtabmap::Parameters::kGridObjectMaxHeight </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Key of parameter Grid/ObjectMaxHeight : uFormat("[%s] Maximum height of labelled points: points labelled up to this height, and ground points (under \"%s\") labelled 0, vote for their cell's label.", <a class="el" href="classrtabmap_1_1Parameters.html#ad7fb026f92cd0a2e4520de4f57d8ddaa" title="Key of parameter Grid/Labelers : uFormat(&quot;Labelers of the sensor data&#39;s labels (per-pixel labels alig...">kGridLabelers()</a>.c_str(), <a class="el" href="classrtabmap_1_1Parameters.html#a85aa414c16d0b4dd0081358e165d1c90" title="Key of parameter Grid/MaxGroundHeight : uFormat(&quot;Maximum ground height (0=disabled)....">kGridMaxGroundHeight()</a>.c_str()) Default value: 0.5 ( float ). </p>
-
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00936">936</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
-
-</div>
-</div>
-<a id="aadc595c505895e4e069f1f8853bb9a5f" name="aadc595c505895e4e069f1f8853bb9a5f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aadc595c505895e4e069f1f8853bb9a5f">&#9670;&#160;</a></span>defaultGridObjectMaxHeight()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static float rtabmap::Parameters::defaultGridObjectMaxHeight </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Default value of parameter Grid/ObjectMaxHeight : 0.5 . </p>
-
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00936">936</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
-
-</div>
-</div>
-<a id="ac141f1728dfd87b5703cc2ad4bdacaba" name="ac141f1728dfd87b5703cc2ad4bdacaba"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac141f1728dfd87b5703cc2ad4bdacaba">&#9670;&#160;</a></span>typeGridObjectMaxHeight()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static std::string rtabmap::Parameters::typeGridObjectMaxHeight </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Type of parameter Grid/ObjectMaxHeight , as a string: float . </p>
-
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00936">936</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -56248,7 +56056,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Key of parameter Grid/MaxGroundAngle : uFormat("[%s=true] Maximum angle (degrees) between point's normal to ground's normal to label it as ground. Points with higher angle difference are considered as obstacles.", <a class="el" href="classrtabmap_1_1Parameters.html#a70947485e501b5de0351fef74c55aca9" title="Key of parameter Grid/NormalsSegmentation : &quot;Segment ground from obstacles using point normals,...">kGridNormalsSegmentation()</a>.c_str()) Default value: 45 ( float ). </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00937">937</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00935">935</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -56277,7 +56085,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Default value of parameter Grid/MaxGroundAngle : 45 . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00937">937</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00935">935</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -56306,7 +56114,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Type of parameter Grid/MaxGroundAngle , as a string: float . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00937">937</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00935">935</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -56335,7 +56143,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Key of parameter Grid/NormalK : uFormat("[%s=true] K neighbors to compute normals.", <a class="el" href="classrtabmap_1_1Parameters.html#a70947485e501b5de0351fef74c55aca9" title="Key of parameter Grid/NormalsSegmentation : &quot;Segment ground from obstacles using point normals,...">kGridNormalsSegmentation()</a>.c_str()) Default value: 20 ( int ). </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00938">938</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00936">936</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -56364,7 +56172,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Default value of parameter Grid/NormalK : 20 . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00938">938</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00936">936</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -56393,7 +56201,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Type of parameter Grid/NormalK , as a string: int . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00938">938</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00936">936</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -56422,7 +56230,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Key of parameter Grid/ClusterRadius : uFormat("[%s=true] Cluster maximum radius.", <a class="el" href="classrtabmap_1_1Parameters.html#a70947485e501b5de0351fef74c55aca9" title="Key of parameter Grid/NormalsSegmentation : &quot;Segment ground from obstacles using point normals,...">kGridNormalsSegmentation()</a>.c_str()) Default value: 0.1 ( float ). </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00939">939</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00937">937</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -56451,7 +56259,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Default value of parameter Grid/ClusterRadius : 0.1 . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00939">939</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00937">937</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -56480,7 +56288,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Type of parameter Grid/ClusterRadius , as a string: float . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00939">939</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00937">937</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -56509,7 +56317,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Key of parameter Grid/MinClusterSize : uFormat("[%s=true] Minimum cluster size to project the points.", <a class="el" href="classrtabmap_1_1Parameters.html#a70947485e501b5de0351fef74c55aca9" title="Key of parameter Grid/NormalsSegmentation : &quot;Segment ground from obstacles using point normals,...">kGridNormalsSegmentation()</a>.c_str()) Default value: 10 ( int ). </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00940">940</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00938">938</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -56538,7 +56346,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Default value of parameter Grid/MinClusterSize : 10 . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00940">940</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00938">938</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -56567,7 +56375,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Type of parameter Grid/MinClusterSize , as a string: int . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00940">940</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00938">938</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -56596,7 +56404,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Key of parameter Grid/FlatObstacleDetected : uFormat("[%s=true] Flat obstacles detected.", <a class="el" href="classrtabmap_1_1Parameters.html#a70947485e501b5de0351fef74c55aca9" title="Key of parameter Grid/NormalsSegmentation : &quot;Segment ground from obstacles using point normals,...">kGridNormalsSegmentation()</a>.c_str()) Default value: true ( bool ). </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00941">941</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00939">939</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -56625,7 +56433,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Default value of parameter Grid/FlatObstacleDetected : true . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00941">941</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00939">939</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -56654,7 +56462,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Type of parameter Grid/FlatObstacleDetected , as a string: bool . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00941">941</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00939">939</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -56683,7 +56491,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Key of parameter Grid/3D : uFormat("A 3D occupancy grid is required if you want an OctoMap (3D ray tracing). Set to false if you want only a 2D map, the cloud will be projected on xy plane. A 2D map can be still generated if checked, but it requires more memory and time to generate it. Ignored if laser scan is 2D and \"%s\" is 0.", <a class="el" href="classrtabmap_1_1Parameters.html#a17fb5272a86d8b1bfed8aac554ca8e98" title="Key of parameter Grid/Sensor : &quot;Create occupancy grid from selected sensor: 0=laser scan,...">kGridSensor()</a>.c_str()) Default value: false ( bool ). </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00945">945</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00943">943</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -56712,7 +56520,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Default value of parameter Grid/3D : false . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00945">945</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00943">943</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -56741,7 +56549,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Type of parameter Grid/3D , as a string: bool . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00945">945</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00943">943</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -56770,7 +56578,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Key of parameter Grid/GroundIsObstacle : uFormat("[%s=true] Ground segmentation (%s) is ignored, all points are obstacles. Use this only if you want an OctoMap with ground identified as an obstacle (e.g., with an UAV).", <a class="el" href="classrtabmap_1_1Parameters.html#a9cc690fcb9e611d424ad844ae825ccfd" title="Key of parameter Grid/3D : uFormat(&quot;A 3D occupancy grid is required if you want an OctoMap (3D ray tr...">kGrid3D()</a>.c_str(), <a class="el" href="classrtabmap_1_1Parameters.html#a70947485e501b5de0351fef74c55aca9" title="Key of parameter Grid/NormalsSegmentation : &quot;Segment ground from obstacles using point normals,...">kGridNormalsSegmentation()</a>.c_str()) Default value: false ( bool ). </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00947">947</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00945">945</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -56799,7 +56607,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Default value of parameter Grid/GroundIsObstacle : false . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00947">947</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00945">945</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -56828,7 +56636,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Type of parameter Grid/GroundIsObstacle , as a string: bool . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00947">947</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00945">945</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -56857,7 +56665,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Key of parameter Grid/NoiseFilteringRadius : "Noise filtering radius (0=disabled). Done after segmentation." Default value: 0.0 ( float ). </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00948">948</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00946">946</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -56886,7 +56694,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Default value of parameter Grid/NoiseFilteringRadius : 0.0 . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00948">948</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00946">946</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -56915,7 +56723,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Type of parameter Grid/NoiseFilteringRadius , as a string: float . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00948">948</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00946">946</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -56944,7 +56752,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Key of parameter Grid/NoiseFilteringMinNeighbors : "Noise filtering minimum neighbors." Default value: 5 ( int ). </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00949">949</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00947">947</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -56973,7 +56781,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Default value of parameter Grid/NoiseFilteringMinNeighbors : 5 . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00949">949</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00947">947</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -57002,7 +56810,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Type of parameter Grid/NoiseFilteringMinNeighbors , as a string: int . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00949">949</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00947">947</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -57031,7 +56839,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Key of parameter Grid/Scan2dUnknownSpaceFilled : uFormat("Unknown space filled. Only used with 2D laser scans. Use %s to set maximum range if laser scan max range is to set.", <a class="el" href="classrtabmap_1_1Parameters.html#a182d6b4adf099ece1c2864ad47402e56" title="Key of parameter Grid/RangeMax : &quot;Maximum range from sensor. 0=inf.&quot; Default value: 5....">kGridRangeMax()</a>.c_str()) Default value: false ( bool ). </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00950">950</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00948">948</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -57060,7 +56868,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Default value of parameter Grid/Scan2dUnknownSpaceFilled : false . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00950">950</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00948">948</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -57089,7 +56897,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Type of parameter Grid/Scan2dUnknownSpaceFilled , as a string: bool . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00950">950</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00948">948</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -57118,7 +56926,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Key of parameter Grid/RayTracing : uFormat("Ray tracing is done for each occupied cell, filling unknown space between the sensor and occupied cells. If %s=true, RTAB-Map should be built with OctoMap support, otherwise 3D ray tracing is ignored.", <a class="el" href="classrtabmap_1_1Parameters.html#a9cc690fcb9e611d424ad844ae825ccfd" title="Key of parameter Grid/3D : uFormat(&quot;A 3D occupancy grid is required if you want an OctoMap (3D ray tr...">kGrid3D()</a>.c_str()) Default value: false ( bool ). </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00951">951</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00949">949</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -57147,7 +56955,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Default value of parameter Grid/RayTracing : false . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00951">951</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00949">949</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -57176,7 +56984,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Type of parameter Grid/RayTracing , as a string: bool . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00951">951</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00949">949</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -57205,7 +57013,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Key of parameter GridGlobal/UpdateError : "Graph changed detection error (m). Update map only if poses in new optimized graph have moved more than this value." Default value: 0.01 ( float ). </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00952">952</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00950">950</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -57234,7 +57042,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Default value of parameter GridGlobal/UpdateError : 0.01 . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00952">952</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00950">950</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -57263,7 +57071,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Type of parameter GridGlobal/UpdateError , as a string: float . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00952">952</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00950">950</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -57292,7 +57100,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Key of parameter GridGlobal/FootprintRadius : "Footprint radius (m) used to clear all obstacles under the graph." Default value: 0.0 ( float ). </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00953">953</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00951">951</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -57321,7 +57129,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Default value of parameter GridGlobal/FootprintRadius : 0.0 . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00953">953</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00951">951</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -57350,7 +57158,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Type of parameter GridGlobal/FootprintRadius , as a string: float . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00953">953</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00951">951</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -57379,7 +57187,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Key of parameter GridGlobal/MinSize : "Minimum map size (m)." Default value: 0.0 ( float ). </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00954">954</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00952">952</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -57408,7 +57216,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Default value of parameter GridGlobal/MinSize : 0.0 . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00954">954</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00952">952</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -57437,7 +57245,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Type of parameter GridGlobal/MinSize , as a string: float . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00954">954</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00952">952</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -57466,7 +57274,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Key of parameter GridGlobal/Eroded : "Erode obstacle cells." Default value: false ( bool ). </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00955">955</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00953">953</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -57495,7 +57303,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Default value of parameter GridGlobal/Eroded : false . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00955">955</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00953">953</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -57524,7 +57332,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Type of parameter GridGlobal/Eroded , as a string: bool . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00955">955</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00953">953</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -57553,7 +57361,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Key of parameter GridGlobal/MaxNodes : "Maximum nodes assembled in the map starting from the last node (0=unlimited)." Default value: 0 ( int ). </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00956">956</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00954">954</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -57582,7 +57390,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Default value of parameter GridGlobal/MaxNodes : 0 . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00956">956</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00954">954</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -57611,7 +57419,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Type of parameter GridGlobal/MaxNodes , as a string: int . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00956">956</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00954">954</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -57640,7 +57448,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Key of parameter GridGlobal/AltitudeDelta : "Assemble only nodes that have the same altitude of +-delta meters of the current pose (0=disabled). This is used to generate 2D occupancy grid based on the current altitude (e.g., multi-floor building)." Default value: 0 ( float ). </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00957">957</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00955">955</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -57669,7 +57477,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Default value of parameter GridGlobal/AltitudeDelta : 0 . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00957">957</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00955">955</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -57698,7 +57506,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Type of parameter GridGlobal/AltitudeDelta , as a string: float . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00957">957</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00955">955</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -57727,7 +57535,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Key of parameter GridGlobal/OccupancyThr : "Occupancy threshold (value between 0 and 1)." Default value: 0.5 ( float ). </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00958">958</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00956">956</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -57756,7 +57564,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Default value of parameter GridGlobal/OccupancyThr : 0.5 . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00958">958</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00956">956</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -57785,7 +57593,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Type of parameter GridGlobal/OccupancyThr , as a string: float . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00958">958</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00956">956</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -57814,7 +57622,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Key of parameter GridGlobal/ProbHit : "Probability of a hit (value between 0.5 and 1)." Default value: 0.7 ( float ). </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00959">959</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00957">957</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -57843,7 +57651,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Default value of parameter GridGlobal/ProbHit : 0.7 . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00959">959</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00957">957</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -57872,7 +57680,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Type of parameter GridGlobal/ProbHit , as a string: float . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00959">959</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00957">957</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -57901,7 +57709,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Key of parameter GridGlobal/ProbMiss : "Probability of a miss (value between 0 and 0.5)." Default value: 0.4 ( float ). </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00960">960</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00958">958</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -57930,7 +57738,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Default value of parameter GridGlobal/ProbMiss : 0.4 . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00960">960</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00958">958</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -57959,7 +57767,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Type of parameter GridGlobal/ProbMiss , as a string: float . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00960">960</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00958">958</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -57988,7 +57796,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Key of parameter GridGlobal/ProbClampingMin : "Probability clamping minimum (value between 0 and 1)." Default value: 0.1192 ( float ). </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00961">961</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00959">959</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -58017,7 +57825,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Default value of parameter GridGlobal/ProbClampingMin : 0.1192 . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00961">961</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00959">959</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -58046,7 +57854,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Type of parameter GridGlobal/ProbClampingMin , as a string: float . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00961">961</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00959">959</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -58075,7 +57883,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Key of parameter GridGlobal/ProbClampingMax : "Probability clamping maximum (value between 0 and 1)." Default value: 0.971 ( float ). </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00962">962</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00960">960</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -58104,7 +57912,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Default value of parameter GridGlobal/ProbClampingMax : 0.971 . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00962">962</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00960">960</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -58133,7 +57941,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Type of parameter GridGlobal/ProbClampingMax , as a string: float . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00962">962</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00960">960</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -58162,7 +57970,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Key of parameter GridGlobal/FloodFillDepth : "Flood fill filter (0=disabled), used to remove empty cells outside the map. The flood fill is done at the specified depth (between 1 and 16) of the OctoMap." Default value: 0 ( unsigned int ). </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00963">963</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00961">961</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -58191,7 +57999,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Default value of parameter GridGlobal/FloodFillDepth : 0 . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00963">963</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00961">961</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -58220,7 +58028,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Type of parameter GridGlobal/FloodFillDepth , as a string: unsigned int . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00963">963</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00961">961</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -58249,7 +58057,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Key of parameter Marker/Strategy : "Marker detection implementation: 0=OpenCV, 1=AprilTag" Default value: 0 ( int ). </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00965">965</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00963">963</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -58278,7 +58086,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Default value of parameter Marker/Strategy : 0 . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00965">965</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00963">963</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -58307,7 +58115,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Type of parameter Marker/Strategy , as a string: int . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00965">965</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00963">963</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -58336,7 +58144,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Key of parameter Marker/Dictionary : "Dictionary to use: DICT_ARUCO_4X4_50=0, DICT_ARUCO_4X4_100=1, DICT_ARUCO_4X4_250=2, DICT_ARUCO_4X4_1000=3, DICT_ARUCO_5X5_50=4, DICT_ARUCO_5X5_100=5, DICT_ARUCO_5X5_250=6, DICT_ARUCO_5X5_1000=7, DICT_ARUCO_6X6_50=8, DICT_ARUCO_6X6_100=9, DICT_ARUCO_6X6_250=10, DICT_ARUCO_6X6_1000=11, DICT_ARUCO_7X7_50=12, DICT_ARUCO_7X7_100=13, DICT_ARUCO_7X7_250=14, DICT_ARUCO_7X7_1000=15, DICT_ARUCO_ORIGINAL = 16, DICT_APRILTAG_16h5=17, DICT_APRILTAG_25h9=18, DICT_APRILTAG_36h10=19, DICT_APRILTAG_36h11=20, DICT_ARUCO_MIP_36H12=21" Default value: 0 ( int ). </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00966">966</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00964">964</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -58365,7 +58173,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Default value of parameter Marker/Dictionary : 0 . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00966">966</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00964">964</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -58394,7 +58202,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Type of parameter Marker/Dictionary , as a string: int . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00966">966</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00964">964</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -58423,7 +58231,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Key of parameter Marker/Length : "The length (m) of the markers' side. Value &lt;=0 means automatic marker length estimation using the depth image (the camera should look at the marker perpendicularly for initialization). If 0, the length is estimated only on the first marker detected, then re-used for all next detections (i.e., this assumes that markers have all the same length). With &lt;0, the length is estimated once for each unique marker, then re-used for next detections with the same marker ID." Default value: 0 ( float ). </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00967">967</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00965">965</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -58452,7 +58260,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Default value of parameter Marker/Length : 0 . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00967">967</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00965">965</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -58481,7 +58289,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Type of parameter Marker/Length , as a string: float . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00967">967</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00965">965</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -58510,7 +58318,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Key of parameter Marker/Lengths : uFormat("List of markers to detect. Format is the marker's ID followed by its length (in meters), multiple markers are separated by a vertical line (\"id1 length|id2 length\"). We can also define a range of markers with \"id1:id2 length\" (id2 included). If empty, all markers of the chosen dictionary can be detected and their length is set/estimated based on %s. For example, to detect markers 12 and 14 with lengths of 8 and 15 cm respectively, and all markers between 30 and 40 with a length of 10 cm, set \"12 0.08|14 0.15|30:40 0.1\".", <a class="el" href="classrtabmap_1_1Parameters.html#ae2ca732fba21a575b6da17af7654879f" title="Key of parameter Marker/Length : &quot;The length (m) of the markers&#39; side. Value &lt;=0 means automatic mark...">kMarkerLength()</a>.c_str()).c_str() Default value: "" (string). </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00968">968</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00966">966</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -58539,7 +58347,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Default value of parameter Marker/Lengths : "" . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00968">968</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00966">966</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -58568,7 +58376,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Type of parameter Marker/Lengths , as a string: string. </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00968">968</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00966">966</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -58597,7 +58405,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Key of parameter Marker/MaxDepthError : uFormat("Maximum depth error between all corners of a marker when estimating the marker length (when %s is 0). The smaller it is, the more perpendicular the camera should be toward the marker to initialize the length.", <a class="el" href="classrtabmap_1_1Parameters.html#ae2ca732fba21a575b6da17af7654879f" title="Key of parameter Marker/Length : &quot;The length (m) of the markers&#39; side. Value &lt;=0 means automatic mark...">kMarkerLength()</a>.c_str()) Default value: 0.01 ( float ). </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00969">969</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00967">967</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -58626,7 +58434,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Default value of parameter Marker/MaxDepthError : 0.01 . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00969">969</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00967">967</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -58655,7 +58463,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Type of parameter Marker/MaxDepthError , as a string: float . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00969">969</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00967">967</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -58684,7 +58492,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Key of parameter Marker/VarianceLinear : uFormat("Linear variance to set on marker detections. If %s is enabled and %s=2 (GTSAM): it is the variance of the range factor, with 9999 to disable range factor and to do only bearing.", <a class="el" href="classrtabmap_1_1Parameters.html#a2dee7c32c6693d890b2c8c5cd23af8e5" title="Key of parameter Marker/VarianceOrientationIgnored : uFormat(&quot;When this setting is false,...">kMarkerVarianceOrientationIgnored()</a>.c_str(), <a class="el" href="classrtabmap_1_1Parameters.html#a092fe8cb5454baf939cfb405fbce966f" title="Key of parameter Optimizer/Strategy : &quot;Graph optimization strategy: 0=TORO, 1=g2o,...">kOptimizerStrategy()</a>.c_str()) Default value: 0.001 ( float ). </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00970">970</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00968">968</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -58713,7 +58521,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Default value of parameter Marker/VarianceLinear : 0.001 . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00970">970</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00968">968</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -58742,7 +58550,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Type of parameter Marker/VarianceLinear , as a string: float . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00970">970</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00968">968</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -58771,7 +58579,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Key of parameter Marker/VarianceAngular : uFormat("Angular variance to set on marker detections. If %s is enabled, it is ignored with %s=1 (g2o) and it corresponds to bearing variance with %s=2 (GTSAM).", <a class="el" href="classrtabmap_1_1Parameters.html#a2dee7c32c6693d890b2c8c5cd23af8e5" title="Key of parameter Marker/VarianceOrientationIgnored : uFormat(&quot;When this setting is false,...">kMarkerVarianceOrientationIgnored()</a>.c_str(), <a class="el" href="classrtabmap_1_1Parameters.html#a092fe8cb5454baf939cfb405fbce966f" title="Key of parameter Optimizer/Strategy : &quot;Graph optimization strategy: 0=TORO, 1=g2o,...">kOptimizerStrategy()</a>.c_str(), <a class="el" href="classrtabmap_1_1Parameters.html#a092fe8cb5454baf939cfb405fbce966f" title="Key of parameter Optimizer/Strategy : &quot;Graph optimization strategy: 0=TORO, 1=g2o,...">kOptimizerStrategy()</a>.c_str()) Default value: 0.01 ( float ). </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00971">971</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00969">969</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -58800,7 +58608,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Default value of parameter Marker/VarianceAngular : 0.01 . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00971">971</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00969">969</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -58829,7 +58637,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Type of parameter Marker/VarianceAngular , as a string: float . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00971">971</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00969">969</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -58858,7 +58666,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Key of parameter Marker/VarianceOrientationIgnored : uFormat("When this setting is false, the landmark's orientation is optimized during graph optimization. When this setting is true, only the position of the landmark is optimized. This can be useful when the landmark's orientation estimation is not reliable. Note that for %s=1 (g2o), only %s needs be set if we ignore orientation. For %s=2 (GTSAM), instead of optimizing the landmark's position directly, a bearing/range factor is used, with %s as the variance of the range factor (with 9999 to optimize the position with only a bearing factor) and %s as the variance of the bearing factor (pitch/yaw).", <a class="el" href="classrtabmap_1_1Parameters.html#a092fe8cb5454baf939cfb405fbce966f" title="Key of parameter Optimizer/Strategy : &quot;Graph optimization strategy: 0=TORO, 1=g2o,...">kOptimizerStrategy()</a>.c_str(), <a class="el" href="classrtabmap_1_1Parameters.html#af925249a8ef55540e0145e36b529160b" title="Key of parameter Marker/VarianceLinear : uFormat(&quot;Linear variance to set on marker detections....">kMarkerVarianceLinear()</a>.c_str(), <a class="el" href="classrtabmap_1_1Parameters.html#a092fe8cb5454baf939cfb405fbce966f" title="Key of parameter Optimizer/Strategy : &quot;Graph optimization strategy: 0=TORO, 1=g2o,...">kOptimizerStrategy()</a>.c_str(), <a class="el" href="classrtabmap_1_1Parameters.html#af925249a8ef55540e0145e36b529160b" title="Key of parameter Marker/VarianceLinear : uFormat(&quot;Linear variance to set on marker detections....">kMarkerVarianceLinear()</a>.c_str(), <a class="el" href="classrtabmap_1_1Parameters.html#a52bc876b7e7aa0e0026cbb52f1c80caf" title="Key of parameter Marker/VarianceAngular : uFormat(&quot;Angular variance to set on marker detections....">kMarkerVarianceAngular()</a>.c_str()) Default value: false ( bool ). </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00972">972</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00970">970</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -58887,7 +58695,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Default value of parameter Marker/VarianceOrientationIgnored : false . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00972">972</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00970">970</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -58916,7 +58724,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Type of parameter Marker/VarianceOrientationIgnored , as a string: bool . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00972">972</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00970">970</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -58945,7 +58753,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Key of parameter Marker/MaxRange : "Maximum range in which markers will be detected. &lt;=0 for unlimited range." Default value: 0.0 ( float ). </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00973">973</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00971">971</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -58974,7 +58782,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Default value of parameter Marker/MaxRange : 0.0 . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00973">973</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00971">971</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -59003,7 +58811,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Type of parameter Marker/MaxRange , as a string: float . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00973">973</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00971">971</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -59032,7 +58840,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Key of parameter Marker/MinRange : "Miniminum range in which markers will be detected. &lt;=0 for unlimited range." Default value: 0.0 ( float ). </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00974">974</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00972">972</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -59061,7 +58869,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Default value of parameter Marker/MinRange : 0.0 . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00974">974</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00972">972</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -59090,7 +58898,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Type of parameter Marker/MinRange , as a string: float . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00974">974</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00972">972</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -59119,7 +58927,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Key of parameter Marker/Priors : uFormat("World prior locations of the markers. The map will be transformed in marker's world frame when a tag is detected. Format is the marker's ID followed by its position (angles in rad), multiple markers are separated by vertical line (\"id1 x y z roll pitch yaw|id2 x y z roll pitch yaw\"). Example:  \"1 0 0 1 0 0 0|2 1 0 1 0 0 1.57\" (marker 2 is 1 meter forward than marker 1 with 90 deg yaw rotation). The priors are used only if %s is false.", <a class="el" href="classrtabmap_1_1Parameters.html#a9a27e63a9a70179573a6898049957d31" title="Key of parameter Optimizer/PriorsIgnored : &quot;Ignore prior constraints (global pose,...">kOptimizerPriorsIgnored()</a>.c_str()) Default value: "" (string). </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00975">975</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00973">973</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -59148,7 +58956,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Default value of parameter Marker/Priors : "" . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00975">975</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00973">973</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -59177,7 +58985,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Type of parameter Marker/Priors , as a string: string. </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00975">975</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00973">973</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -59206,7 +59014,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Key of parameter Marker/PriorsVarianceLinear : "Linear variance to set on marker priors." Default value: 0.001 ( float ). </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00976">976</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00974">974</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -59235,7 +59043,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Default value of parameter Marker/PriorsVarianceLinear : 0.001 . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00976">976</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00974">974</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -59264,7 +59072,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Type of parameter Marker/PriorsVarianceLinear , as a string: float . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00976">976</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00974">974</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -59293,7 +59101,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Key of parameter Marker/PriorsVarianceAngular : "Angular variance to set on marker priors." Default value: 0.001 ( float ). </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00977">977</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00975">975</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -59322,7 +59130,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Default value of parameter Marker/PriorsVarianceAngular : 0.001 . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00977">977</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00975">975</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -59351,7 +59159,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Type of parameter Marker/PriorsVarianceAngular , as a string: float . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00977">977</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00975">975</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -59380,7 +59188,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Key of parameter MarkerAprilTag/NThreads : "How many threads should be used?" Default value: 1 ( int ). </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00979">979</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00977">977</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -59409,7 +59217,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Default value of parameter MarkerAprilTag/NThreads : 1 . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00979">979</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00977">977</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -59438,7 +59246,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Type of parameter MarkerAprilTag/NThreads , as a string: int . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00979">979</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00977">977</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -59467,7 +59275,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Key of parameter MarkerAprilTag/QuadDecimate : "Detection of quads can be done on a lower-resolution image, improving speed at a cost of pose accuracy and a slight decrease in detection rate. Decoding the binary payload is still done at full resolution." Default value: 1.0 ( float ). </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00980">980</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00978">978</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -59496,7 +59304,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Default value of parameter MarkerAprilTag/QuadDecimate : 1.0 . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00980">980</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00978">978</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -59525,7 +59333,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Type of parameter MarkerAprilTag/QuadDecimate , as a string: float . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00980">980</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00978">978</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -59554,7 +59362,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Key of parameter MarkerAprilTag/QuadSigma : "What Gaussian blur should be applied to the segmented image (used for quad detection?)  Parameter is the standard deviation in pixels.  Very noisy images benefit from non-zero values (e.g. 0.8)." Default value: 0.0 ( float ). </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00981">981</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00979">979</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -59583,7 +59391,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Default value of parameter MarkerAprilTag/QuadSigma : 0.0 . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00981">981</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00979">979</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -59612,7 +59420,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Type of parameter MarkerAprilTag/QuadSigma , as a string: float . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00981">981</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00979">979</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -59641,7 +59449,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Key of parameter MarkerAprilTag/RefineEdges : uFormat("When true, the edges of the each quad are adjusted to \"snap to\" strong gradients nearby. This is useful when decimation is employed, as it can increase the quality of the initial quad estimate substantially. Generally recommended to be on (true). Very computationally inexpensive. Option is ignored if %s = 1.", <a class="el" href="classrtabmap_1_1Parameters.html#ad970898e86da4015b8f6d4163a4072e6" title="Key of parameter MarkerAprilTag/QuadDecimate : &quot;Detection of quads can be done on a lower-resolution ...">kMarkerAprilTagQuadDecimate()</a>.c_str()) Default value: true ( bool ). </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00982">982</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00980">980</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -59670,7 +59478,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Default value of parameter MarkerAprilTag/RefineEdges : true . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00982">982</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00980">980</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -59699,7 +59507,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Type of parameter MarkerAprilTag/RefineEdges , as a string: bool . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00982">982</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00980">980</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -59728,7 +59536,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Key of parameter MarkerAprilTag/DecodeSharpening : "How much sharpening should be done to decoded images? This can help decode small tags but may or may not help in odd lighting conditions or low light conditions." Default value: 0.25 ( double ). </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00983">983</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00981">981</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -59757,7 +59565,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Default value of parameter MarkerAprilTag/DecodeSharpening : 0.25 . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00983">983</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00981">981</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -59786,7 +59594,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Type of parameter MarkerAprilTag/DecodeSharpening , as a string: double . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00983">983</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00981">981</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -59815,7 +59623,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Key of parameter MarkerAprilTag/Debug : uFormat("When true, write a variety of debugging images to the working directory where the app started (not %s) at various stages through the detection process. (Somewhat slow).", <a class="el" href="classrtabmap_1_1Parameters.html#a42233cb8e32e704f7dd79d0208fa9d07" title="Key of parameter Rtabmap/WorkingDirectory : &quot;Working directory.&quot; Default value: &quot;&quot; (string).">kRtabmapWorkingDirectory()</a>.c_str()) Default value: false ( bool ). </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00984">984</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00982">982</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -59844,7 +59652,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Default value of parameter MarkerAprilTag/Debug : false . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00984">984</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00982">982</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -59873,7 +59681,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Type of parameter MarkerAprilTag/Debug , as a string: bool . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00984">984</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00982">982</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -59902,7 +59710,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Key of parameter MarkerOpenCV/CornerRefinementMethod : "Corner refinement method for OpenCV strategy (0: None, 1: Subpixel, 2:contour, 3: AprilTag2). For OpenCV &lt;3.3.0, this is \"doCornerRefinement\" parameter: set 0 for false and 1 for true." Default value: 0 ( int ). </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00986">986</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00984">984</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -59931,7 +59739,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Default value of parameter MarkerOpenCV/CornerRefinementMethod : 0 . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00986">986</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00984">984</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -59960,7 +59768,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Type of parameter MarkerOpenCV/CornerRefinementMethod , as a string: int . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00986">986</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00984">984</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -59989,7 +59797,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Key of parameter ImuFilter/MadgwickGain : "Gain of the filter. Higher values lead to faster convergence but more noise. Lower values lead to slower convergence but smoother signal, belongs in [0, 1]." Default value: 0.1 ( double ). </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00988">988</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00986">986</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -60018,7 +59826,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Default value of parameter ImuFilter/MadgwickGain : 0.1 . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00988">988</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00986">986</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -60047,7 +59855,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Type of parameter ImuFilter/MadgwickGain , as a string: double . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00988">988</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00986">986</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -60076,7 +59884,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Key of parameter ImuFilter/MadgwickZeta : "Gyro drift gain (approx. rad/s), belongs in [-1, 1]." Default value: 0.0 ( double ). </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00989">989</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00987">987</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -60105,7 +59913,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Default value of parameter ImuFilter/MadgwickZeta : 0.0 . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00989">989</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00987">987</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -60134,7 +59942,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Type of parameter ImuFilter/MadgwickZeta , as a string: double . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00989">989</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00987">987</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -60163,7 +59971,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Key of parameter ImuFilter/ComplementaryGainAcc : "Gain parameter for the complementary filter, belongs in [0, 1]." Default value: 0.01 ( double ). </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00991">991</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00989">989</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -60192,7 +60000,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Default value of parameter ImuFilter/ComplementaryGainAcc : 0.01 . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00991">991</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00989">989</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -60221,7 +60029,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Type of parameter ImuFilter/ComplementaryGainAcc , as a string: double . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00991">991</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00989">989</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -60250,7 +60058,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Key of parameter ImuFilter/ComplementaryBiasAlpha : "Bias estimation gain parameter, belongs in [0, 1]." Default value: 0.01 ( double ). </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00992">992</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00990">990</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -60279,7 +60087,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Default value of parameter ImuFilter/ComplementaryBiasAlpha : 0.01 . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00992">992</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00990">990</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -60308,7 +60116,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Type of parameter ImuFilter/ComplementaryBiasAlpha , as a string: double . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00992">992</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00990">990</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -60337,7 +60145,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Key of parameter ImuFilter/ComplementaryDoBiasEstimation : "Parameter whether to do bias estimation or not." Default value: true ( bool ). </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00993">993</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00991">991</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -60366,7 +60174,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Default value of parameter ImuFilter/ComplementaryDoBiasEstimation : true . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00993">993</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00991">991</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -60395,7 +60203,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Type of parameter ImuFilter/ComplementaryDoBiasEstimation , as a string: bool . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00993">993</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00991">991</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -60424,7 +60232,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Key of parameter ImuFilter/ComplementaryDoAdpativeGain : "Parameter whether to do adaptive gain or not." Default value: true ( bool ). </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00994">994</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00992">992</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -60453,7 +60261,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Default value of parameter ImuFilter/ComplementaryDoAdpativeGain : true . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00994">994</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00992">992</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -60482,7 +60290,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 
 <p>Type of parameter ImuFilter/ComplementaryDoAdpativeGain , as a string: bool . </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00994">994</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l00992">992</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
@@ -60510,7 +60318,7 @@ The <a class="el" href="parameters.html">Parameter reference</a> page, which lis
 </div><div class="memdoc">
 <p>Get default parameters </p>
 
-<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l01003">1003</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Parameters_8h_source.html#l01001">1001</a> of file <a class="el" href="Parameters_8h_source.html">Parameters.h</a>.</p>
 
 </div>
 </div>
