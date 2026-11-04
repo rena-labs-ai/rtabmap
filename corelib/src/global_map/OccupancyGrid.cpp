@@ -597,6 +597,20 @@ void OccupancyGrid::assemble(const std::list<std::pair<int, Transform> > & newPo
 	UDEBUG("Occupancy Grid update time = %f s", timer.ticks());
 }
 
+cv::Mat OccupancyGrid::getLastNodeMap(float & xMin, float & yMin) const
+{
+	xMin = minValues_[0];
+	yMin = minValues_[1];
+	if(mapInfo_.empty())
+	{
+		return cv::Mat();
+	}
+	cv::Mat nodes;
+	cv::extractChannel(mapInfo_, nodes, 0);
+	nodes.convertTo(nodes, CV_32SC1);
+	return nodes;
+}
+
 unsigned long OccupancyGrid::getMemoryUsed() const
 {
 	unsigned long memoryUsage = GlobalMap::getMemoryUsed();

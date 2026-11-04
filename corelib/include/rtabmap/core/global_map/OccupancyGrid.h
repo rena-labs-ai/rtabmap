@@ -48,6 +48,11 @@ public:
 
 	cv::Mat getMap(float & xMin, float & yMin) const;
 	cv::Mat getProbMap(float & xMin, float & yMin) const;
+	/**
+	 * @return `CV_32SC1` on getMap()'s cells: the newest node that observed each cell, hit or
+	 * free (0: none).
+	 */
+	cv::Mat getLastNodeMap(float & xMin, float & yMin) const;
 
 	unsigned long getMemoryUsed() const;
 
