@@ -183,9 +183,9 @@ TEST(MemoryTest, RefusesAMapMadeWithOtherLabelers)
 {
 	const std::string dbPath = uniqueDbPath();
 	ParametersMap made = defaultMemoryParams();
-	made[Parameters::kGridLabelers()] = "floorseg:2 objseg:10";
+	made[Parameters::kGridLabelers()] = "floorseg:2 floorplan:6";
 	ParametersMap other = made;
-	other[Parameters::kGridLabelers()] = "floorseg:2 objseg:12";
+	other[Parameters::kGridLabelers()] = "floorseg:2 floorplan:4";
 	{
 		Memory memory(made);
 		ASSERT_TRUE(memory.init(dbPath, true, made));

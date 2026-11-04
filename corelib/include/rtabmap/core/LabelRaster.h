@@ -37,12 +37,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace rtabmap {
 
+/// A cell's word: every labeler's label packed in its bits.
+typedef uint8_t LabelWord;
+
 /**
  * @class LabelLayout
- * @brief The labelers of a labels image and the bits each has in a cell's 16-bit word
- * (Parameters::kGridLabelers()): "floorseg:2 floorplan:4 objseg:10" packs
+ * @brief The labelers of a labels image and the bits each has in a cell's 8-bit word
+ * (Parameters::kGridLabelers()): "floorseg:2 floorplan:6" packs
  *
- *     word = [ objseg: 10 bits | floorplan: 4 bits | floorseg: 2 bits ]
+ *     word = [ floorplan: 6 bits | floorseg: 2 bits ]
  *
  * Labeler i is the labels image's channel i. A labeler's field is 0 for no vote (it did
  * not judge the cell), else its label + 1; label 0 is seen with nothing there.
@@ -51,7 +54,7 @@ class RTABMAP_CORE_EXPORT LabelLayout
 {
 public:
 	LabelLayout() {}
-	/// An error for a malformed list or more than 16 bits in all.
+	/// An error for a malformed list or more than 8 bits in all.
 	static LabelLayout parse(const std::string & labelers);
 
 	int size() const {return (int)names_.size();}
@@ -59,9 +62,9 @@ public:
 	/// The highest label labeler's field holds.
 	int maxLabel(int labeler) const {return (1 << bits_.at(labeler)) - 2;}
 
-	uint16_t pack(uint16_t word, int labeler, int label) const;
+	LabelWord pack(LabelWord word, int labeler, int label) const;
 	/// labeler's label in word, -1 for no vote.
-	int label(uint16_t word, int labeler) const;
+	int label(LabelWord word, int labeler) const;
 
 private:
 	std::vector<std::string> names_;
@@ -73,7 +76,7 @@ private:
  * @class LabelRaster
  * @brief One node's labels per local grid cell (see LocalGridMaker::createLabelRaster()):
  * a raster over the cells its labelled points fall in, robot/base frame, each cell one
- * 16-bit word of every labeler's label there, packed by a LabelLayout. Saved with the
+ * 8-bit word of every labeler's label there, packed by a LabelLayout. Saved with the
  * node's occupancy grid (encode()); the layout is the map's (Parameters::kGridLabelers()).
  */
 class RTABMAP_CORE_EXPORT LabelRaster
@@ -103,7 +106,7 @@ private:
 	int x0_ = 0;
 	int y0_ = 0;
 	float cellSize_ = 0.0f;
-	cv::Mat words_; ///< CV_16UC1
+	cv::Mat words_; ///< CV_8UC1
 };
 
 } // namespace rtabmap

@@ -6,33 +6,30 @@ using namespace rtabmap;
 
 TEST(LabelLayoutTest, EachLabelerHasItsOwnBits)
 {
-	const LabelLayout layout = LabelLayout::parse("floorseg:2 floorplan:4 objseg:10");
-	ASSERT_EQ(layout.size(), 3);
+	const LabelLayout layout = LabelLayout::parse("floorseg:2 floorplan:6");
+	ASSERT_EQ(layout.size(), 2);
 	EXPECT_EQ(layout.name(1), "floorplan");
 	EXPECT_EQ(layout.maxLabel(0), 2);
-	EXPECT_EQ(layout.maxLabel(1), 14);
-	EXPECT_EQ(layout.maxLabel(2), 1022);
+	EXPECT_EQ(layout.maxLabel(1), 62);
 
-	uint16_t word = 0;
+	LabelWord word = 0;
 	EXPECT_EQ(layout.label(word, 0), -1) << "0: no vote";
 	word = layout.pack(word, 0, 1);
 	word = layout.pack(word, 1, 0);
-	word = layout.pack(word, 2, 1022);
 	EXPECT_EQ(layout.label(word, 0), 1);
 	EXPECT_EQ(layout.label(word, 1), 0) << "seen with nothing there";
-	EXPECT_EQ(layout.label(word, 2), 1022);
-	EXPECT_EQ(word, uint16_t(2 | (1 << 2) | (1023 << 6)));
+	EXPECT_EQ(word, LabelWord(2 | (1 << 2)));
 
-	word = layout.pack(word, 1, 14);
-	EXPECT_EQ(layout.label(word, 0), 1) << "the other labelers keep theirs";
-	EXPECT_EQ(layout.label(word, 1), 14);
-	EXPECT_EQ(layout.label(word, 2), 1022);
+	word = layout.pack(word, 1, 62);
+	EXPECT_EQ(layout.label(word, 0), 1) << "the other labeler keeps its";
+	EXPECT_EQ(layout.label(word, 1), 62);
+	EXPECT_EQ(word, LabelWord(2 | (63 << 2)));
 }
 
 TEST(LabelLayoutTest, RefusesWhatDoesNotFit)
 {
 	EXPECT_EQ(LabelLayout::parse("").size(), 0);
-	EXPECT_THROW(LabelLayout::parse("a:8 b:9"), UException) << "17 bits";
+	EXPECT_THROW(LabelLayout::parse("a:4 b:5"), UException) << "9 bits";
 	EXPECT_THROW(LabelLayout::parse("floorseg"), UException) << "no bits";
 	EXPECT_THROW(LabelLayout::parse("a:0"), UException);
 	EXPECT_THROW(LabelLayout::parse("a:2").pack(0, 0, 3), UException) << "3 needs more than 2 bits";
@@ -40,7 +37,7 @@ TEST(LabelLayoutTest, RefusesWhatDoesNotFit)
 
 TEST(LabelRasterTest, CellsAreTheVotedOnesAtTheirCentres)
 {
-	const LabelLayout layout = LabelLayout::parse("floorseg:2 objseg:10");
+	const LabelLayout layout = LabelLayout::parse("floorseg:2 floorplan:6");
 	LabelRaster raster(10, -2, 0.1f, 2, 3);
 	raster.set(layout, 0, 0, 0, 0);
 	raster.set(layout, 0, 1, 2, 1);
@@ -67,24 +64,24 @@ TEST(LabelRasterTest, CellsAreTheVotedOnesAtTheirCentres)
 
 TEST(LabelRasterTest, EncodesAndDecodes)
 {
-	const LabelLayout layout = LabelLayout::parse("floorseg:2 floorplan:4 objseg:10");
+	const LabelLayout layout = LabelLayout::parse("floorseg:2 floorplan:6");
 	LabelRaster raster(-5, 7, 0.025f, 3, 2);
-	raster.set(layout, 2, 2, 1, 500);
-	raster.set(layout, 1, 0, 0, 6);
+	raster.set(layout, 1, 2, 1, 50);
+	raster.set(layout, 0, 0, 0, 1);
 
 	const cv::Mat bytes = raster.encode();
 	ASSERT_EQ(bytes.type(), CV_8UC1);
-	EXPECT_EQ(bytes.total(), 17u + 3 * 2 * 2) << "header, then 16 bits per cell";
+	EXPECT_EQ(bytes.total(), 17u + 3 * 2) << "header, then 8 bits per cell";
 	const LabelRaster decoded = LabelRaster::decode(bytes);
 	ASSERT_EQ(decoded.rows(), 3);
 	ASSERT_EQ(decoded.cols(), 2);
-	EXPECT_EQ(decoded.label(layout, 2, 2, 1), 500);
-	EXPECT_EQ(decoded.label(layout, 1, 0, 0), 6);
-	EXPECT_EQ(decoded.label(layout, 0, 0, 0), -1);
+	EXPECT_EQ(decoded.label(layout, 1, 2, 1), 50);
+	EXPECT_EQ(decoded.label(layout, 0, 0, 0), 1);
+	EXPECT_EQ(decoded.label(layout, 1, 0, 0), -1);
 	EXPECT_EQ(cv::norm(decoded.encode(), bytes, cv::NORM_INF), 0.0);
 
 	EXPECT_TRUE(LabelRaster::decode(cv::Mat()).empty());
 	cv::Mat other = bytes.clone();
-	other.at<unsigned char>(0, 0) = 2;
-	EXPECT_THROW(LabelRaster::decode(other), UException) << "another version";
+	other.at<unsigned char>(0, 0) = 1;
+	EXPECT_THROW(LabelRaster::decode(other), UException) << "version 1, 16-bit words";
 }

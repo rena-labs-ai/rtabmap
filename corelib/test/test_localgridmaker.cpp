@@ -1589,7 +1589,7 @@ TEST(LocalGridMakerTest, CreateLabelRasterFromLabels)
 	params.insert(ParametersPair(Parameters::kGridCellSize(), "0.1"));
 	params.insert(ParametersPair(Parameters::kGridRangeMax(), "5"));
 	params.insert(ParametersPair(Parameters::kGridMaxGroundHeight(), "0.05"));
-	params.insert(ParametersPair(Parameters::kGridLabelers(), "floor:2 objects:4 second:10"));
+	params.insert(ParametersPair(Parameters::kGridLabelers(), "floor:2 objects:4 second:2"));
 	const LocalGridMaker maker(params);
 	const LabelLayout & layout = maker.labelLayout();
 
