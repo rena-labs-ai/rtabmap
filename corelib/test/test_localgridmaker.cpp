@@ -1570,3 +1570,58 @@ TEST(LocalGridMakerTest, SegmentCloudPointNormalType)
 	EXPECT_EQ(groundIndices->size(), 2u);
 	EXPECT_EQ(obstaclesIndices->size(), 1u);
 }
+
+// Grid/SemanticSegmentation: the ground mask's 0 is ground at any height (a ramp), 1-127 an obstacle
+// up to Grid/MaxObstacleHeight (above it the robot passes under), 128-255 left out.
+TEST(LocalGridMakerTest, GroundFromTheLabelsNotHeights)
+{
+	ParametersMap params;
+	params.insert(ParametersPair(Parameters::kGridCellSize(), "0.1"));
+	params.insert(ParametersPair(Parameters::kGridRangeMax(), "5"));
+	params.insert(ParametersPair(Parameters::kGridMaxGroundHeight(), "0.05"));
+	params.insert(ParametersPair(Parameters::kGridMaxObstacleHeight(), "0.5"));
+	params.insert(ParametersPair(Parameters::kGridRayTracing(), "false"));
+	params.insert(ParametersPair(Parameters::kGrid3D(), "false"));
+	params.insert(ParametersPair(Parameters::kGridSemanticSegmentation(), "true"));
+	LocalGridMaker maker(params);
+
+	// Rows by height (camera 0.2 m up, looking along x): row 1 is 0.6 m up at x=4.05, row 2
+	// 0.2 m up at x=2.05, row 3 on the floor at x=2.05. Columns: y=0.25, 0.05, -0.25.
+	const cv::Mat depth = (cv::Mat_<float>(4, 3) <<
+			0.0f, 0.0f, 0.0f,
+			4.05f, 4.05f, 4.05f,
+			2.05f, 2.05f, 2.05f,
+			2.05f, 2.05f, 2.05f);
+	const cv::Mat floorseg = (cv::Mat_<unsigned char>(4, 3) <<
+			255, 255, 255,
+			1, 1, 1,       // not floor 0.6 m up: the robot passes under (a table top)
+			1, 0, 255,     // not floor 0.2 m up: an obstacle; floor 0.2 m up: a ramp, ground
+			255, 255, 255);
+	const CameraModel model(10.0, 10.0, 1.0, 2.0,
+			Transform(0, 0, 0.2f, 0, 0, 0) * CameraModel::opticalRotation(), 0.0, cv::Size(3, 4));
+	SensorData data(cv::Mat(4, 3, CV_8UC3, cv::Scalar::all(0)), depth, model);
+	data.setLabels(floorseg);
+
+	cv::Mat ground, obstacles, empty;
+	ASSERT_TRUE(maker.createSemanticCells(data, Transform::getIdentity(), cv::Point3f(0, 0, 0.2f), ground, obstacles, empty));
+	ASSERT_EQ(ground.cols, 1) << "the ramp at 0.2 m is ground";
+	EXPECT_NEAR(ground.at<cv::Vec2f>(0)[0], 2.05f, 0.06f);
+	EXPECT_NEAR(ground.at<cv::Vec2f>(0)[1], 0.05f, 0.06f);
+	ASSERT_EQ(obstacles.cols, 1) << "only the 0.2 m obstacle: the table top is above the robot, 255 is left out";
+	EXPECT_NEAR(obstacles.at<cv::Vec2f>(0)[0], 2.05f, 0.06f);
+	EXPECT_NEAR(obstacles.at<cv::Vec2f>(0)[1], 0.25f, 0.06f);
+
+	// the same through createLocalMap: no height rule anywhere
+	Signature node(data);
+	node.setPose(Transform::getIdentity());
+	cv::Mat ground2, obstacles2, empty2;
+	cv::Point3f viewPoint;
+	maker.createLocalMap(node, ground2, obstacles2, empty2, viewPoint);
+	EXPECT_EQ(ground2.cols, 1);
+	EXPECT_EQ(obstacles2.cols, 1);
+
+	// off: heights decide, and the ramp (0.2 m) is an obstacle
+	params[Parameters::kGridSemanticSegmentation()] = "false";
+	LocalGridMaker heights(params);
+	EXPECT_FALSE(heights.createSemanticCells(data, Transform::getIdentity(), cv::Point3f(0, 0, 0.2f), ground, obstacles, empty));
+}
