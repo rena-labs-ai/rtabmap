@@ -244,6 +244,7 @@ protected:
 			int nodeId,
 			const cv::Mat & image,
 			const std::string & format) const;
+	virtual void updateImagesQuery(const std::list<SensorData> & nodes) const;
 
 	void updateLaserScanQuery(
 			int nodeId,

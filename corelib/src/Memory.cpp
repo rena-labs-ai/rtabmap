@@ -77,6 +77,7 @@ Memory::Memory(const ParametersMap & parameters) :
 	_dbDriver(0),
 	_similarityThreshold(Parameters::defaultMemRehearsalSimilarity()),
 	_binDataKept(Parameters::defaultMemBinDataKept()),
+	_binDataOnRequest(Parameters::defaultMemBinDataOnRequest()),
 	_rawDescriptorsKept(Parameters::defaultMemRawDescriptorsKept()),
 	_loadVisualLocalFeaturesOnInit(Parameters::defaultMemLoadVisualLocalFeaturesOnInit()),
 	_saveDepth16Format(Parameters::defaultMemSaveDepth16Format()),
@@ -821,6 +822,7 @@ void Memory::parseParameters(const ParametersMap & parameters)
 	ParametersMap::const_iterator iter;
 
 	Parameters::parse(params, Parameters::kMemBinDataKept(), _binDataKept);
+	Parameters::parse(params, Parameters::kMemBinDataOnRequest(), _binDataOnRequest);
 	Parameters::parse(params, Parameters::kMemRawDescriptorsKept(), _rawDescriptorsKept);
 	Parameters::parse(params, Parameters::kMemLoadVisualLocalFeaturesOnInit(), _loadVisualLocalFeaturesOnInit);
 	Parameters::parse(params, Parameters::kMemSaveDepth16Format(), _saveDepth16Format);
@@ -1571,6 +1573,8 @@ void Memory::moveSignatureToWMFromSTM(int id, int * reducedToOut)
 {
 	UDEBUG("Inserting node %d from STM in WM...", id);
 	UASSERT(_stMem.find(id) != _stMem.end());
+	// The images were held only for keepNodeData() while the node was in STM.
+	this->_getSignature(id)->sensorData().clearCompressedData(imagesOnRequest(), false, false, false);
 	int reducedId = 0;
 	if(_reduceGraph)
 	{
@@ -3049,6 +3053,8 @@ void Memory::moveToTrash(Signature * s, bool keepLinkedToGraph, std::list<int> *
 			{
 				_allNodesInWM = false;
 			}
+			// A node trashed straight from STM (never linked, merged) was never kept.
+			s->sensorData().clearCompressedData(imagesOnRequest(), false, false, false);
 			_dbDriver->asyncSave(s);
 		}
 		else
@@ -3356,11 +3362,43 @@ void Memory::saveLocationData(int locationId)
 	{
 		Signature * cpy = new Signature();
 		*cpy = *location;
+		// The row is inserted without images; keepNodeData() writes them later, if asked,
+		// from the pair the node holds until it leaves STM.
+		cpy->sensorData().clearCompressedData(imagesOnRequest(), false, false, false);
 		_dbDriver->asyncSave(cpy);
 
 		location->setSaved(true);
-		location->sensorData().clearCompressedData();
+		location->sensorData().clearCompressedData(!imagesOnRequest());
 	}
+}
+
+std::vector<bool> Memory::keepNodeData(const std::vector<int> & keep, const std::vector<int> & release)
+{
+	std::vector<bool> kept(keep.size(), false);
+	if(!_dbDriver)
+	{
+		return kept;
+	}
+	std::list<SensorData> images;
+	for(size_t i=0; i<keep.size(); ++i)
+	{
+		const Signature * s = this->getSignature(keep[i]);
+		if(s == 0 || !s->isSaved() || s->sensorData().imageCompressed().empty())
+		{
+			continue;
+		}
+		images.push_back(SensorData(s->sensorData().imageCompressed(), s->sensorData().depthOrRightCompressed(), CameraModel(), keep[i]));
+		kept[i] = true;
+	}
+	for(size_t i=0; i<release.size(); ++i)
+	{
+		images.push_back(SensorData(cv::Mat(), cv::Mat(), CameraModel(), release[i]));
+	}
+	// The node's row is still queued for the trash thread's transaction until the next
+	// update joins it; an UPDATE before that commit would match no row and say nothing.
+	_dbDriver->emptyTrashes();
+	_dbDriver->updateImages(images);
+	return kept;
 }
 
 void Memory::removeLink(int oldId, int newId)

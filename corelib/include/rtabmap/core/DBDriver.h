@@ -169,6 +169,11 @@ public:
 	 */
 	void updateDepthImage(int nodeId, const cv::Mat & image, const std::string & format);
 	/**
+	 * @brief Replace the RGB and depth blobs of each node's Data row, in one transaction.
+	 * @param nodes Compressed image pair per node id (SensorData::id()); an empty matrix clears the blob.
+	 */
+	void updateImages(const std::list<SensorData> & nodes);
+	/**
 	 * @brief Update the laser scan stored for a node.
 	 * @param scan Uncompressed scan, or already compressed (@ref LaserScan::isCompressed()).
 	 * Uncompressed data is compressed with @ref compressData2() before writing.
@@ -395,6 +400,7 @@ protected:
 			int nodeId,
 			const cv::Mat & image,
 			const std::string & format) const = 0;
+	virtual void updateImagesQuery(const std::list<SensorData> & nodes) const = 0;
 
 	virtual void updateLaserScanQuery(
 			int nodeId,

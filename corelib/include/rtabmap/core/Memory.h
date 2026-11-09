@@ -365,6 +365,12 @@ public:
 	void deleteLocation(int locationId, std::list<int> * deletedWords = 0, bool keepLinkedInDb = false);
 	/** @brief Forces @p locationId to be flushed to the database. */
 	void saveLocationData(int locationId);
+	/**
+	 * @brief Writes the compressed images of the @p keep nodes still in short-term memory to the
+	 *        database and clears those of the @p release nodes (Mem/BinDataOnRequest), in one transaction.
+	 * @return For each id of @p keep, whether its images were written.
+	 */
+	std::vector<bool> keepNodeData(const std::vector<int> & keep, const std::vector<int> & release);
 	int flushSession(const std::map<int, Transform> & optimizedPoses, const Transform & currentPose, bool optimizedPosesChanged, bool stationary);
 	/** @brief Removes any link between @p idA and @p idB (both directions). */
 	void removeLink(int idA, int idB);
@@ -430,7 +436,7 @@ public:
 	/** @brief Returns links of every signature; @p ignoreNullLinks drops empty placeholders. */
 	std::multimap<int, Link> getAllLinks(bool lookInDatabase, bool ignoreNullLinks = true, bool withLandmarks = false) const;
 	/** @return True if raw binary data (images, scans) is kept in memory after compression. */
-	bool isBinDataKept() const {return _binDataKept;}
+	bool isBinDataKept() const {return _binDataKept || _binDataOnRequest;}
 	/** @return Similarity threshold used by rehearsal (@ref Parameters::kMemRehearsalSimilarity()). */
 	float getSimilarityThreshold() const {return _similarityThreshold;}
 	/** @return Map from signature id to weight (rehearsal accumulation count) for WM and STM. */
@@ -790,6 +796,8 @@ private:
 	void loadDataFromDb(bool postInitClosingEvents);
 	void saveFlannIndex(bool postInitClosingEvents);
 	void moveToTrash(Signature * s, bool keepLinkedToGraph = true, std::list<int> * deletedWords = 0);
+	/** @brief Images reach the database only through keepNodeData() (Mem/BinDataOnRequest). */
+	bool imagesOnRequest() const {return _binDataOnRequest && !_binDataKept;}
 
 	void moveSignatureToWMFromSTM(int id, int * reducedTo = 0);
 	void addSignatureToWmFromLTM(Signature * signature);
@@ -824,6 +832,7 @@ private:
 	ParametersMap parameters_;
 	float _similarityThreshold;
 	bool _binDataKept;
+	bool _binDataOnRequest;
 	bool _rawDescriptorsKept;
 	bool _loadVisualLocalFeaturesOnInit;
 	bool _saveDepth16Format;

@@ -5904,6 +5904,15 @@ void Rtabmap::dumpPrediction() const
 	}
 }
 
+std::vector<bool> Rtabmap::keepNodeData(const std::vector<int> & keep, const std::vector<int> & release)
+{
+	if(!_memory)
+	{
+		return std::vector<bool>(keep.size(), false);
+	}
+	return _memory->keepNodeData(keep, release);
+}
+
 Signature Rtabmap::getSignatureCopy(int id, bool images, bool scan, bool userData, bool occupancyGrid, bool withWords, bool withGlobalDescriptors) const
 {
 	Signature s;

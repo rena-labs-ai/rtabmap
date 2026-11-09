@@ -574,6 +574,8 @@ public:
 	 * words and global descriptors.
 	 */
 	Signature getSignatureCopy(int id, bool images, bool scan, bool userData, bool occupancyGrid, bool withWords, bool withGlobalDescriptors) const;
+	/** @brief See Memory::keepNodeData(). Returns false for every id before @ref init(). */
+	std::vector<bool> keepNodeData(const std::vector<int> & keep, const std::vector<int> & release);
 	/**
 	 * @brief Deprecated: use @ref getGraph() instead with @c withImages=true,
 	 *        @c withScan=true, @c withUserData=true and @c withGrid=true.

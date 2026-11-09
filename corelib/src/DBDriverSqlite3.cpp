@@ -4959,6 +4959,42 @@ void DBDriverSqlite3::updateDepthImageQuery(
 	}
 }
 
+void DBDriverSqlite3::updateImagesQuery(const std::list<SensorData> & nodes) const
+{
+	UASSERT(uStrNumCmp(_version, "0.10.0") >= 0);
+	if(!_ppDb)
+	{
+		return;
+	}
+	sqlite3_stmt * ppStmt = 0;
+	int rc = sqlite3_prepare_v2(_ppDb, "UPDATE Data SET image=?, depth=? WHERE id=?;", -1, &ppStmt, 0);
+	UASSERT_MSG(rc == SQLITE_OK, uFormat("DB error (%s): %s", _version.c_str(), sqlite3_errmsg(_ppDb)).c_str());
+	for(std::list<SensorData>::const_iterator iter=nodes.begin(); iter!=nodes.end(); ++iter)
+	{
+		const cv::Mat blobs[2] = {iter->imageCompressed(), iter->depthOrRightCompressed()};
+		for(int i=0; i<2; ++i)
+		{
+			if(blobs[i].empty())
+			{
+				rc = sqlite3_bind_zeroblob(ppStmt, i+1, 4);
+			}
+			else
+			{
+				rc = sqlite3_bind_blob(ppStmt, i+1, blobs[i].data, (int)blobs[i].cols, SQLITE_STATIC);
+			}
+			UASSERT_MSG(rc == SQLITE_OK, uFormat("DB error (%s): %s", _version.c_str(), sqlite3_errmsg(_ppDb)).c_str());
+		}
+		rc = sqlite3_bind_int(ppStmt, 3, iter->id());
+		UASSERT_MSG(rc == SQLITE_OK, uFormat("DB error (%s): %s", _version.c_str(), sqlite3_errmsg(_ppDb)).c_str());
+		rc = sqlite3_step(ppStmt);
+		UASSERT_MSG(rc == SQLITE_DONE, uFormat("DB error (%s): %s", _version.c_str(), sqlite3_errmsg(_ppDb)).c_str());
+		rc = sqlite3_reset(ppStmt);
+		UASSERT_MSG(rc == SQLITE_OK, uFormat("DB error (%s): %s", _version.c_str(), sqlite3_errmsg(_ppDb)).c_str());
+	}
+	rc = sqlite3_finalize(ppStmt);
+	UASSERT_MSG(rc == SQLITE_OK, uFormat("DB error (%s): %s", _version.c_str(), sqlite3_errmsg(_ppDb)).c_str());
+}
+
 void DBDriverSqlite3::updateLaserScanQuery(
 		int nodeId,
 		const LaserScan & scan) const
